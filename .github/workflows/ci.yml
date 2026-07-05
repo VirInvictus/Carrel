@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    name: ruff + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ruff
+        run: pip install ruff==0.15.20
+
+      - name: ruff check
+        run: ruff check scripts/ tests/
+
+      - name: ruff format --check
+        run: ruff format --check scripts/ tests/
+
+      - name: unittest
+        # This repo's own generator tests (justfile `test-theme`); the justfile
+        # `test` recipe runs the fork's suite cross-repo and is not portable to
+        # a standalone CI checkout.
+        run: python -m unittest discover -s tests
