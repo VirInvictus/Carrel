@@ -1,5 +1,28 @@
 # Patchnotes
 
+## 0.9.0 (2026-07-24)
+
+Phase 10: statistics. The last planned phase.
+
+- **`/statistics`**: hero counts, then ranked ledgers for publication decade,
+  genre, weekday, format, author, series and publisher. Magnitude rides the
+  single gold ramp; identity is position and a direct label. There is no
+  categorical colour anywhere, because the Dragon accents fail the categorical
+  checks outright (worst adjacent pair delta-E 6.7 for normal vision).
+- **Degenerate axes are readouts, not charts.** Rated is 2.1%, status is 98%
+  To Read, source is 96% Anna's Archive. Charted, each would be a single
+  slice; stated as one line each, they are useful.
+- **The 2 a.m. shelf** gets its own hour strip, with the peak named in words
+  so the shape is never the only encoding: 02:00, 664 books.
+- **Front-page strip**: books, authors, series, rated share, busiest hour, and
+  a link through. Only on the whole-library view; beside a filtered wing grid
+  a library-wide total would mislead.
+- Decades before 1900 bucket into one labelled row. Charted individually they
+  were forty rows of one- and two-book decades that flattened the real
+  distribution.
+- `metadata.db` md5 is identical before and after a full render, so the
+  read-only guarantee in spec 7 holds on the new surfaces too.
+
 ## 0.8.0 (2026-07-24)
 
 Phase 9: the search bar gains Calibre's grammar. Plus a category browser.

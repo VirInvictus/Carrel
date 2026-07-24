@@ -212,16 +212,23 @@ The large one. Reverses part of Phase 1 by design.
 
 ## Phase 10: Statistics (spec §12)
 
-- [ ] `cps/stats.py`: headless metric functions returning plain dicts,
-      read-only, no formatting
-- [ ] `/statistics` page: charted axes per §12.1, ledger layout
-- [ ] Front-page readout strip: hero counts plus the hour-of-day line
-- [ ] Degenerate axes render as readout rows, never as charts
-- [ ] All magnitude encoded on the §4.3 gold ramp; no categorical color
-      anywhere; every mark carries a direct label
-- [ ] Tests: metric functions against the fixture DB, including empty-library
-      and single-book cases
-- [ ] Verify: `metadata.db` checksum unchanged across a full stats render
+- [x] `cps/stats.py`: headless metric functions returning plain dicts,
+      read-only, no formatting. A test asserts the whole payload is
+      JSON-serialisable, which is what keeps them honest
+- [x] `/statistics`: hero counts, readout rows, hour strip, then ranked
+      ledgers for decade, genre, weekday, format, author, series, publisher
+- [x] Front-page readout strip, on the whole-library view only (a
+      library-wide total beside a filtered wing grid would mislead)
+- [x] Degenerate axes are readout rows: rated 2.1%, status 98% To Read,
+      source 96% Anna's Archive
+- [x] All magnitude on the §4.3 gold ramp; no categorical colour anywhere;
+      every row carries its label and value as text
+- [x] Tests: metrics against the fixture, 24-bucket hour histogram, decade
+      bucketing, and the empty-library divide-by-zero guard. 31 green
+- [x] Verify: `metadata.db` md5 identical before and after a full stats
+      render (abb47887...)
+- [ ] Brandon: browse pass over statistics; `1.0.0` when it is daily-driver
+      ready
 
 ## Later / opportunistic
 
