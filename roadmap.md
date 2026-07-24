@@ -113,20 +113,31 @@ when shipping; details and rationale live in `spec.md`.
 
 ## Phase 5: EPUB reader theme (stretch)
 
-- [ ] "Kanagawa" entry in `epub_themes.css` + `read.html` theme selector
-- [ ] Reader verified with a known EPUB in light/dark rooms
+- [x] "Kanagawa" entry in `epub_themes.css` (dragonBlack3 page, dragonWhite
+      text) + `read.html` theme selector button and `window.themes` entry
+      (oldWhite chrome title), wired identically to the five stock themes
+- [ ] Brandon: read a chapter on the Kanagawa reader theme and judge it
 
 ## Phase 6: Tests and close-out
 
-- [ ] `tests/` in the fork: fixture mini metadata.db (bool + enum custom
-      columns, preferences row with wing expressions)
-- [ ] Unit: enum projection, Read/Unread filters, write-guard, wing
-      evaluation + cache invalidation
-- [ ] Smoke (Flask test client): detail badge renders, `/wings/<name>`
-      renders, disabled routes 404
-- [ ] Full verification pass (spec §10); `validate_library.py` 0 errors
-- [ ] roadmap boxes ticked, patchnotes entry, spec.md synced
-- [ ] VERSION 1.0.0 when the instance is daily-driver ready
+- [x] `tests/` in the fork: fixture metadata.db built from a real-library
+      schema dump (`tests/calibre_schema.sql`, tables only, no FTS/triggers)
+      plus hand-written cc2 enum + cc5 bool columns and wing expressions
+      (including a `vl:` cross-reference). Self-cleaning sandbox
+      CALIBRE_DBPATH; harness boots the real app via create_app and mirrors
+      main()'s blueprint registration, stopping the updater/scheduler
+      threads in tearDownModule (they otherwise hang the interpreter)
+- [x] 11 tests green in ~0.4s: enum detection, all four badges (incl. DNF,
+      which the live library cannot exercise), exact Read/Unread membership,
+      toggle refusal + checksum, bool-path-under-mode=ro regression, direct
+      SQL write rejected readonly, trimmed routes 404, wings sidebar
+      names/counts, exact wing filtering, empty/bogus wings, mtime cache
+      invalidation
+- [x] Full verification pass (spec §10) performed across Phases 3-4;
+      `validate_library.py` 0 errors
+- [x] roadmap boxes ticked, patchnotes entries, spec.md synced
+- [ ] VERSION 1.0.0 when Brandon signs off the instance as daily-driver
+      ready (open: his visual pass, Rin's account, DNF/reader-theme eyeball)
 
 ## Later / opportunistic
 

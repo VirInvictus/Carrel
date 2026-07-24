@@ -1,5 +1,28 @@
 # Patchnotes
 
+## 0.6.0 (2026-06-11)
+
+Phases 5 and 6: the EPUB reader theme and the test suite.
+
+- EPUB reader gains a "Kanagawa" theme (dragonBlack3 page, dragonWhite
+  text, oldWhite chrome) in `epub_themes.css` and the `read.html`
+  selector, wired identically to the five stock themes.
+- Fork test suite (`tests/`, unittest, 11 tests, ~0.4s): boots the real
+  app via `create_app` against a sandboxed fixture library whose schema is
+  dumped from a real Calibre metadata.db (`tests/calibre_schema.sql`).
+  Covers enum-column detection, all four status badges (including DNF,
+  which the live library cannot exercise), exact Read/Unread membership,
+  toggle refusal with checksum proof, the bool path failing safely under
+  mode=ro, a direct SQL write rejected as readonly, trimmed routes, wings
+  names/counts/filtering (including the vl: cross-reference and the empty
+  wing), and mtime cache invalidation.
+- Harness lessons recorded: create_app's updater/APScheduler threads must
+  be stopped in tearDownModule or the interpreter hangs at exit; cli arg
+  parsing requires a scrubbed sys.argv; cc_classes needs one forced
+  connect before the first request.
+- The shell alias pair was updated for run-from-source (`enter-cps`
+  absolute path; `cps` now runs the fork with CALIBRE_DBPATH).
+
 ## 0.5.0 (2026-06-11)
 
 Phase 4: Wings. The library's 31 virtual libraries (plus Unsorted) are now

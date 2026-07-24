@@ -270,9 +270,17 @@ only its own shelf system, which duplicates curation state.
 - Fork tests live in `calibre-web-smallscope/tests/` (upstream keeps its
   test suite in a separate repo, so this directory is ours), `unittest`
   style, mirroring CalibreQuarry's conventions.
-- Fixture: a minimal generated `metadata.db` containing a bool custom column
-  AND an enumeration custom column, plus a `preferences` row with two wing
-  expressions.
+- Fixture: a generated `metadata.db` whose table schema is dumped from a
+  real Calibre library (`tests/calibre_schema.sql`; tables only, no
+  triggers so inserts need no `title_sort`, FTS and custom_column tables
+  excluded), plus hand-written cc2 (enumeration) and cc5 (bool) columns
+  and a `preferences` row with wing expressions including a `vl:`
+  cross-reference. Regenerate the dump if a future Calibre migration
+  changes the schema.
+- Harness: boots the real app (`create_app`) in a sandbox `CALIBRE_DBPATH`,
+  mirrors `main()`'s blueprint registration (keep in sync on rebases), and
+  must stop the updater/APScheduler threads in `tearDownModule` (they are
+  non-daemon and otherwise hang the interpreter at exit).
 - Coverage contract: enum linked-query projection (5.2/5.3), Read/Unread
   filters, the write-guard (toggle endpoint refuses), wing evaluation and
   mtime cache invalidation, and Flask test-client smoke checks (detail page
