@@ -3,7 +3,7 @@
 The contract for the Kanagawa Dragon calibre-web theme and its companion fork.
 Read this before changing semantics in either repo.
 
-Last revised: 2026-06-11. Companion repo: `calibre-web-smallscope`
+Last revised: 2026-07-24. Companion repo: `calibre-web-smallscope`
 (fork of `janeczku/calibre-web`; all code changes live there on the
 `smallscope` branch). This repo holds the theme source, the documentation
 contract, and glue tooling.
@@ -12,7 +12,7 @@ contract, and glue tooling.
 
 ## 1. Purpose
 
-A personal web front-end for Brandon's curated Calibre library (5,600+ books,
+A personal web front-end for Brandon's curated Calibre library (7,200+ books,
 single-tag dot taxonomy, 31 virtual-library wings, validator-enforced metadata)
 that:
 
@@ -62,24 +62,32 @@ and safe to touch.
   release notes, rebase `smallscope` onto the new tag, re-run the fork tests,
   re-verify the feature-removal list (section 6) against new UI surface.
 - License: GPL-3.0 in both repos (calibre-web is GPL-3.0; the theme targets
-  its templates and caliBlur's selectors, so everything stays aligned).
+  its templates, so everything stays aligned).
 
 ## 4. Theme
 
 ### 4.1 Mechanism
 
-caliBlur (calibre-web's built-in dark theme, `g.current_theme == 1`) stays
-enabled as the base layer. The fork adds exactly one stylesheet link in
-`cps/templates/layout.html`, after `caliBlur_override.css`:
+The theme is an **owned stylesheet over stock calibre-web templates**. caliBlur
+is not used: `config_theme` is 0 (stock), `caliBlur.css` and
+`caliBlur_override.css` are unlinked, and `theme/kanagawa-dragon.css` is the
+single sheet the fork loads.
 
-```html
-<link href="{{ url_for('static', filename='css/kanagawa-dragon.css') }}" rel="stylesheet" media="screen">
-```
+This is the same move the GTK side of the portfolio made when it dropped
+libadwaita: stop overriding a vendor theme and own the surface instead. The
+override era is documented in §4.7 for the record.
 
-All visual change lives in that one override sheet. caliBlur defines a small
-set of CSS custom properties (`caliBlur.css:74-79`) plus roughly 25 dominant
-hardcoded colors; the override redefines the variables first, then restyles
-the selectors that hardcode.
+Consequences, all intended:
+
+- The generated recolor block and `scripts/recolor_caliblur.py` retire. There
+  is no vendor palette left to map, so the generator and its tests are removed
+  rather than maintained.
+- Layout is written against stock templates, which are plainer and far shorter
+  than caliBlur's, so selectors get shorter and specificity fights disappear.
+- caliBlur's raster backgrounds (`blur-light.png`, averaging `#3a4853`, a cool
+  slate applied to `body` at `!important`) go with it. They were unreachable by
+  any color-level override and were the single largest source of drift from the
+  palette below.
 
 ### 4.2 Palette
 
@@ -114,22 +122,42 @@ Source of truth: the Dragon palette as pinned in Brandon's
 | samuraiRed | `#E82424` | Hard errors only |
 | roninYellow | `#FF9E3B` | Hard warnings only |
 
-### 4.3 caliBlur variable mapping
+### 4.3 The chart ramp (statistics surfaces)
 
-| caliBlur | Value | Kanagawa replacement |
-| --- | --- | --- |
-| `--color-background` | `#474747` | dragonBlack1 `#12120f` |
-| `--color-primary` | `#F9BE03` | dragonOrange `#b6927b` |
-| `--color-secondary` | `#CC7B19` | dragonYellow `#c4b28a` |
-| `--color-secondary-hover` | `#E59029` | dragonOrange2 `#b98d7b` |
-| `--color-background-mobile` | `#1f1f1f` | dragonBlack0 `#0d0c0c` |
+The Dragon palette is deliberately muted, which makes it excellent for prose
+and unusable for "color equals category". Measured against the categorical
+checks (OKLab, dark surface `#12120f`):
 
-Hardcoded caliBlur colors map by role, not one-to-one: whites (`#fff`,
-`#eee`) become dragonWhite/fujiWhite by emphasis; the gray ramp (`#222`,
-`#282828`, `#323232`, `#3f4245`, `#474747`, `#555`) collapses onto the
-dragonBlack ramp; reds (`#ce3d2a`, `#ac3323`) become dragonRed.
+- The six natural accents fail. Worst adjacent pair `#8ba4b0` / `#87a987` is
+  ΔE 6.7 for **normal** vision, below the floor of 15, and five of six fall
+  under the chroma floor (they read as gray).
+- Even a best-case three-hue set chosen for maximum spread fails
+  (`#c4746e` / `#658594`, ΔE 15.0 normal, 5.7 protan).
+
+This is a property of Kanagawa, not a tuning problem, so §12 encodes magnitude
+with **one sequential ramp** and encodes identity with position and labels:
+
+| Step | Hex | OKLab L | Contrast on `#12120f` |
+| --- | --- | --- | --- |
+| gold 1 | `#3a3222` | 0.321 | 1.48:1 |
+| gold 2 | `#5d5039` | 0.438 | 2.39:1 |
+| gold 3 | `#8a7853` | 0.580 | 4.37:1 |
+| gold 4 | `#a89571` | 0.678 | 6.44:1 |
+| gold 5 | `#c4b28a` | 0.769 | 9.01:1 |
+
+Monotonic in lightness by construction. Steps 3 to 5 clear 4.5:1 and are the
+only ones permitted to carry a label directly on the fill.
+
+**Rule: no categorical color anywhere.** Where a chart shows more than one
+category, identity comes from position, a direct text label, and a hairline
+gap. Color may reinforce; it may never be the sole encoding.
 
 ### 4.4 Design principles
+
+The register is **a dark reading room wired into a terminal**: library-forward
+prose, instrumentation in a mono voice. The structure is adapted from Brandon's
+Athenaeum static site so the two read as one property. Nothing is named after
+it, nothing links to it; the borrowing is structural only.
 
 1. **Covers carry the color.** Surfaces stay in the near-black dragonBlack
    range with low-saturation text; the curated covers are the most saturated
@@ -138,12 +166,26 @@ dragonBlack ramp; reds (`#ce3d2a`, `#ac3323`) become dragonRed.
 2. **Warm, not clinical.** oldWhite headings, dragonOrange/dragonYellow
    accents; the blue/violet side of the palette is for small informational
    touches only.
-3. **Covers get presentation treatment**: comfortable grid spacing, rounded
-   corners, soft shadow, gentle hover lift/scale. Badges and overlays stay
-   subdued so they never compete with the artwork.
-4. **Typography is the bundled Open Sans** (embedded in caliBlur as
-   base64 WOFF). No reliance on system-installed fonts, ever.
-5. **Readability beats density.** This is a reading room, not a dashboard.
+3. **Ledgers, not cards.** Rows share hairline borders (dragonBlack5) and
+   align to a common grid. No filled floating tiles, no drop shadows, no hover
+   lift. `--radius` is 3px everywhere. A cover is presented by spacing and
+   alignment, not by a raised surface. *(This reverses the Phase 1 cover
+   treatment, deliberately.)*
+4. **Two type registers.** Prose, titles, and book metadata are set in
+   `--serif`; all chrome, labels, counts, nav, and table headers are `--mono`,
+   uppercase and tracked. The split is what makes the instrumentation read as
+   instrumentation.
+5. **Readability beats density.** Still a reading room. §12 is the one
+   dashboard surface, and it is built from readout rows rather than gauges.
+
+**Font policy (a documented exception).** Principle 4 names installed families:
+`--serif` leads with `"EB Garamond Absinthe"` and `--mono` with
+`"JetBrains Mono"`. This is an explicit, bounded exception to the global "never
+assume an installed font" rule, permitted only because §11 binds the server to
+localhost, making this a single-machine surface exactly like Athenaeum. Both
+stacks still end in generic families (`serif`, `ui-monospace`) so the app
+degrades rather than breaks. Note that plain `"EB Garamond"` must **not** lead
+the stack: on this machine it resolves to Söhne, a sans.
 
 ### 4.5 Assets
 
@@ -156,6 +198,26 @@ The EPUB reader (`read.html`) has its own theme selector and isolated styles
 (`epub_themes.css`); it does not inherit the app theme. A "Kanagawa" reading
 theme (dragonBlack1 page, dragonWhite text) is planned as a stretch goal.
 PDF/comic/DJVU readers keep their stock styling.
+
+### 4.7 The override era (historical)
+
+Through v0.6.x the theme was an override layer on top of caliBlur, generated by
+`scripts/recolor_caliblur.py`: roughly 178 rules whose caliBlur colors were
+mapped to Dragon equivalents by role, plus a hand-curated polish layer. It is
+recorded here because the approach was sound for its constraints and because
+its failure modes are the argument for §4.1:
+
+- **Rasters are unreachable.** caliBlur's page background is a PNG, so no
+  color-level generator could ever retheme it.
+- **Specificity outranks source order.** caliBlur's selectors are long
+  (`.container-fluid .book .meta .title`, 0-4-0), so hand-written polish rules
+  were silently losing to generated ones despite loading later.
+- **Notation coverage is a trap.** The generator matched `#hex` only, so
+  colors written as `rgba()` passed through un-themed and rules containing no
+  hex at all were never emitted for review.
+
+None of these are fixable in an override; all of them disappear when the sheet
+is owned.
 
 ## 5. Read status: the `reading_status` enumeration
 
@@ -218,8 +280,9 @@ per account rather than patched.
 | Registration/magic-link remnants, Goodreads settings | templates and admin panes |
 
 Rule: routes are **disabled** (404/registration removed), not deleted, when
-that keeps the diff small and rebase-friendly. Users: exactly two accounts
-(Brandon, Rin), both see the whole library; no content restriction.
+that keeps the diff small and rebase-friendly. Users: exactly one, the owner.
+Multi-account operation was dropped in favour of §11; there is no content
+restriction because there is nobody to restrict.
 
 ## 7. Read-only metadata.db guarantee
 
@@ -299,7 +362,122 @@ only its own shelf system, which duplicates curation state.
 4. Integrity: `metadata.db` checksum identical before/after a full browse
    session; `validate_library.py` stays at 0 errors.
 
-## 11. Non-goals
+## 11. Single-user operation
+
+This instance has exactly one reader. Authentication is therefore removed as a
+concept, not merely bypassed.
+
+### 12.1 The contract
+
+- No credential is ever requested. `/login`, `/logout`, and registration
+  answer 404 through the same route-disable pattern as §6.2.
+- Every request runs as the owning admin account.
+- The `user` table and `flask-login` stay in the tree. All 154
+  `@login_required` decorators stay exactly where upstream put them.
+
+### 12.2 Mechanism
+
+`cps/single_user.py` registers a `before_request` that authenticates the owner
+whenever `current_user` is anonymous. The decorators then pass trivially,
+because the request is always authenticated.
+
+This is chosen over deleting the auth layer for one reason: §3 requires the
+fork to stay rebase-friendly onto upstream tags, and touching 154 call sites
+across 10 modules would make every future rebase a merge conflict. Deleting
+`single_user.py` restores stock behaviour exactly.
+
+### 12.3 Exposure
+
+Because nothing gates access, the server binds **`127.0.0.1` only**. Reaching
+it from another device is deliberately an SSH tunnel or an authenticating
+reverse proxy, never an open port. Binding `0.0.0.0` without auth would expose
+both the library and the admin configuration pane to the whole network.
+
+The localhost binding is what licenses the font exception in §4.4.
+
+## 12. Statistics
+
+Two surfaces, both computed live from `metadata.db` under the §7 read-only
+guarantee: a compact readout strip on the front page, and a full `/statistics`
+page.
+
+### 13.1 What is worth showing
+
+Measured against the real library (7,257 books) rather than assumed. Axes with
+a real distribution get a chart; degenerate axes get a one-line readout, because
+a chart of a 98%/2% split is a chart that looks broken:
+
+| Charted | Readout only (and why) |
+| --- | --- |
+| Publication by decade (2453 / 1596 / 1182 / 702 / 439 / 256) | Ratings: 149 of 7,257 rated (2%) |
+| Genre spine: Fic 3440, NonFic 3004, Gaming 813, over 426 tags | Reading status: 98% To Read |
+| Top authors (5,700), series (804), publishers (1,456) | Source: 96% Anna's Archive |
+| Formats: EPUB 4845, PDF 2302, DJVU 99, MOBI 10, AZW3 4 | Date Read: 39 books populated |
+| Acquisition strip, 161 days | |
+| Hour-of-day acquisition (peak 02:00, 664 books) | |
+| Wing composition, reusing §8 | |
+
+These counts are a snapshot taken 2026-07-24 and will drift; they are recorded
+to justify the charted/readout split, not as fixtures.
+
+### 13.2 Rendering
+
+Hand-rolled CSS bars and inline SVG. No charting dependency, matching the
+"stdlib-lean, no framework" posture of the rest of the portfolio. Every chart
+obeys the §4.3 ramp rule: sequential gold for magnitude, position and direct
+labels for identity, never color alone.
+
+### 13.3 Boundary
+
+`cps/stats.py` holds headless metric functions returning plain dicts; templates
+render them. No metric function prints, formats, or knows about HTML.
+
+cquarry's `modes/stats.py` is **not** reused: it prints ANSI to stdout and is
+presentation-coupled. The queries here are written fresh and credit that
+lineage. If a fourth consumer of library metrics appears, extracting a headless
+metrics layer becomes the right call; three is the point at which it gets
+raised, not acted on.
+
+## 13. Search parity
+
+### 14.1 The problem
+
+calibre-web's simple search has no expression grammar. `search_query` in
+`cps/db.py` lowercases the term and hands it to FTS5 as a phrase, so every
+Calibre-style query is matched as literal text and returns nothing. Measured
+against the live library:
+
+| Query | calibre-web | cquarry |
+| --- | --- | --- |
+| `King` | 61 | 3180 |
+| `author:"King"` | **0** | 55 |
+| `title:Dune` | **0** | 11 |
+| `tags:Fic.Fantasy` | **0** | 1368 |
+| `rating:>=4` | **0** | 130 |
+| `author:King AND title:Tower` | **0** | 1 |
+
+### 14.2 The contract
+
+The search bar evaluates through cquarry's `SearchEngine`, the same engine §8
+already uses for wing expressions. Field prefixes, boolean logic, grouping,
+hierarchical tags, and `vl:` references all behave as they do in Calibre and in
+cquarry, including cquarry's documented deviations (stdlib `re`, `unicodedata`
+rather than ICU, anchored `tags:`).
+
+A bare term keeps Calibre's semantics: substring across title, authors,
+author_sort, series, publisher, tags, and comments. This is why `King` returns
+3180 rather than 61; it matches "sorcerer-**king**" and equally "ma**king**"
+and "as**king**" inside comments. That breadth is Calibre-faithful and is
+accepted as the cost of parity.
+
+### 14.3 Consequence for the cquarry dependency
+
+This makes the search bar, not just wing evaluation, depend on cquarry. Per the
+project rule, that deepening is recorded here rather than passed over: cquarry
+is now load-bearing for the primary user-facing interaction. It remains a
+single editable install and the only approved dependency.
+
+## 14. Non-goals
 
 - No writes to `metadata.db`, ever (section 7).
 - No Kobo/KOReader sync, no email/send-to-device, no uploads, no web

@@ -62,7 +62,8 @@ when shipping; details and rationale live in `spec.md`.
 - [x] Route trimming implemented as `cps/smallscope.py` `trim()`:
       before_request 404 guards installed pre-registration, so `url_for`
       keeps resolving everywhere (rebase-friendly)
-- [ ] Rin's account created (Brandon: admin UI, needs a password chosen)
+- [x] Dropped: multi-account operation. Superseded by Phase 7 (spec §11);
+      this instance has one user and no login
 - [x] Verify: /tasks, /shelf/*, /admin/book/* return 404; /login renders
       200 themed; auth redirects intact; Jinja syntax pass on all four
       edited templates
@@ -137,12 +138,72 @@ when shipping; details and rationale live in `spec.md`.
       `validate_library.py` 0 errors
 - [x] roadmap boxes ticked, patchnotes entries, spec.md synced
 - [ ] VERSION 1.0.0 when Brandon signs off the instance as daily-driver
-      ready (open: his visual pass, Rin's account, DNF/reader-theme eyeball)
+      ready (open: his visual pass, DNF/reader-theme eyeball)
+
+## Phase 7: Single-user (spec §11)
+
+Small, self-contained, no visual change. Lands first because everything after
+it is easier to verify without a login round-trip.
+
+- [ ] `cps/single_user.py`: `before_request` authenticates the owner when
+      `current_user` is anonymous. No `@login_required` decorator is touched
+- [ ] `/login`, `/logout`, registration 404 via the existing `trim()` pattern;
+      user-management panes removed from the admin UI
+- [ ] Bind `127.0.0.1` (spec §11.3). Verify from a second device that the port
+      is closed
+- [ ] Tests: unauthenticated request to `/` renders the library; `/login` 404s;
+      deleting `single_user.py` restores the stock login flow
+- [ ] Verify: no credential prompt anywhere in a full browse/search/read pass
+
+## Phase 8: De-caliBlur and the owned stylesheet (spec §4.1, §4.4)
+
+The large one. Reverses part of Phase 1 by design.
+
+- [ ] `config_theme` to 0; unlink `caliBlur.css` and `caliBlur_override.css`
+- [ ] Rewrite `theme/kanagawa-dragon.css` against stock templates: `:root`
+      tokens, two type registers, ledger idiom, 3px radius
+- [ ] Delete `scripts/recolor_caliblur.py`, its 24 tests, and the generated
+      block. Drop the `regen` justfile recipe
+- [ ] Cover treatment: remove shadow, hover lift, and 5px radius per §4.4.3
+- [ ] Topbar as a status line; sidebar reduced to Wings
+- [ ] Ctrl-K command palette over wings, authors, series, categories
+- [ ] Cut Discover, Hot Books, Top Rated (routes 404, nav entries removed)
+- [ ] Font stacks lead with the exact installed families and end in generics
+      (spec §4.4); confirm `"EB Garamond"` never leads
+- [ ] Verify: screenshot desktop (1440) and mobile (390); confirm the rendered
+      page background is the palette value, not a raster
+
+## Phase 9: Search parity (spec §13)
+
+- [ ] Route the search bar through cquarry's `SearchEngine`
+- [ ] Advanced search either rebuilt on the same engine or removed; two search
+      grammars in one app is not acceptable
+- [ ] Tests against the fixture DB: field prefixes, boolean logic, grouping,
+      hierarchical `tags:`, `vl:` references, malformed input
+- [ ] Verify against the live library that the §13.1 table inverts: every row
+      that read 0 now matches cquarry exactly
+
+## Phase 10: Statistics (spec §12)
+
+- [ ] `cps/stats.py`: headless metric functions returning plain dicts,
+      read-only, no formatting
+- [ ] `/statistics` page: charted axes per §12.1, ledger layout
+- [ ] Front-page readout strip: hero counts plus the hour-of-day line
+- [ ] Degenerate axes render as readout rows, never as charts
+- [ ] All magnitude encoded on the §4.3 gold ramp; no categorical color
+      anywhere; every mark carries a direct label
+- [ ] Tests: metric functions against the fixture DB, including empty-library
+      and single-book cases
+- [ ] Verify: `metadata.db` checksum unchanged across a full stats render
 
 ## Later / opportunistic
 
 - [ ] Offer enum read-column support upstream (it is generally useful)
-- [ ] Homelab deployment notes (September 2026 build): serve from Rin's
-      machine against the mirrored library
-- [ ] Library-graduation check-in on cquarry's search engine if the fork's
-      consumption deepens
+- [ ] Homelab deployment (September 2026 build): explicitly gated on
+      reinstating authentication. Phase 7 removes login and binds
+      localhost, so serving any other machine means an authenticating
+      reverse proxy in front, or reverting Phase 7. Do not simply
+      rebind to 0.0.0.0
+- [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
+      depend on its engine, so consumption HAS deepened (spec §13.3).
+      Revisit if a fourth consumer of library metrics appears
