@@ -230,19 +230,19 @@ hands; none of it is a code task.
       so the favicon wants a simplified variant rather than a resize
 - [ ] DNF badge eyeball, whenever a book actually carries the value
 - [ ] Read a chapter on the Kanagawa reader theme and judge it
-- [ ] Update the `cps` shell alias in the dotfiles to pass `-i 127.0.0.1`.
-      Without it that alias still binds every interface, and there is no login
-      in front of it any more. `just serve` is already correct
+- [ ] `dotfile-sync` the `.zshrc` change (the `cps` alias now binds
+      `0.0.0.0`, matching `just serve`)
 - [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
 
 ## Later / opportunistic
 
 - [ ] Offer enum read-column support upstream (it is generally useful)
-- [ ] Homelab deployment (September 2026 build): explicitly gated on
-      reinstating authentication. Phase 7 removes login and binds
-      localhost, so serving any other machine means an authenticating
-      reverse proxy in front, or reverting Phase 7. Do not simply
-      rebind to 0.0.0.0
+- [ ] Homelab deployment (September 2026 build): the instance already binds
+      `0.0.0.0` with no authentication (spec §11.3), which is acceptable on a
+      trusted home network run on demand. A always-on homelab is a different
+      threat model and needs authentication reinstated or an authenticating
+      reverse proxy in front. Decide that deliberately, not by inheriting
+      this config
 - [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
       depend on its engine, so consumption HAS deepened (spec §13.3).
       Revisit if a fourth consumer of library metrics appears

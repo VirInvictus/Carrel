@@ -388,12 +388,28 @@ across 10 modules would make every future rebase a merge conflict. Deleting
 
 ### 11.3 Exposure
 
-Because nothing gates access, the server binds **`127.0.0.1` only**. Reaching
-it from another device is deliberately an SSH tunnel or an authenticating
-reverse proxy, never an open port. Binding `0.0.0.0` without auth would expose
-both the library and the admin configuration pane to the whole network.
+The server binds **`0.0.0.0`**, so the instance is reachable from any device
+on the local network (`192.168.2.41:8083`). Since §11.1 removes
+authentication entirely, this means **anything on the network can read and
+download the whole library and reach the admin configuration pane**.
 
-The localhost binding is what licenses the font exception in §4.4.
+That is a deliberate decision, recorded here so it is never mistaken for an
+oversight. The control is not the bind address: it is that the server is run
+only in environments Brandon trusts, and is not left running otherwise. The
+threat model is a home network under his control, not a shared or hostile one.
+
+Revision history, because this clause has flipped once already: Phase 7 bound
+`127.0.0.1` on exactly the reasoning above. It was rebound on 2026-07-24 for
+phone access, with the exposure understood and accepted. If the instance ever
+needs to run somewhere untrusted, the honest fixes are reinstating
+authentication (delete `cps/single_user.py`) or fronting it with an
+authenticating reverse proxy. Do not simply hope the network is friendly.
+
+Note that §4.4's font exception was originally licensed by the localhost
+binding. It survives on the narrower ground that this is still a
+single-machine surface in practice: the fonts are named for Brandon's own
+browser, and every stack ends in a generic family, so any other device
+degrades to a system serif and mono rather than breaking.
 
 ## 12. Statistics
 
