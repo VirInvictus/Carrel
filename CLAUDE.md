@@ -1,7 +1,7 @@
-# CLAUDE.md (calibre-web-kanagawa)
+# CLAUDE.md (Carrel)
 
 Per-project guidance. This file and `spec.md` are the contract for BOTH this
-repo and the companion fork `~/.gitrepos/calibre-web-smallscope`; the fork's
+repo and the companion fork `~/.gitrepos/Carrel-calibre-web`; the fork's
 own CLAUDE.md is a stub pointing here.
 
 ## What this is
@@ -50,7 +50,7 @@ calibre-web, serving Brandon's curated Calibre library
   `CALIBRE_DBPATH=~/.calibre-web <venv>/bin/python cps.py` in the fork.
   calibre-web's own `app.db` (users/settings, in `~/.calibre-web/`) is
   separate from the library and safe to touch.
-- Fork tests: `calibre-web-smallscope/tests/`, unittest style, fixture
+- Fork tests: `Carrel-calibre-web/tests/`, unittest style, fixture
   metadata.db built in test setup.
 
 ## Working notes

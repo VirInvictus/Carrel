@@ -1,6 +1,6 @@
-<p align="center"><img src="logo.svg" width="120" alt="calibre-web-kanagawa logo"></p>
+<p align="center"><img src="logo.svg" width="120" alt="Carrel logo"></p>
 
-# calibre-web-kanagawa
+# Carrel
 
 A Kanagawa Dragon theme and a curated, library-first configuration for
 [calibre-web](https://github.com/janeczku/calibre-web).
@@ -15,7 +15,7 @@ the book covers are the most saturated thing on every page; text runs warm
 This repo is the project home: the canonical theme stylesheet
 (`theme/kanagawa-dragon.css`), the specification (`spec.md`), the roadmap,
 and glue tooling. The code changes live in a companion fork,
-[calibre-web-smallscope](https://github.com/VirInvictus/calibre-web-smallscope),
+[Carrel-calibre-web](https://github.com/VirInvictus/Carrel-calibre-web),
 as commits on the `smallscope` branch (cut from calibre-web `0.6.26`).
 
 Beyond the theme, the fork adapts calibre-web to a curated library:

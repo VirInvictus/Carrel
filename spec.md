@@ -1,9 +1,9 @@
-# calibre-web-kanagawa: Specification
+# Carrel: Specification
 
 The contract for the Kanagawa Dragon calibre-web theme and its companion fork.
 Read this before changing semantics in either repo.
 
-Last revised: 2026-07-24. Companion repo: `calibre-web-smallscope`
+Last revised: 2026-07-24. Companion repo: `Carrel-calibre-web`
 (fork of `janeczku/calibre-web`; all code changes live there on the
 `smallscope` branch). This repo holds the theme source, the documentation
 contract, and glue tooling.
@@ -30,8 +30,8 @@ that:
 
 | Repo | Role |
 | --- | --- |
-| `calibre-web-kanagawa` (this repo) | Theme source (`theme/`), spec, roadmap, patchnotes, glue (`justfile`). The documentation here is the contract for both repos. |
-| `calibre-web-smallscope` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26` (the release installed in `~/calibre-web-env/`). All Python/template/CSS changes are commits on this branch. |
+| `Carrel` (this repo) | Theme source (`theme/`), spec, roadmap, patchnotes, glue (`justfile`). The documentation here is the contract for both repos. |
+| `Carrel-calibre-web` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26` (the release installed in `~/calibre-web-env/`). All Python/template/CSS changes are commits on this branch. |
 
 Division of labor: the theme is developed here in `theme/kanagawa-dragon.css`
 and vendored into the fork at `cps/static/css/kanagawa-dragon.css` via
@@ -45,7 +45,7 @@ supported source-run mode):
 
 ```sh
 CALIBRE_DBPATH=~/.calibre-web ~/calibre-web-env/bin/python \
-    ~/.gitrepos/calibre-web-smallscope/cps.py
+    ~/.gitrepos/Carrel-calibre-web/cps.py
 ```
 
 `CALIBRE_DBPATH` points at the existing settings directory
@@ -330,7 +330,7 @@ only its own shelf system, which duplicates curation state.
 
 ## 9. Testing
 
-- Fork tests live in `calibre-web-smallscope/tests/` (upstream keeps its
+- Fork tests live in `Carrel-calibre-web/tests/` (upstream keeps its
   test suite in a separate repo, so this directory is ours), `unittest`
   style, mirroring CalibreQuarry's conventions.
 - Fixture: a generated `metadata.db` whose table schema is dumped from a

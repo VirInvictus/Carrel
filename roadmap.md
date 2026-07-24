@@ -1,11 +1,11 @@
 # Roadmap
 
-Phases for calibre-web-kanagawa and the `smallscope` fork branch. Tick boxes
+Phases for Carrel and the `smallscope` fork branch. Tick boxes
 when shipping; details and rationale live in `spec.md`.
 
 ## Phase 0: Scaffold (in flight)
 
-- [x] Clone `calibre-web-kanagawa` and `calibre-web-smallscope` into `~/.gitrepos/`
+- [x] Clone `Carrel` and `Carrel-calibre-web` into `~/.gitrepos/`
 - [x] Fork: add `upstream` remote (janeczku/calibre-web), fetch tags, branch
       `smallscope` from tag `0.6.26` (matches the installed release)
 - [x] Project framework: README, spec.md, roadmap.md, patchnotes.md, CLAUDE.md,

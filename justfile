@@ -1,6 +1,6 @@
-# calibre-web-kanagawa glue tasks
+# Carrel glue tasks
 
-fork := env_var('HOME') / ".gitrepos/calibre-web-smallscope"
+fork := env_var('HOME') / ".gitrepos/Carrel-calibre-web"
 venv := env_var('HOME') / "calibre-web-env"
 
 # Regenerate the mechanical recolor block from the fork's caliBlur.css

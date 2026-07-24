@@ -143,8 +143,8 @@ Phase 1: the Kanagawa Dragon theme, live on the instance.
 
 Project scaffold.
 
-- Repos established: `calibre-web-kanagawa` (project home) and
-  `calibre-web-smallscope` (fork of janeczku/calibre-web; branch
+- Repos established: `Carrel` (project home) and
+  `Carrel-calibre-web` (fork of janeczku/calibre-web; branch
   `smallscope` cut from tag 0.6.26, upstream remote wired).
 - Documentation framework: README, spec.md (full contract: palette and
   caliBlur mapping, feature-removal lists, read-only reading_status

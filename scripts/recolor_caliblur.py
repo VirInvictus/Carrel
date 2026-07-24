@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-DEFAULT_FORK = Path.home() / ".gitrepos" / "calibre-web-smallscope"
+DEFAULT_FORK = Path.home() / ".gitrepos" / "Carrel-calibre-web"
 DEFAULT_THEME = REPO / "theme" / "kanagawa-dragon.css"
 
 BEGIN = "/* BEGIN GENERATED RECOLOR (scripts/recolor_caliblur.py) */"
