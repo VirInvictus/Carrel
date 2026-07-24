@@ -166,17 +166,28 @@ it is easier to verify without a login round-trip.
 
 The large one. Reverses part of Phase 1 by design.
 
-- [ ] `config_theme` to 0; unlink `caliBlur.css` and `caliBlur_override.css`
-- [ ] Rewrite `theme/kanagawa-dragon.css` against stock templates: `:root`
+- [x] `config_theme` to 0; caliBlur CSS and JS no longer load. The theme link
+      moved out of the `g.current_theme == 1` branch so it applies over stock
+- [x] Rewrite `theme/kanagawa-dragon.css` against stock templates: `:root`
       tokens, two type registers, ledger idiom, 3px radius
-- [ ] Delete `scripts/recolor_caliblur.py`, its 24 tests, and the generated
-      block. Drop the `regen` justfile recipe
-- [ ] Cover treatment: remove shadow, hover lift, and 5px radius per §4.4.3
-- [ ] Topbar as a status line; sidebar reduced to Wings
-- [ ] Ctrl-K command palette over wings, authors, series, categories
-- [ ] Cut Discover, Hot Books, Top Rated (routes 404, nav entries removed)
-- [ ] Font stacks lead with the exact installed families and end in generics
-      (spec §4.4); confirm `"EB Garamond"` never leads
+- [x] Delete `scripts/recolor_caliblur.py`, its 24 tests, and the generated
+      block; dropped the `regen` and `test-theme` recipes. CI repointed at the
+      stylesheet's own invariants (palette closure, serif stack, no caliBlur)
+- [x] Cover treatment: shadow, hover lift and 5px radius gone. Note stock
+      style.css paints covers at `.container-fluid .book .cover span img`
+      (0-3-2), so the override has to meet that specificity
+- [x] Topbar as a status line; account link relabelled (it rendered the
+      username beside the Settings link, reading "ADMIN ADMIN")
+- [ ] Sidebar reduced to Wings alone (Browse section still present; the
+      palette now covers those destinations, so it can go)
+- [x] Ctrl-K command palette over wings, authors, series, categories:
+      `cps/palette.py` + `static/js/palette.js`, ported from Athenaeum,
+      6,975 entries, mtime-cached and immutable-cacheable
+- [x] Cut Discover, Hot Books, Top Rated: `seal_browse_surfaces()` 404s them
+      by path prefix (they share the `/<data>/<sort_param>` rule), sidebar
+      bits unset. Dead Login/Register/Logout navbar links removed too
+- [x] Font stacks lead with the exact installed families and end in generics;
+      CI asserts `"EB Garamond"` never leads
 - [ ] Verify: screenshot desktop (1440) and mobile (390); confirm the rendered
       page background is the palette value, not a raster
 
