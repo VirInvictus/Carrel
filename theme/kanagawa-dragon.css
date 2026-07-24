@@ -355,6 +355,19 @@ hr { border-color: var(--rule); }
 }
 
 /* ------------------------------------------------------------------ */
+/* Keyboard navigation                                                */
+/* ------------------------------------------------------------------ */
+
+/* j/k walk the grid, Enter opens. The selected book is marked the same way
+   the sidebar marks an active row: an accent rule, not a highlight box. */
+.book.kn-sel { position: relative; }
+.book.kn-sel .cover img {
+    border-color: var(--kngw-orange);
+    box-shadow: 0 0 0 1px var(--kngw-orange);
+}
+.book.kn-sel .meta .title { color: var(--kngw-old-white); }
+
+/* ------------------------------------------------------------------ */
 /* Search syntax legend (spec 13)                                     */
 /* ------------------------------------------------------------------ */
 
@@ -720,10 +733,21 @@ hr { border-color: var(--rule); }
 #archived_form:hover span { color: var(--kngw-gray); }
 
 /* Series line: a book is usually part of something */
+.book-meta > .series { max-width: 620px; padding: 5px 0; border-bottom: 1px solid var(--rule); }
+.book-meta .series p { margin: 0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
 .book-meta .series, .book-meta .series a {
     font-family: var(--serif);
     font-size: 15px;
     color: var(--kngw-gray2);
+}
+.book-meta .series a { color: var(--kngw-orange); }
+.series-held {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--kngw-black6);
+    white-space: nowrap;
 }
 
 .book-meta p, #description p {
