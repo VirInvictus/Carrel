@@ -2,64 +2,101 @@
 
 # Carrel
 
-A Kanagawa Dragon theme and a curated, library-first configuration for
+A single-user reading room for one curated Calibre library, built on
 [calibre-web](https://github.com/janeczku/calibre-web).
 
-The premise: a personal Calibre library deserves a web front-end that feels
-like a reading room, not a dashboard. Surfaces stay near-black and muted so
-the book covers are the most saturated thing on every page; text runs warm
-(oldWhite headings, dragonOrange accents); everything you don't use is gone.
+A carrel is a private desk in a library. That is the design brief: no accounts,
+no sharing, no dashboard. One reader, 7,000 books, and an interface that gets
+out of the way.
+
+The register is a dark reading room wired into a terminal. Prose, titles and
+book metadata are set in a serif; every label, count, nav item and table header
+is mono. Surfaces stay in near-black so the covers are the most saturated thing
+on any page, and rows share hairline rules instead of floating as cards.
 
 ## What lives where
 
-This repo is the project home: the canonical theme stylesheet
-(`theme/kanagawa-dragon.css`), the specification (`spec.md`), the roadmap,
-and glue tooling. The code changes live in a companion fork,
-[Carrel-calibre-web](https://github.com/VirInvictus/Carrel-calibre-web),
-as commits on the `smallscope` branch (cut from calibre-web `0.6.26`).
+**This repo is the contract and the theme.** `spec.md` is authoritative:
+read it before changing semantics. `theme/kanagawa-dragon.css` is the canonical
+stylesheet, vendored into the fork by `just sync-theme`.
 
-Beyond the theme, the fork adapts calibre-web to a curated library:
+**The code lives in the fork,**
+[Carrel-calibre-web](https://github.com/VirInvictus/Carrel-calibre-web), on the
+`smallscope` branch cut from calibre-web `0.6.26`. Its README has the
+screenshots and the feature tour.
 
-- **Read status from the library, read-only.** Stock calibre-web only links
-  read state to boolean custom columns and otherwise keeps its own tracking
-  table. The fork understands an enumeration column (To Read / Reading /
-  Read / DNF) and displays it as a four-state badge. It never writes it;
-  status changes belong to the curation workflow.
-- **Wings.** Calibre virtual libraries, which stock calibre-web ignores
-  entirely, appear as a sidebar section. Expressions are evaluated by
-  [CalibreQuarry](../CalibreQuarry)'s stdlib port of Calibre's search grammar.
-- **Read-only guarantee.** The fork attaches `metadata.db` with
-  `mode=ro`. The web app cannot corrupt the library, by construction.
-- **Trimmed surface.** Uploads, web metadata editing, shelves, tasks,
-  email/Kindle, Kobo, Goodreads, and registration are removed or disabled.
-  What remains: browse, search, read, download.
+## What it does that calibre-web does not
 
-## Install (this instance)
+- **No login.** The owner is authenticated on every request, so upstream's 154
+  `@login_required` decorators pass untouched and rebases stay clean.
+- **Calibre's search grammar.** Upstream has none; it matches the query as
+  literal FTS text, so `author:"King"` returned nothing. Carrel evaluates
+  through [CalibreQuarry](https://github.com/VirInvictus/CalibreQuarry)'s
+  stdlib port of Calibre's parser: field prefixes, boolean logic, grouping,
+  hierarchical tags, custom columns (`#audience:Rin`) and `vl:` references.
+- **Wings.** Calibre virtual libraries as browse sections, evaluated through
+  that same engine, so the sidebar and a `vl:` search agree by construction.
+- **A category browser** over the library's dot taxonomy, where intermediate
+  nodes are synthesised from path prefixes because only leaves are assigned.
+- **Ctrl-K** over every wing, author, series, category and page, falling
+  through to a search when what you typed is not a destination.
+- **Statistics** computed live, where axes with a real distribution get charts
+  and degenerate ones get a readout line.
+- **Read status from the library, read-only.** An enumeration column (To Read /
+  Reading / Read / DNF) rendered as a badge and never written back; status
+  belongs to the curation workflow, not the web app.
+- **A read-only guarantee.** `metadata.db` is attached `mode=ro`. The web app
+  cannot corrupt the library, by construction, and the tests prove it by
+  checksum.
+
+## Design
+
+The palette is Kanagawa Dragon, from Brandon's
+[Emacs port](https://github.com/VirInvictus/kanagawa-dragon-nvim-emacs), which
+is the source of truth for the hexes. The structure is adapted from his
+Athenaeum static site so the two read as one property.
+
+One constraint shaped the statistics surfaces more than any taste decision:
+**Kanagawa fails as a categorical chart palette.** Measured in OKLab against
+the dark surface, the worst adjacent accent pair sits at ΔE 6.7 for normal
+vision, before colour blindness is considered, and five of six accents fall
+below the chroma floor. So magnitude rides a single sequential gold ramp and
+identity is carried by position and a direct label. There is no categorical
+colour anywhere. See spec §4.3.
+
+## Working on it
 
 ```sh
-# theme changes: edit theme/kanagawa-dragon.css here, then
-just sync-theme        # vendors it into the fork's static/css/
-
-# the fork replaces the calibreweb wheel in the venv (run-from-source;
-# the 0.6.26 git tree has no src/ layout, so editable install isn't possible)
-~/calibre-web-env/bin/pip uninstall calibreweb
-
-# run (settings carry over from the wheel install via CALIBRE_DBPATH)
-just serve
+just sync-theme   # vendor theme/kanagawa-dragon.css into the fork
+just serve        # run the fork from source
+just test         # the fork's suite (33 tests)
 ```
+
+The deployment venv is `~/calibre-web-env/`; the `calibreweb` wheel is
+uninstalled and the fork runs from source, because the 0.6.26 tree has no
+`src/` layout and cannot be installed editable.
+
+> There is no authentication. The bind address is the only thing standing
+> between the library and the network, and it is currently `0.0.0.0`
+> deliberately. See spec §11.3 before changing where this runs.
+
+CI guards the stylesheet's contract rather than running tests: every colour
+must be declared in `:root`, the serif stack must lead with the exact installed
+family, and no rule may target caliBlur.
 
 ## Status
 
-Scaffolding (v0.1.0). See `roadmap.md` for phases and `patchnotes.md` for
-history.
+v0.9.0. Phases 0 through 10 are complete. `roadmap.md` tracks what remains
+before 1.0, which is sign-off rather than code. `patchnotes.md` has the
+history, newest first.
 
-## License
+## Licence
 
 GPL-3.0, matching calibre-web. See `LICENSE`.
 
 ## Support
 
-If this theme's useful to you and you'd like to chip in:
+If this is useful to you and you would like to chip in:
 
 ```
 bc1qkge6zr45tzqfwfmvma2ylumt6mg7wlwmhr05yv
