@@ -367,7 +367,7 @@ only its own shelf system, which duplicates curation state.
 This instance has exactly one reader. Authentication is therefore removed as a
 concept, not merely bypassed.
 
-### 12.1 The contract
+### 11.1 The contract
 
 - No credential is ever requested. `/login`, `/logout`, and registration
   answer 404 through the same route-disable pattern as §6.2.
@@ -375,7 +375,7 @@ concept, not merely bypassed.
 - The `user` table and `flask-login` stay in the tree. All 154
   `@login_required` decorators stay exactly where upstream put them.
 
-### 12.2 Mechanism
+### 11.2 Mechanism
 
 `cps/single_user.py` registers a `before_request` that authenticates the owner
 whenever `current_user` is anonymous. The decorators then pass trivially,
@@ -386,7 +386,7 @@ fork to stay rebase-friendly onto upstream tags, and touching 154 call sites
 across 10 modules would make every future rebase a merge conflict. Deleting
 `single_user.py` restores stock behaviour exactly.
 
-### 12.3 Exposure
+### 11.3 Exposure
 
 Because nothing gates access, the server binds **`127.0.0.1` only**. Reaching
 it from another device is deliberately an SSH tunnel or an authenticating
@@ -401,7 +401,7 @@ Two surfaces, both computed live from `metadata.db` under the §7 read-only
 guarantee: a compact readout strip on the front page, and a full `/statistics`
 page.
 
-### 13.1 What is worth showing
+### 12.1 What is worth showing
 
 Measured against the real library (7,257 books) rather than assumed. Axes with
 a real distribution get a chart; degenerate axes get a one-line readout, because
@@ -420,14 +420,14 @@ a chart of a 98%/2% split is a chart that looks broken:
 These counts are a snapshot taken 2026-07-24 and will drift; they are recorded
 to justify the charted/readout split, not as fixtures.
 
-### 13.2 Rendering
+### 12.2 Rendering
 
 Hand-rolled CSS bars and inline SVG. No charting dependency, matching the
 "stdlib-lean, no framework" posture of the rest of the portfolio. Every chart
 obeys the §4.3 ramp rule: sequential gold for magnitude, position and direct
 labels for identity, never color alone.
 
-### 13.3 Boundary
+### 12.3 Boundary
 
 `cps/stats.py` holds headless metric functions returning plain dicts; templates
 render them. No metric function prints, formats, or knows about HTML.
@@ -440,7 +440,7 @@ raised, not acted on.
 
 ## 13. Search parity
 
-### 14.1 The problem
+### 13.1 The problem
 
 calibre-web's simple search has no expression grammar. `search_query` in
 `cps/db.py` lowercases the term and hands it to FTS5 as a phrase, so every
@@ -456,7 +456,12 @@ against the live library:
 | `rating:>=4` | **0** | 130 |
 | `author:King AND title:Tower` | **0** | 1 |
 
-### 14.2 The contract
+Verified after the change: every row inverted and now matches cquarry
+exactly. `King` 3180, `author:"King"` 55, `title:Dune` 11,
+`tags:Fic.Fantasy` 1368, `rating:>=4` 130, `author:King AND title:Tower` 1,
+and `#audience:Rin` 244.
+
+### 13.2 The contract
 
 The search bar evaluates through cquarry's `SearchEngine`, the same engine §8
 already uses for wing expressions. Field prefixes, boolean logic, grouping,
@@ -470,7 +475,27 @@ author_sort, series, publisher, tags, and comments. This is why `King` returns
 and "as**king**" inside comments. That breadth is Calibre-faithful and is
 accepted as the cost of parity.
 
-### 14.3 Consequence for the cquarry dependency
+Custom columns use Calibre's `#label` syntax and the label is
+case-insensitive, so `#audience:Rin`, `#Audience:Rin` and `#audience:"Rin"`
+are equivalent. Single quotes are **not** Calibre syntax: its tokenizer
+recognises only `"` (`search_query_parser.py:158`), so `#Audience:'Rin'`
+searches for those literal characters and finds nothing. That is parity, not
+a defect.
+
+A malformed query is a user error, not a 500: the parse failure is caught and
+the grammar's own message is shown in place of results.
+
+### 13.2a Advanced search is removed
+
+`/advsearch` answers 404 and its navbar link and palette entry are gone. Its
+form built SQLAlchemy filters directly, with `ilike` substring semantics that
+disagree with the engine above, most visibly on tags where the engine anchors
+the hierarchy. Two grammars answering the same question differently is worse
+than one, and the bar subsumes the form: nothing it could express is lost,
+while `tags:Fic.Fantasy AND rating:>=4 AND #audience:Rin` was never
+expressible in it.
+
+### 13.3 Consequence for the cquarry dependency
 
 This makes the search bar, not just wing evaluation, depend on cquarry. Per the
 project rule, that deepening is recorded here rather than passed over: cquarry

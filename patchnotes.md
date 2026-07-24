@@ -1,5 +1,30 @@
 # Patchnotes
 
+## 0.8.0 (2026-07-24)
+
+Phase 9: the search bar gains Calibre's grammar. Plus a category browser.
+
+- **Search parity.** The bar evaluates through cquarry's engine instead of
+  upstream's FTS5 phrase match, which had no grammar at all and matched every
+  field-prefixed query as literal text. Measured against the live library,
+  every row inverted: `author:"King"` 0 to 55, `title:Dune` 0 to 11,
+  `tags:Fic.Fantasy` 0 to 1368, `rating:>=4` 0 to 130,
+  `author:King AND title:Tower` 0 to 1, and `#audience:Rin` 0 to 244. Field
+  prefixes, boolean logic, grouping, hierarchical tags, custom columns and
+  `vl:` references now behave as they do in Calibre.
+- A malformed query reports the grammar's own message instead of silently
+  returning nothing. It is a user error, not a 500.
+- **Advanced search removed.** Its form built SQLAlchemy filters with `ilike`
+  substring semantics that disagreed with the engine, most visibly on tags.
+  One grammar or none, and the bar subsumes the form.
+- **Category browser**: the dot taxonomy as a collapsible sidebar ledger above
+  Wings. Only leaf tags are assigned in this library, so every prefix is
+  synthesised as a node and accumulates its descendants, matching the engine's
+  hierarchical rule exactly (Fic 3440, Fic.Fantasy 1368, NonFic 3004, all
+  equal to cquarry). Ancestors of the active category auto-expand; anything
+  else you open persists across page changes.
+- Fixed spec subsection numbering left stale by the Carrel rename.
+
 ## 0.7.0 (2026-07-24)
 
 Phases 7 and 8: the instance becomes single-user, and the theme stops being

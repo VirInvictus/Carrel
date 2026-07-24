@@ -199,13 +199,16 @@ The large one. Reverses part of Phase 1 by design.
 
 ## Phase 9: Search parity (spec §13)
 
-- [ ] Route the search bar through cquarry's `SearchEngine`
-- [ ] Advanced search either rebuilt on the same engine or removed; two search
-      grammars in one app is not acceptable
-- [ ] Tests against the fixture DB: field prefixes, boolean logic, grouping,
-      hierarchical `tags:`, `vl:` references, malformed input
-- [ ] Verify against the live library that the §13.1 table inverts: every row
-      that read 0 now matches cquarry exactly
+- [x] Route the search bar through cquarry's `SearchEngine` (`cps/carrel_search.py`,
+      rebound on metadata.db's mtime, its own mode=ro connection)
+- [x] Advanced search removed: `/advsearch` 404s, navbar link and palette
+      entry gone. Its `ilike` semantics disagreed with the engine (spec §13.2a)
+- [x] Tests: field prefixes, hierarchical `tags:`, boolean logic and grouping,
+      custom-column prefix, malformed input reported not 500, sealed routes.
+      26 green. Found the harness never installed `seal_browse_surfaces`, so
+      the Phase 8 route cuts had never been exercised either
+- [x] Verified against the live library: every row inverted and matches
+      cquarry exactly, `#audience:Rin` included
 
 ## Phase 10: Statistics (spec §12)
 
