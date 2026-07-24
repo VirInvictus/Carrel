@@ -7,7 +7,7 @@ on:
 
 jobs:
   check:
-    name: ruff + tests
+    name: theme invariants
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,17 +16,41 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install ruff
-        run: pip install ruff==0.15.20
+      # This repo holds no Python since Phase 8 retired the caliBlur recolor
+      # generator (spec 4.1). What is worth guarding is the stylesheet's
+      # contract: every colour it uses must come from the Dragon palette or
+      # the declared chart ramp, and the serif stack must not lead with
+      # "EB Garamond", which resolves to a sans.
+      - name: Palette and type-stack invariants
+        run: |
+          python - <<'PY'
+          import re, sys
 
-      - name: ruff check
-        run: ruff check scripts/ tests/
+          raw = open("theme/kanagawa-dragon.css").read()
+          # Strip comments first: the header and several notes legitimately
+          # discuss caliBlur in prose, and only real rules should be checked.
+          css = re.sub(r"/\*.*?\*/", "", raw, flags=re.S)
+          root = css.split("}", 1)[0]
 
-      - name: ruff format --check
-        run: ruff format --check scripts/ tests/
+          declared = {v.lower() for v in re.findall(r"#[0-9a-fA-F]{6}\b", root)}
+          used = [h.lower() for h in re.findall(r"#[0-9a-fA-F]{3,8}\b", css)]
+          stray = sorted({h for h in used if h not in declared})
 
-      - name: unittest
-        # This repo's own generator tests (justfile `test-theme`); the justfile
-        # `test` recipe runs the fork's suite cross-repo and is not portable to
-        # a standalone CI checkout.
-        run: python -m unittest discover -s tests
+          fails = []
+          if stray:
+              fails.append("off-palette colours outside :root: %s" % ", ".join(stray))
+
+          serif = re.search(r"--serif:\s*([^;]+);", css)
+          if not serif:
+              fails.append("no --serif stack declared")
+          elif not serif.group(1).strip().startswith('"EB Garamond Absinthe"'):
+              fails.append('--serif must lead with "EB Garamond Absinthe"')
+
+          if "caliBlur" in css:
+              fails.append("a rule still targets caliBlur; the sheet is meant to be standalone")
+
+          for f in fails:
+              print("FAIL:", f)
+          print("OK: %d colours, all declared in :root" % len(declared))
+          sys.exit(1 if fails else 0)
+          PY

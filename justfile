@@ -3,14 +3,6 @@
 fork := env_var('HOME') / ".gitrepos/Carrel-calibre-web"
 venv := env_var('HOME') / "calibre-web-env"
 
-# Regenerate the mechanical recolor block from the fork's caliBlur.css
-regen:
-    python3 scripts/recolor_caliblur.py
-
-# Run this repo's own tests (generator script)
-test-theme:
-    python3 -m unittest discover -s tests -v
-
 # Vendor the canonical theme into the fork's static css
 sync-theme:
     cp theme/kanagawa-dragon.css {{fork}}/cps/static/css/kanagawa-dragon.css
