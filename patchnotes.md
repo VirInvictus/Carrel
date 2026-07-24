@@ -1,5 +1,38 @@
 # Patchnotes
 
+## 0.6.1 (2026-07-24)
+
+Theme fixes found by rendering the app and measuring it, rather than
+reading the stylesheet.
+
+- The page background was caliBlur's `blur-light.png`, a raster averaging
+  `#3a4853` (cool slate) applied to `body` at `!important`. Desktop
+  rendered `#3d464f` while the mobile breakpoint correctly rendered
+  dragonBlack0, so the two widths looked like different themes. The noise
+  grain is kept, the slate plate dropped, and dragonBlack1 shows through.
+  The detail page's blurred-cover backdrop lives on `.blur-wrapper` and is
+  deliberately untouched.
+- `recolor_caliblur.py` matched `#hex` only, so every `rgb()`/`rgba()`
+  value passed through un-themed and any rule whose colors were all rgba
+  was never emitted for review at all. It now normalizes rgb to hex and
+  reuses the existing role map, preserving the alpha channel verbatim.
+  Pure black is skipped deliberately: every `rgba(0,0,0,x)` in caliBlur is
+  a drop shadow, where black is already correct. 8 new tests, 24 total.
+- `.alert-danger` kept caliBlur's orange `#ff5533` at 30% (its background
+  was written as rgba, so the generator never saw it). Now dragonRed.
+- The cover-placeholder gradients kept a neutral `rgba(50,50,50,.5)` while
+  their hex half had become dragonBlack2, blending cool into warm on the
+  most cover-forward surface in the theme. Now dragonBlack2 throughout.
+- `.btn-danger` was light text on dragonRed at 2.06:1. Near-black on the
+  same fill gives 5.65:1 and keeps the destructive signal.
+- Book titles rendered dragonWhite instead of the intended fujiWhite: the
+  generated `.container-fluid .book .meta .title` (0-4-0) outranks a plain
+  `.book .meta .title` (0-3-0) regardless of source order, so the polish
+  layer was silently losing. Matched the selector.
+
+The generated block is now free of off-palette color: zero stray hex, zero
+stray rgb.
+
 ## 0.6.0 (2026-06-11)
 
 Phases 5 and 6: the EPUB reader theme and the test suite.

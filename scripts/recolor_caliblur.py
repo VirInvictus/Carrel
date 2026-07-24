@@ -60,16 +60,27 @@ COLOR_MAP = {
     "#ce3d2a": "#c4746e",
     "#ac3323": "#c4746e",
     "#641e14": "#393836",
+    "#ff5533": "#c4746e",  # .alert-danger, only ever written as rgba()
 }
 
 HEX_RE = re.compile(r"#[0-9a-fA-F]{3,8}\b")
+RGB_RE = re.compile(
+    r"\brgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(,\s*[^)]+?\s*)?\)"
+)
 
 
 def map_value(value):
-    """Replace every mapped hex in a declaration value. Returns (new, changed)."""
+    """Replace every mapped color in a declaration value. Returns (new, changed).
+
+    Handles both #hex and rgb()/rgba() notation. caliBlur writes some of its
+    palette as rgba (the .alert-danger orange, the cover-placeholder gradient),
+    and a hex-only pass leaves those un-themed. Pure black is left alone: every
+    rgba(0,0,0,x) in caliBlur is a drop shadow, where black is already correct
+    and remapping would only churn ~90 rules for an invisible difference.
+    """
     changed = False
 
-    def repl(m):
+    def hex_repl(m):
         nonlocal changed
         new = COLOR_MAP.get(m.group(0).lower())
         if new is None:
@@ -77,7 +88,22 @@ def map_value(value):
         changed = True
         return new
 
-    return HEX_RE.sub(repl, value), changed
+    def rgb_repl(m):
+        nonlocal changed
+        r, g, b = (int(m.group(i)) for i in (1, 2, 3))
+        if max(r, g, b) > 255:
+            return m.group(0)
+        if (r, g, b) == (0, 0, 0):
+            return m.group(0)  # shadow; see docstring
+        new = COLOR_MAP.get("#%02x%02x%02x" % (r, g, b))
+        if new is None:
+            return m.group(0)
+        changed = True
+        nr, ng, nb = (int(new[i : i + 2], 16) for i in (1, 3, 5))
+        alpha = m.group(4) or ""
+        return f"rgba({nr}, {ng}, {nb}{alpha})" if alpha else f"rgb({nr}, {ng}, {nb})"
+
+    return RGB_RE.sub(rgb_repl, HEX_RE.sub(hex_repl, value)), changed
 
 
 def parse_rules(css):

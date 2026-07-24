@@ -41,6 +41,51 @@ class TestMapValue(unittest.TestCase):
         self.assertEqual(new, "color: #fffafa80")
 
 
+class TestMapRgba(unittest.TestCase):
+    def test_maps_rgba_preserving_alpha(self):
+        # rgb(50,50,50) is #323232, the cover-placeholder gradient grey
+        new, changed = rc.map_value("background: rgba(50, 50, 50, .5)")
+        self.assertTrue(changed)
+        self.assertEqual(new, "background: rgba(29, 28, 25, .5)")
+
+    def test_maps_rgb_without_alpha(self):
+        new, changed = rc.map_value("color: rgb(255, 255, 255)")
+        self.assertTrue(changed)
+        self.assertEqual(new, "color: rgb(197, 201, 197)")
+
+    def test_alert_danger_orange_becomes_dragon_red(self):
+        new, changed = rc.map_value("background-color: rgba(255, 85, 51, .3)")
+        self.assertTrue(changed)
+        self.assertEqual(new, "background-color: rgba(196, 116, 110, .3)")
+
+    def test_pure_black_shadow_untouched(self):
+        # every rgba(0,0,0,x) in caliBlur is a drop shadow; black is correct
+        new, changed = rc.map_value("box-shadow: 0 0 4px rgba(0, 0, 0, .15)")
+        self.assertFalse(changed)
+        self.assertEqual(new, "box-shadow: 0 0 4px rgba(0, 0, 0, .15)")
+
+    def test_unmapped_rgb_untouched(self):
+        new, changed = rc.map_value("color: rgba(1, 2, 3, .5)")
+        self.assertFalse(changed)
+        self.assertEqual(new, "color: rgba(1, 2, 3, .5)")
+
+    def test_out_of_range_channel_untouched(self):
+        new, changed = rc.map_value("color: rgb(999, 0, 0)")
+        self.assertFalse(changed)
+
+    def test_hex_and_rgba_in_one_gradient(self):
+        new, changed = rc.map_value(
+            "background: radial-gradient(rgba(50, 50, 50, .5) 50%, #1d1c19 100%)"
+        )
+        self.assertTrue(changed)
+        self.assertIn("rgba(29, 28, 25, .5)", new)
+
+    def test_hsla_left_alone(self):
+        # caliBlur uses hsla for a few translucent whites; out of scope here
+        new, changed = rc.map_value("background: hsla(0, 0%, 100%, .02)")
+        self.assertFalse(changed)
+
+
 class TestParseRules(unittest.TestCase):
     def test_plain_rule(self):
         rules = list(rc.parse_rules("a { color: #fff; }"))
