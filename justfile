@@ -18,7 +18,7 @@ sync-theme:
 
 # Run the fork from source with the existing settings dir
 serve:
-    cd {{fork}} && CALIBRE_DBPATH={{env_var('HOME')}}/.calibre-web {{venv}}/bin/python cps.py
+    cd {{fork}} && CALIBRE_DBPATH={{env_var('HOME')}}/.calibre-web {{venv}}/bin/python cps.py -i 127.0.0.1
 
 # Run the fork's test suite
 test:

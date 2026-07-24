@@ -145,15 +145,22 @@ when shipping; details and rationale live in `spec.md`.
 Small, self-contained, no visual change. Lands first because everything after
 it is easier to verify without a login round-trip.
 
-- [ ] `cps/single_user.py`: `before_request` authenticates the owner when
+- [x] `cps/single_user.py`: `before_request` authenticates the owner when
       `current_user` is anonymous. No `@login_required` decorator is touched
-- [ ] `/login`, `/logout`, registration 404 via the existing `trim()` pattern;
-      user-management panes removed from the admin UI
-- [ ] Bind `127.0.0.1` (spec §11.3). Verify from a second device that the port
-      is closed
-- [ ] Tests: unauthenticated request to `/` renders the library; `/login` 404s;
-      deleting `single_user.py` restores the stock login flow
-- [ ] Verify: no credential prompt anywhere in a full browse/search/read pass
+- [x] `/login`, `/logout`, `/register`, `/admin/user/new`, `/admin/usertable`
+      answer 404; the Add New User button is gone. `/admin/user/<id>` is
+      deliberately kept: it is how the owner edits their own preferences
+- [x] Bind `127.0.0.1` via `cps.py -i 127.0.0.1` in the `serve` recipe (the
+      address is a CLI flag, not a DB setting, so no fork diff). Verified:
+      only `127.0.0.1:8083` listens, the `0.0.0.0` and `[::]` sockets are gone
+- [ ] Brandon: update the `cps` shell alias in the dotfiles to pass
+      `-i 127.0.0.1` too, or it will still bind every interface
+- [x] Tests: 15 green. The harness no longer logs in at all, so every existing
+      assertion doubles as a regression guard; commenting out the shim fails
+      12 of 15 with redirects to `/login`
+- [x] Verify: `/`, `/me`, `/admin/view`, `/admin/user/1` all 200 with no
+      cookie; the five sealed paths 404
+- [ ] Brandon: a full browse/search/read pass to confirm nothing prompts
 
 ## Phase 8: De-caliBlur and the owned stylesheet (spec §4.1, §4.4)
 
