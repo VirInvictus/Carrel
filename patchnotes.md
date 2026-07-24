@@ -1,5 +1,36 @@
 # Patchnotes
 
+## 0.7.0 (2026-07-24)
+
+Phases 7 and 8: the instance becomes single-user, and the theme stops being
+an override.
+
+- **No login.** `cps/single_user.py` authenticates the owner on every
+  request, so upstream's 154 `@login_required` decorators pass untouched and
+  every future rebase stays clean. `/login`, `/logout`, `/register`,
+  `/admin/user/new` and `/admin/usertable` answer 404, and the dead navbar
+  links are gone. The server binds `127.0.0.1` only; with no auth, binding
+  anything else would hand the library and the admin pane to the network.
+- **caliBlur is gone.** `theme/kanagawa-dragon.css` is now a standalone sheet
+  over stock templates rather than an override layer, the same move the GTK
+  projects made dropping libadwaita. The recolor generator and its 24 tests
+  retire with it; CI now guards the stylesheet's own invariants instead.
+- **A ledger, not cards.** Hairline rules, 3px radius, and two type
+  registers: serif for prose, titles and book metadata, mono for every label,
+  count, nav item and table header. Covers lose the shadow, hover lift and
+  5px radius; they are presented by alignment and space.
+- **Ctrl-K command palette** over 6,975 destinations (authors, series,
+  categories, wings, pages), ported from the Athenaeum static site and cached
+  on the library's mtime.
+- **Trimmed:** Discover, Hot Books and Top Rated 404 and leave the sidebar,
+  which is now Wings alone.
+- Fixed the last off-palette colour: stock painted the brand teal at
+  `!important`.
+
+Both widths now render exactly dragonBlack1. Under caliBlur desktop rendered
+a cool `#3d464f` slate while mobile rendered warm, so the two looked like
+different themes; that is what began this phase.
+
 ## 0.6.1 (2026-07-24)
 
 Theme fixes found by rendering the app and measuring it, rather than

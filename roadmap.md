@@ -178,8 +178,8 @@ The large one. Reverses part of Phase 1 by design.
       (0-3-2), so the override has to meet that specificity
 - [x] Topbar as a status line; account link relabelled (it rendered the
       username beside the Settings link, reading "ADMIN ADMIN")
-- [ ] Sidebar reduced to Wings alone (Browse section still present; the
-      palette now covers those destinations, so it can go)
+- [x] Sidebar reduced to Wings alone. The Browse loop is removed; the brand
+      link returns to the whole library and the palette covers every axis
 - [x] Ctrl-K command palette over wings, authors, series, categories:
       `cps/palette.py` + `static/js/palette.js`, ported from Athenaeum,
       6,975 entries, mtime-cached and immutable-cacheable
@@ -188,8 +188,14 @@ The large one. Reverses part of Phase 1 by design.
       bits unset. Dead Login/Register/Logout navbar links removed too
 - [x] Font stacks lead with the exact installed families and end in generics;
       CI asserts `"EB Garamond"` never leads
-- [ ] Verify: screenshot desktop (1440) and mobile (390); confirm the rendered
-      page background is the palette value, not a raster
+- [x] Verify: both widths render `rgb(18,18,15)`, exactly dragonBlack1. Under
+      caliBlur desktop rendered `#3d464f` while mobile rendered warm, so this
+      closes the defect that started the phase
+- [x] Brand: stock sets `.navbar-brand` to Grand Hotel cursive at
+      `#45b29d !important`, the last off-palette colour on the page. Answered
+      in kind and moved into the serif register; instance title is now Carrel
+- [ ] Brandon: browse pass over the new surface, and a verdict on losing the
+      Browse sidebar entirely in favour of Ctrl-K
 
 ## Phase 9: Search parity (spec §13)
 
