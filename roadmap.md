@@ -17,8 +17,7 @@ when shipping; details and rationale live in `spec.md`.
       not possible). Settings carry over via `CALIBRE_DBPATH=~/.calibre-web`
 - [x] Baseline: unmodified fork serves on :8083 with existing settings
       (login page 200, Tornado start clean)
-- [ ] Manual baseline pass by Brandon (browse, detail, search, EPUB read)
-- [ ] Initial commits in both repos (messages reviewed before committing)
+- [x] Initial commits in both repos (messages reviewed before committing)
 
 ## Phase 1: Kanagawa Dragon theme
 
@@ -36,9 +35,6 @@ when shipping; details and rationale live in `spec.md`.
 - [x] `just sync-theme` vendoring works; vendored copy in the fork
 - [x] logo.svg first draft; `favicon.ico` / `icon.svg` / `icon.png`
       regenerated from it; `config_theme` flipped to caliBlur base
-- [ ] Brandon's visual pass (desktop + mobile widths), logo verdict, and
-      per-page touch-ups that fall out of it (the generated recolor is
-      mechanical; expect a polish iteration)
 
 ## Phase 2: Trim the feature surface
 
@@ -67,7 +63,6 @@ when shipping; details and rationale live in `spec.md`.
 - [x] Verify: /tasks, /shelf/*, /admin/book/* return 404; /login renders
       200 themed; auth redirects intact; Jinja syntax pass on all four
       edited templates
-- [ ] Brandon's browse pass over the trimmed UI
 
 ## Phase 3: Read-only reading_status + read-only hardening
 
@@ -91,8 +86,6 @@ when shipping; details and rationale live in `spec.md`.
       badges exact on Read/Reading/To Read sample books, read section
       paginates to exactly 149 books (matches SQL), metadata.db checksum
       identical before/after, `validate_library.py` 0 errors
-- [ ] Brandon: DNF badge eyeball whenever a DNF book exists (none currently
-      carry the value)
 
 ## Phase 4: Wings
 
@@ -117,7 +110,6 @@ when shipping; details and rationale live in `spec.md`.
 - [x] "Kanagawa" entry in `epub_themes.css` (dragonBlack3 page, dragonWhite
       text) + `read.html` theme selector button and `window.themes` entry
       (oldWhite chrome title), wired identically to the five stock themes
-- [ ] Brandon: read a chapter on the Kanagawa reader theme and judge it
 
 ## Phase 6: Tests and close-out
 
@@ -137,8 +129,6 @@ when shipping; details and rationale live in `spec.md`.
 - [x] Full verification pass (spec §10) performed across Phases 3-4;
       `validate_library.py` 0 errors
 - [x] roadmap boxes ticked, patchnotes entries, spec.md synced
-- [ ] VERSION 1.0.0 when Brandon signs off the instance as daily-driver
-      ready (open: his visual pass, DNF/reader-theme eyeball)
 
 ## Phase 7: Single-user (spec §11)
 
@@ -153,14 +143,11 @@ it is easier to verify without a login round-trip.
 - [x] Bind `127.0.0.1` via `cps.py -i 127.0.0.1` in the `serve` recipe (the
       address is a CLI flag, not a DB setting, so no fork diff). Verified:
       only `127.0.0.1:8083` listens, the `0.0.0.0` and `[::]` sockets are gone
-- [ ] Brandon: update the `cps` shell alias in the dotfiles to pass
-      `-i 127.0.0.1` too, or it will still bind every interface
 - [x] Tests: 15 green. The harness no longer logs in at all, so every existing
       assertion doubles as a regression guard; commenting out the shim fails
       12 of 15 with redirects to `/login`
 - [x] Verify: `/`, `/me`, `/admin/view`, `/admin/user/1` all 200 with no
       cookie; the five sealed paths 404
-- [ ] Brandon: a full browse/search/read pass to confirm nothing prompts
 
 ## Phase 8: De-caliBlur and the owned stylesheet (spec §4.1, §4.4)
 
@@ -194,8 +181,6 @@ The large one. Reverses part of Phase 1 by design.
 - [x] Brand: stock sets `.navbar-brand` to Grand Hotel cursive at
       `#45b29d !important`, the last off-palette colour on the page. Answered
       in kind and moved into the serif register; instance title is now Carrel
-- [ ] Brandon: browse pass over the new surface, and a verdict on losing the
-      Browse sidebar entirely in favour of Ctrl-K
 
 ## Phase 9: Search parity (spec §13)
 
@@ -227,8 +212,28 @@ The large one. Reverses part of Phase 1 by design.
       bucketing, and the empty-library divide-by-zero guard. 31 green
 - [x] Verify: `metadata.db` md5 identical before and after a full stats
       render (abb47887...)
-- [ ] Brandon: browse pass over statistics; `1.0.0` when it is daily-driver
-      ready
+
+## Sign-off: what 1.0.0 waits on
+
+(The per-phase sign-off boxes were consolidated here on 2026-07-24; the
+phases above are code-complete.)
+
+Phases 0 through 10 are code-complete. Everything here needs Brandon's eyes or
+hands; none of it is a code task.
+
+- [ ] One browse pass over the whole surface: front page, a wing, a category,
+      a detail page, search, and the EPUB reader, at desktop and mobile width.
+      This replaces the six per-phase passes that had accumulated
+- [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
+      the most opinionated change made, and the easiest to revert
+- [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
+      so the favicon wants a simplified variant rather than a resize
+- [ ] DNF badge eyeball, whenever a book actually carries the value
+- [ ] Read a chapter on the Kanagawa reader theme and judge it
+- [ ] Update the `cps` shell alias in the dotfiles to pass `-i 127.0.0.1`.
+      Without it that alias still binds every interface, and there is no login
+      in front of it any more. `just serve` is already correct
+- [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
 
 ## Later / opportunistic
 
