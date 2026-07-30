@@ -72,7 +72,7 @@ just serve        # run the fork from source
 just test         # the fork's suite (33 tests)
 ```
 
-The deployment venv is `~/calibre-web-env/`; the `calibreweb` wheel is
+The deployment venv is `~/.local/share/carrel/venv/`; the `calibreweb` wheel is
 uninstalled and the fork runs from source, because the 0.6.26 tree has no
 `src/` layout and cannot be installed editable.
 

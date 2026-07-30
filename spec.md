@@ -31,7 +31,7 @@ that:
 | Repo | Role |
 | --- | --- |
 | `Carrel` (this repo) | Theme source (`theme/`), spec, roadmap, patchnotes, glue (`justfile`). The documentation here is the contract for both repos. |
-| `Carrel-calibre-web` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26` (the release installed in `~/calibre-web-env/`). All Python/template/CSS changes are commits on this branch. |
+| `Carrel-calibre-web` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26` (the release installed in `~/.local/share/carrel/venv/`). All Python/template/CSS changes are commits on this branch. |
 
 Division of labor: the theme is developed here in `theme/kanagawa-dragon.css`
 and vendored into the fork at `cps/static/css/kanagawa-dragon.css` via
@@ -44,7 +44,7 @@ so editable installs are not possible; `python cps.py` is upstream's
 supported source-run mode):
 
 ```sh
-CALIBRE_DBPATH=~/.calibre-web ~/calibre-web-env/bin/python \
+CALIBRE_DBPATH=~/.calibre-web ~/.local/share/carrel/venv/bin/python \
     ~/.gitrepos/Carrel-calibre-web/cps.py
 ```
 
@@ -55,7 +55,7 @@ and safe to touch.
 
 ## 3. Base version and upstream policy
 
-- Base: calibre-web `0.6.26` (tag), Python 3.14 venv at `~/calibre-web-env/`.
+- Base: calibre-web `0.6.26` (tag), Python 3.14 venv at `~/.local/share/carrel/venv/`.
 - The fork keeps upstream's version number; project identity lives in the
   `smallscope` branch and this repo's `VERSION`.
 - Upstream rebases are deliberate, not automatic: fetch upstream, read the
@@ -353,7 +353,7 @@ only its own shelf system, which duplicates curation state.
 
 ## 10. Verification (per phase, against the real library)
 
-1. Server up via `~/calibre-web-env/bin/cps`; browse, search, open a book,
+1. Server up via `just serve` (or the `cps` alias); browse, search, open a book,
    read an EPUB.
 2. Read status: badge matches known books (cross-check with
    `cquarry --search 'tags:... and #reading_status:...'`); Read/Unread section

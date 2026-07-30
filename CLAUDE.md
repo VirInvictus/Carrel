@@ -68,7 +68,7 @@ release history (`patchnotes.md`), the canonical theme (`theme/`), and the glue
 
 - `justfile`: `sync-theme` (vendor the CSS into the fork), `serve` (run the
   fork), `test` (the fork's suite).
-- Deployment venv `~/calibre-web-env/` (Python 3.14) holds the dependencies;
+- Deployment venv `~/.local/share/carrel/venv/` (Python 3.14) holds the dependencies;
   the calibreweb wheel is uninstalled and the fork runs from source, because
   the 0.6.26 tree has no `src/` layout. calibre-web's own `app.db` in
   `~/.calibre-web/` is separate from the library and safe to touch.

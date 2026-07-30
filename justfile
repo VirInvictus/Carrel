@@ -1,7 +1,7 @@
 # Carrel glue tasks
 
 fork := env_var('HOME') / ".gitrepos/Carrel-calibre-web"
-venv := env_var('HOME') / "calibre-web-env"
+venv := env_var('HOME') / ".local/share/carrel/venv"
 
 # Vendor the canonical theme into the fork's static css
 sync-theme:
