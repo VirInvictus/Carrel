@@ -229,7 +229,10 @@ hands; none of it is a code task.
 - [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
       so the favicon wants a simplified variant rather than a resize
 - [ ] DNF badge eyeball, whenever a book actually carries the value
-- [ ] Read a chapter on the Kanagawa reader theme and judge it
+- [x] Read a chapter on the Kanagawa reader theme and judge it *(signed off
+      2026-08-08: "it looks great", judged on Redshirts chapter 4. The read
+      surfaced and fixed the dark-theme flaw where book stylesheets painted
+      over the class themes; see patchnotes 0.9.1)*
 - [ ] `dotfile-sync` the `.zshrc` change (the `cps` alias now binds
       `0.0.0.0`, matching `just serve`)
 - [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
