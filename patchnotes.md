@@ -1,5 +1,18 @@
 # Patchnotes
 
+## 0.9.1 (2026-08-08)
+
+Reader-theme fix, found during the Phase 5 sign-off read. Selecting any dark
+reader theme (Kanagawa included) restyled the chrome but left the book page
+white: the class themes style the epub.js iframe's root element, and a book
+that ships its own stylesheet (Tor EPUBs declare body background and text
+colors) paints right over them. The stock dark and black themes had the same
+flaw. `selectTheme` in the fork's `read.html` now also applies
+`themes.override()` for background and text color, the inline-important
+mechanism font size already used, which epub.js re-applies to every newly
+rendered section; the custom theme derives a readable text color from its
+background's luminance. Fork suite still green (33 tests).
+
 ## 0.9.0 (2026-07-24)
 
 Phase 10: statistics. The last planned phase.
