@@ -67,6 +67,8 @@ colour anywhere. See spec §4.3.
 ## Working on it
 
 ```sh
+just check        # the theme contract: palette closure, serif stack, no caliBlur
+just check-theme  # is the fork's vendored copy still the canonical one?
 just sync-theme   # vendor theme/kanagawa-dragon.css into the fork
 just serve        # run the fork from source
 just test         # the fork's suite (33 tests)
@@ -80,15 +82,17 @@ uninstalled and the fork runs from source, because the 0.6.26 tree has no
 > between the library and the network, and it is currently `0.0.0.0`
 > deliberately. See spec §11.3 before changing where this runs.
 
-CI guards the stylesheet's contract rather than running tests: every colour
-must be declared in `:root`, the serif stack must lead with the exact installed
-family, and no rule may target caliBlur.
+CI guards the theme's contract rather than running tests: every colour in the
+stylesheet and the logo must be declared in `:root`, the serif stack must lead
+with the exact installed family, and no rule may target caliBlur. It runs
+`scripts/check-theme.py`, the same file `just check` runs, so pushing is not
+the only way to find out.
 
 ## Status
 
-v0.9.0. Phases 0 through 10 are complete. `roadmap.md` tracks what remains
-before 1.0, which is sign-off rather than code. `patchnotes.md` has the
-history, newest first.
+v0.9.2. Phases 0 through 11 are complete. `roadmap.md` tracks what remains
+before 1.0, which is sign-off rather than code, plus one open contrast
+question. `patchnotes.md` has the history, newest first.
 
 ## Licence
 

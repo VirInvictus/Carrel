@@ -142,7 +142,10 @@ it is easier to verify without a login round-trip.
       deliberately kept: it is how the owner edits their own preferences
 - [x] Bind `127.0.0.1` via `cps.py -i 127.0.0.1` in the `serve` recipe (the
       address is a CLI flag, not a DB setting, so no fork diff). Verified:
-      only `127.0.0.1:8083` listens, the `0.0.0.0` and `[::]` sockets are gone
+      only `127.0.0.1:8083` listens, the `0.0.0.0` and `[::]` sockets are gone.
+      **Reversed on 2026-07-24**: the recipe binds `0.0.0.0` for phone access,
+      with the exposure understood and accepted. Read spec §11.3, which carries
+      the full revision history, before moving where this runs
 - [x] Tests: 15 green. The harness no longer logs in at all, so every existing
       assertion doubles as a regression guard; commenting out the shim fails
       12 of 15 with redirects to `/login`
@@ -213,6 +216,79 @@ The large one. Reverses part of Phase 1 by design.
 - [x] Verify: `metadata.db` md5 identical before and after a full stats
       render (abb47887...)
 
+## Phase 11: Maintenance sweep (2026-08-09)
+
+Not a feature phase. A full read of this repo (spec, roadmap, README,
+stylesheet, justfile, CI, logo) plus the fork's Carrel-owned code, looking for
+drift, dead code and contract violations rather than new surface. Findings in
+the fork were handed to the agent working there and are not tracked here.
+
+Contract drift, where a document contradicted another document or the tree:
+
+- [x] `spec.md` §4.4 licensed the font exception "only because §11 binds the
+      server to localhost". §11.3 says `0.0.0.0` and already recorded that the
+      exception survives on narrower ground, so §4.4 was the pre-flip text and
+      asserted something false about §11. The reasoning is now stated once, in
+      §4.4; §11.3 points at it rather than restating it, which is how the two
+      drifted apart in the first place
+- [x] `README.md` status said v0.9.0 against a `VERSION` of 0.9.1, and predated
+      the reader-theme work
+- [x] `logo.svg` painted the wave's under-stroke `#658594`, which is not in the
+      §4.2 palette. It is Wave-family, and the only place the spec mentions it
+      is §4.3's ΔE counter-example: a pair cited as *failing* the categorical
+      check. CLAUDE.md rule 4 forbids it; CI never saw the SVG. Now dragonBlue2
+      at `opacity: 0.55`, because §4.2 has no blue darker than `#8ba4b0` and
+      hand-picking one is the violation itself. Rendered before and after at
+      256px to confirm the wave keeps its depth
+- [x] Phase 7's `127.0.0.1` boxes above recorded a bind that was reversed on
+      2026-07-24. `spec.md` §11.3 carries the revision history; this file did
+      not, so read alone it contradicted its own later entries
+
+Stylesheet:
+
+- [x] `#description p` was dead: all three templates spell the id `decription`
+      (the upstream typo), which the neighbouring rule already handles, and it
+      is on a heading with no `<p>` children either way
+- [x] Two `@media (max-width: 767px)` blocks, 260 lines apart, merged into one
+- [x] The detail-page metadata rows were styled twice: once scoped under
+      `.book-meta`, once unscoped eighty lines later, where the second copy
+      silently adds `text-transform: uppercase` and wider tracking. Both copies
+      are now scoped and adjacent, and a comment records that they overlap and
+      that the second wins on source order, so `.publishing-date` and
+      `.real_custom_columns` are uppercase while their siblings are not. Left
+      that way deliberately: reconciling it would change the page
+- [ ] **Open, needs Brandon's verdict.** `--kngw-black6` (`#625e5a`) fails
+      WCAG AA wherever it carries information rather than decoration: 2.92:1 on
+      the page background, 2.65:1 on hover rows, all at 10 to 11.5px, so AA
+      wants 4.5:1. That covers the sidebar wing and category counts, the
+      `.nav-head` labels, `.hero-l`, `.ro-k`, `.hour-tick` and `.masthead`.
+      `.kngw-status-toread` is 3.45:1 and `.kngw-status-dnf` 4.31:1 on
+      `--kngw-black4`. §4.2 assigns black6 the role "muted/disabled text",
+      which is fair for `.cat-all` and the hour ticks and wrong for a wing's
+      book count. `--kngw-gray3` measures 4.82:1 and is already the sheet's
+      quiet-information colour. Either move the informational uses up a step or
+      record the exception in §4.2, so the next sweep does not re-raise it
+
+Tooling:
+
+- [x] The palette guard could only be run by pushing. It moved out of CI's
+      inline heredoc into `scripts/check-theme.py`, which both CI and the new
+      `just check` run, so the two cannot drift. This is the repo's only Python
+      file and is tooling, not application code
+- [x] That guard extended to `logo.svg`: it was the other colour-bearing asset
+      here and nothing checked it. Verified by reintroducing each violation in
+      turn (`#658594` in the logo, a bare `#ff0000` rule, `"EB Garamond"`
+      leading the stack) and confirming a non-zero exit each time
+- [x] `just check-theme`: `sync-theme` is a one-way copy with no verify, so a
+      hand-edit in the fork (forbidden by CLAUDE.md rule 3) was undetectable.
+      Diffs the canonical sheet against the vendored copy
+- [x] `actions/checkout@v4` to `v5`, retiring the Node 20 deprecation
+      annotation. Atrium already moved workspace-wide
+- [x] `justfile` repeated `env_var('HOME')` three times
+- [ ] Run `just sync-theme` to vendor this phase's stylesheet edits into the
+      fork. Held back because another agent is working in that tree; `just
+      check-theme` reports the drift until it is done
+
 ## Sign-off: what 1.0.0 waits on
 
 (The per-phase sign-off boxes were consolidated here on 2026-07-24; the
@@ -242,7 +318,7 @@ hands; none of it is a code task.
 - [ ] Offer enum read-column support upstream (it is generally useful)
 - [ ] Homelab deployment (September 2026 build): the instance already binds
       `0.0.0.0` with no authentication (spec §11.3), which is acceptable on a
-      trusted home network run on demand. A always-on homelab is a different
+      trusted home network run on demand. An always-on homelab is a different
       threat model and needs authentication reinstated or an authenticating
       reverse proxy in front. Decide that deliberately, not by inheriting
       this config

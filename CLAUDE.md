@@ -13,7 +13,9 @@ under an owned Kanagawa Dragon stylesheet.
 
 This repo holds the contract (`spec.md`), the phases (`roadmap.md`), the
 release history (`patchnotes.md`), the canonical theme (`theme/`), and the glue
-(`justfile`). It holds no Python. All code lives in the fork.
+(`justfile`). It holds no application code; the one Python file is
+`scripts/check-theme.py`, the theme guard that `just check` and CI both run.
+All code lives in the fork.
 
 ## Hard rules
 
@@ -29,7 +31,9 @@ release history (`patchnotes.md`), the canonical theme (`theme/`), and the glue
    hand-edit it there.
 4. **Palette comes from `~/.gitrepos/kanagawa-dragon-nvim-emacs`.** Don't
    introduce colours outside spec §4.2, and don't guess hexes. CI enforces
-   this: every colour in the sheet must be declared in `:root`.
+   this: every colour in the sheet **and in `logo.svg`** must be declared in
+   `:root`. The logo went unguarded until 2026-08-09 and had been carrying a
+   Wave hex the whole time.
 5. **Tests run against the fixture DB, never the real library.** Read-only
    verification against the real library is fine (spec §10). Anything
    write-capable against `~/docs/Calibre Library/` is forbidden.
@@ -66,14 +70,17 @@ release history (`patchnotes.md`), the canonical theme (`theme/`), and the glue
 
 ## Layout and tooling
 
-- `justfile`: `sync-theme` (vendor the CSS into the fork), `serve` (run the
-  fork), `test` (the fork's suite).
+- `justfile`: `check` (the theme guard), `check-theme` (is the fork's vendored
+  copy still the canonical one?), `sync-theme` (vendor the CSS into the fork),
+  `serve` (run the fork), `test` (the fork's suite).
 - Deployment venv `~/.local/share/carrel/venv/` (Python 3.14) holds the dependencies;
   the calibreweb wheel is uninstalled and the fork runs from source, because
   the 0.6.26 tree has no `src/` layout. calibre-web's own `app.db` in
   `~/.calibre-web/` is separate from the library and safe to touch.
-- CI runs no tests here (there is no Python). It guards the stylesheet's
-  contract: palette closure, the serif stack, and the absence of caliBlur.
+- CI runs no tests here (there is no application code). It guards the theme's
+  contract via `scripts/check-theme.py`: palette closure across both the
+  stylesheet and `logo.svg`, the serif stack, and the absence of caliBlur.
+  `just check` runs the same file, so a violation is catchable before pushing.
 
 ## Working notes
 

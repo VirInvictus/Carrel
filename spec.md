@@ -181,11 +181,14 @@ it, nothing links to it; the borrowing is structural only.
 **Font policy (a documented exception).** Principle 4 names installed families:
 `--serif` leads with `"EB Garamond Absinthe"` and `--mono` with
 `"JetBrains Mono"`. This is an explicit, bounded exception to the global "never
-assume an installed font" rule, permitted only because §11 binds the server to
-localhost, making this a single-machine surface exactly like Athenaeum. Both
-stacks still end in generic families (`serif`, `ui-monospace`) so the app
-degrades rather than breaks. Note that plain `"EB Garamond"` must **not** lead
-the stack: on this machine it resolves to Söhne, a sans.
+assume an installed font" rule. It was originally licensed by the `127.0.0.1`
+binding, which made the instance a single-machine surface exactly like
+Athenaeum; §11.3 rebound the server to `0.0.0.0` on 2026-07-24, so the licence
+is now the narrower one recorded there. The fonts are named for Brandon's own
+browser, and both stacks end in generic families (`serif`, `ui-monospace`), so
+any other device on the network degrades to a system serif and mono rather than
+breaking. Note that plain `"EB Garamond"` must **not** lead the stack: on this
+machine it resolves to Söhne, a sans.
 
 ### 4.5 Assets
 
@@ -405,11 +408,9 @@ needs to run somewhere untrusted, the honest fixes are reinstating
 authentication (delete `cps/single_user.py`) or fronting it with an
 authenticating reverse proxy. Do not simply hope the network is friendly.
 
-Note that §4.4's font exception was originally licensed by the localhost
-binding. It survives on the narrower ground that this is still a
-single-machine surface in practice: the fonts are named for Brandon's own
-browser, and every stack ends in a generic family, so any other device
-degrades to a system serif and mono rather than breaking.
+This clause also carried §4.4's font exception, which was licensed by the
+localhost binding. That exception survives on narrower ground, stated once in
+§4.4: keep the two in step if this clause ever flips again.
 
 ## 12. Statistics
 

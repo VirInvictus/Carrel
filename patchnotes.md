@@ -1,5 +1,49 @@
 # Patchnotes
 
+## 0.9.2 (2026-08-09)
+
+Phase 11, a maintenance sweep. No new surface: a full read of the contract, the
+stylesheet, the logo and the tooling, looking for drift and dead code. Nothing
+in the running app changes.
+
+- **The spec contradicted itself about the bind address.** §4.4 licensed the
+  installed-font exception "only because §11 binds the server to localhost".
+  §11.3 has said `0.0.0.0` since 2026-07-24 and already recorded that the
+  exception survives on narrower ground, so §4.4 was asserting something false
+  about its own spec. The reasoning is now stated once, in §4.4, and §11.3
+  points at it instead of restating it. Two copies is how it drifted the first
+  time.
+- **`logo.svg` was carrying an off-palette colour.** The wave's receding second
+  stroke was `#658594`, which is Wave-family and not in the §4.2 table. The
+  only place the spec mentions that hex is §4.3's ΔE analysis, as half of a
+  pair cited for *failing* the categorical check. It is now dragonBlue2 at low
+  alpha, which reads the same and needs no new hex, because §4.2 has no blue
+  darker than `#8ba4b0` and hand-picking one is the violation.
+- **CI now guards the logo too, and can be run without pushing.** The palette
+  check moved out of an inline heredoc into `scripts/check-theme.py`, which
+  both CI and the new `just check` run, so they cannot disagree. It gained a
+  fourth assertion covering `logo.svg`; the logo had been the one colour-
+  bearing asset nothing looked at. `actions/checkout` went to v5.
+- **`just check-theme`** diffs the fork's vendored stylesheet against the
+  canonical one. `sync-theme` is a one-way copy with no verify, so a hand-edit
+  in the fork, which CLAUDE.md forbids, was previously undetectable.
+- **Stylesheet.** Dropped a dead `#description p` selector: the id is spelled
+  `decription` upstream in all three templates that carry it, and the rule
+  above already handles it. Merged the two `@media (max-width: 767px)` blocks
+  that sat 260 lines apart. Scoped the detail-page `.publishing-date` and
+  `.real_custom_columns` rules under `.book-meta`, which is the only place
+  either class appears, and recorded in a comment that they overlap the
+  ledger-row rule above and win on source order, so those two rows are
+  uppercase at wider tracking while their siblings are not. That disagreement
+  is left alone because changing it changes the page.
+- **The roadmap's Phase 7 boxes** recorded a `127.0.0.1` bind with no note that
+  it was reversed, two screens above an entry saying the opposite.
+- Open and not actioned: `--kngw-black6` measures 2.92:1 on the page ground and
+  2.65:1 on hover rows, at 10 to 11.5px, wherever it carries information rather
+  than decoration. That covers the sidebar wing and category counts, the
+  readout keys and the masthead. `roadmap.md` carries the numbers and the
+  options; it needs a verdict, not a patch.
+
 ## 0.9.1 (2026-08-08)
 
 Reader-theme fix, found during the Phase 5 sign-off read. Selecting any dark

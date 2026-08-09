@@ -10,47 +10,21 @@ jobs:
     name: theme invariants
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
-      # This repo holds no Python since Phase 8 retired the caliBlur recolor
-      # generator (spec 4.1). What is worth guarding is the stylesheet's
-      # contract: every colour it uses must come from the Dragon palette or
-      # the declared chart ramp, and the serif stack must not lead with
-      # "EB Garamond", which resolves to a sans.
-      - name: Palette and type-stack invariants
-        run: |
-          python - <<'PY'
-          import re, sys
-
-          raw = open("theme/kanagawa-dragon.css").read()
-          # Strip comments first: the header and several notes legitimately
-          # discuss caliBlur in prose, and only real rules should be checked.
-          css = re.sub(r"/\*.*?\*/", "", raw, flags=re.S)
-          root = css.split("}", 1)[0]
-
-          declared = {v.lower() for v in re.findall(r"#[0-9a-fA-F]{6}\b", root)}
-          used = [h.lower() for h in re.findall(r"#[0-9a-fA-F]{3,8}\b", css)]
-          stray = sorted({h for h in used if h not in declared})
-
-          fails = []
-          if stray:
-              fails.append("off-palette colours outside :root: %s" % ", ".join(stray))
-
-          serif = re.search(r"--serif:\s*([^;]+);", css)
-          if not serif:
-              fails.append("no --serif stack declared")
-          elif not serif.group(1).strip().startswith('"EB Garamond Absinthe"'):
-              fails.append('--serif must lead with "EB Garamond Absinthe"')
-
-          if "caliBlur" in css:
-              fails.append("a rule still targets caliBlur; the sheet is meant to be standalone")
-
-          for f in fails:
-              print("FAIL:", f)
-          print("OK: %d colours, all declared in :root" % len(declared))
-          sys.exit(1 if fails else 0)
-          PY
+      # This repo holds no application code since Phase 8 retired the caliBlur
+      # recolor generator (spec 4.1). What is worth guarding is the theme's
+      # contract: every colour in the stylesheet AND the logo must come from
+      # the Dragon palette declared in :root, the serif stack must not lead
+      # with "EB Garamond" (which resolves to a sans), and no rule may target
+      # caliBlur.
+      #
+      # The script lives in the repo rather than inline here so `just check`
+      # runs the identical thing. It used to be an inline heredoc, which meant
+      # the only way to exercise it was to push.
+      - name: Theme contract
+        run: python3 scripts/check-theme.py
