@@ -221,7 +221,9 @@ The large one. Reverses part of Phase 1 by design.
 Not a feature phase. A full read of this repo (spec, roadmap, README,
 stylesheet, justfile, CI, logo) plus the fork's Carrel-owned code, looking for
 drift, dead code and contract violations rather than new surface. Findings in
-the fork were handed to the agent working there and are not tracked here.
+the fork were handed to the agent working there; what came back is under
+"Fork" below, including the two items that turned out to be contract
+questions this file owns.
 
 Contract drift, where a document contradicted another document or the tree:
 
@@ -287,7 +289,58 @@ Tooling:
 - [x] `justfile` repeated `env_var('HOME')` three times
 - [ ] Run `just sync-theme` to vendor this phase's stylesheet edits into the
       fork. Held back because another agent is working in that tree; `just
-      check-theme` reports the drift until it is done
+      check-theme` reports the drift until it is done. That tree is now
+      finished and pushed, so this is unblocked
+
+Fork (`Carrel-calibre-web`, commit `a6797c22` on `smallscope`):
+
+The code side swept in parallel. It is summarised here rather than left only
+in that repo's history, because two of its findings are contract questions this
+file owns and the rest is context for the next sweep.
+
+- [x] Search results ignored the sort the reader picked.
+      `render_search_results` took an `order` argument and dropped it, pinning
+      every query to `Books.sort` while `search.html` rendered eight sort
+      buttons that still marked themselves active. Confirmed by observation
+      (five different sort params returned identical ordering), then fixed by
+      passing the order through with the series join `authaz`/`authza` need
+- [x] CI in the fork linted three of its nine Carrel-owned modules, which is
+      how an unused variable and two unformatted files reached the branch.
+      Both ruff steps now share one `CARREL_PY` list
+- [x] The `metadata.db` mtime-cache idiom was copy-pasted across six modules
+      and is now `cps/library_cache.py`. `/statistics` and `/palette-data.js`
+      had called `getmtime` outside any guard, so an unreadable library took
+      them down with a traceback where every sibling surface degraded; they
+      now answer 503 and an empty palette
+- [x] The two comments claiming the server binds localhost, which §11.3
+      reversed on 2026-07-24. `cps/single_user.py` is the file a reader
+      consults before deciding whether the instance is safe where it runs
+- [x] Fork tests 33 to 35. Three existing ones did not assert what they
+      claimed, including one that sliced on a literal string the rendered page
+      never contains
+
+Deliberately not touched, recorded so the next sweep does not re-raise them:
+
+- [x] **Decided against.** Ctrl-K does not index the implied intermediate
+      category nodes. Only leaf tags exist as rows in `tags`, so `Fic.Fantasy`
+      is browsable in the sidebar tree and unreachable from the palette.
+      Brandon was asked directly on 2026-08-09 and chose not to index them:
+      the payload cost is not worth destinations that are one click away in
+      the sidebar. The related half of that question *was* fixed, so the two
+      surfaces no longer disagree about what a category is: palette rows point
+      at `/categories/<name>`, the roll-up browser, instead of stock
+      calibre-web's exact-tag `/category/stored/<id>`
+- [ ] **Open, needs a verdict.** `cps/static/js/palette.js` carries a second
+      copy of the Dragon palette as CSS custom-property fallbacks
+      (`var(--kngw-black2,#1d1c19)` and seven more). Nothing guards them
+      against §4.2, and `scripts/check-theme.py` reads the canonical sheet and
+      `logo.svg` only. Either extend the guard to the fork's JS or drop the
+      fallbacks so the file inherits the sheet's tokens and fails visibly when
+      they are missing. Left alone because it is a §4.2 question owned here,
+      not a call for the fork to make unilaterally
+- [x] No contrast rule was added in the fork. The `--kngw-black6` question
+      above is its only home: the sheet is vendored there and CLAUDE.md rule 3
+      forbids hand-editing the copy
 
 ## Sign-off: what 1.0.0 waits on
 
