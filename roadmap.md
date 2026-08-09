@@ -287,10 +287,12 @@ Tooling:
 - [x] `actions/checkout@v4` to `v5`, retiring the Node 20 deprecation
       annotation. Atrium already moved workspace-wide
 - [x] `justfile` repeated `env_var('HOME')` three times
-- [ ] Run `just sync-theme` to vendor this phase's stylesheet edits into the
-      fork. Held back because another agent is working in that tree; `just
-      check-theme` reports the drift until it is done. That tree is now
-      finished and pushed, so this is unblocked
+- [x] Run `just sync-theme` to vendor this phase's stylesheet edits into the
+      fork. Held back while another agent was working in that tree; done once
+      it finished (fork commit `b32654f8`). `just check-theme` now reports the
+      vendored copy matches. Checked that merging the two `@media` blocks did
+      not drop the mobile statistics rules: `.hero-row`, `.hero-n` and
+      `.stat-label` are all in the surviving block
 
 Fork (`Carrel-calibre-web`, commit `a6797c22` on `smallscope`):
 
