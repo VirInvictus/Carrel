@@ -102,8 +102,8 @@ GPL-3.0, matching calibre-web. See `LICENSE`.
 
 If this is useful to you and you would like to chip in:
 
-```
-bc1qkge6zr45tzqfwfmvma2ylumt6mg7wlwmhr05yv
-```
-
-https://liberapay.com/bdkl/
+- liberapay · [liberapay.com/bdkl](https://liberapay.com/bdkl/)
+- bitcoin
+  ```
+  bc1qkge6zr45tzqfwfmvma2ylumt6mg7wlwmhr05yv
+  ```
