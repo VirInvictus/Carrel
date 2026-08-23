@@ -380,3 +380,19 @@ hands; none of it is a code task.
 - [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
       depend on its engine, so consumption HAS deepened (spec §13.3).
       Revisit if a fourth consumer of library metrics appears
+
+## Phase 12: Code Sweep & UX Polish (2026-08-23)
+*Context: Found falsy index rendering issues, modal input bleeds, and route guard bypasses.*
+
+### Bugs to Fix
+- [ ] **Falsy Series Index 0:** Update `cps/series_info.py` and `detail.html` to treat index `0` and `0.0` as explicit values, preventing "Book 0" badges from disappearing.
+- [ ] **Case-Sensitive Route Guards:** Normalize paths with `.lower()` in `seal_browse_surfaces()` to prevent capitalized URL bypasses (e.g. `/Hot/`).
+- [ ] **Palette Modifier Capture:** Ensure `palette.js` ignores `/` keystrokes if Ctrl, Alt, or Meta are held.
+- [ ] **Background Grid Navigation:** Prevent `keynav.js` from intercepting vim keys (j/k) when configuration or book detail modals are open.
+- [ ] **Docs Sync:** Update README test counts from 33 to 35.
+
+### Refactoring & Growth
+- [ ] **Thread-Safe LibraryCache:** Add `threading.Lock()` in `LibraryCache` transitions to prevent race conditions during DB rebuilds.
+- [ ] **Remove Inline CSS Hexes:** Delete inline Kanagawa fallback hex codes in `palette.js` to rely entirely on the `:root` stylesheet overrides.
+- [ ] **Currently Reading Shelf:** Surface books marked as "Reading" on the front page index.
+- [ ] **Prefix Filtering in Ctrl-K:** Support prefix commands (e.g., `a ` for authors) inside the command palette to shrink the 6,975-item haystack.
