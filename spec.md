@@ -314,7 +314,7 @@ only its own shelf system, which duplicates curation state.
 
 - New module `cps/wings.py` in the fork reads the `virtual_libraries` JSON
   and evaluates each wing's expression to a set of book ids using
-  **CalibreQuarry's search engine** (`cquarry`, v2.6+:
+  **cquarry's search engine** (`cquarry`, v2.6+:
   `search(expr) -> set[int]`, a stdlib-faithful port of Calibre's expression
   grammar including `vl:` references, so the self-referential Unsorted wing
   parses correctly).
@@ -327,7 +327,7 @@ only its own shelf system, which duplicates curation state.
 - Wings are read-only views. Creating/editing wings happens in the library
   workflow (Calibre preferences / curation SQL), never from the web.
 - Dependency note: cquarry is installed editable from
-  `~/.gitrepos/CalibreQuarry`. This is the first cross-project consumption
+  `~/.gitrepos/cquarry`. This is the first cross-project consumption
   of cquarry's search engine; it is a standing candidate for the
   library-graduation conversation if it grows.
 
@@ -335,7 +335,7 @@ only its own shelf system, which duplicates curation state.
 
 - Fork tests live in `Carrel-calibre-web/tests/` (upstream keeps its
   test suite in a separate repo, so this directory is ours), `unittest`
-  style, mirroring CalibreQuarry's conventions.
+  style, mirroring cquarry's conventions.
 - Fixture: a generated `metadata.db` whose table schema is dumped from a
   real Calibre library (`tests/calibre_schema.sql`; tables only, no
   triggers so inserts need no `title_sort`, FTS and custom_column tables

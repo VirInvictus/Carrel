@@ -39,7 +39,7 @@ All code lives in the fork.
    write-capable against `~/docs/Calibre Library/` is forbidden.
 6. **Keep the fork diff small and rebase-friendly.** Disable routes rather than
    delete files; isolate new code in new modules.
-7. **Dependencies:** cquarry (editable, from `~/.gitrepos/CalibreQuarry`) is the
+7. **Dependencies:** cquarry (editable, from `~/.gitrepos/cquarry`) is the
    one approved addition. Anything else: stop and ask.
 8. **License is GPL-3.0** in both repos.
 
