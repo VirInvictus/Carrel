@@ -1,5 +1,18 @@
 # Patchnotes
 
+## 0.9.3 (2026-08-25)
+
+Contract updates for the fork's cquarry 1.1 adoption (all code lives in
+`Carrel-calibre-web`, `smallscope` branch):
+
+- **§8.3 Saved Searches:** Calibre saved searches as browse sections via
+  cquarry's `search:"Name"` interpolation.
+- **§8.4 Calibre-exact wing layout:** sidebar order/hidden state mirrored from
+  `virt_libs_order` / `virt_libs_hidden`.
+- **§8.5 Reader state:** detail-page progress and highlight counts from
+  cquarry's annotations/position extractors; strictly read-only, never infers
+  or sets reading_status.
+
 ## 0.9.2 (2026-08-09)
 
 Phase 11, a maintenance sweep. No new surface: a full read of the contract, the

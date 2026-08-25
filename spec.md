@@ -331,6 +331,34 @@ only its own shelf system, which duplicates curation state.
   of cquarry's search engine; it is a standing candidate for the
   library-graduation conversation if it grows.
 
+### 8.3 Saved Searches (cquarry 1.1)
+
+Calibre’s named searches (`preferences.saved_searches`) become a second
+sidebar section, `/saved/<name>`, resolved through cquarry’s
+`search:"Name"` interpolation with cycle detection and strict errors on
+unknown names. Sidebar, search bar and desktop Calibre cannot disagree
+about what a saved search matches: all three evaluate the same grammar. A
+saved search matching nothing renders an empty grid, never a 404; an
+unknown name is a 404.
+
+### 8.4 Calibre-exact wing layout (cquarry 1.1)
+
+The sidebar follows the stored tab order (`virt_libs_order`) and drops
+what Calibre hides (`virt_libs_hidden`) via `get_vl_ui_state()`. Unknown
+names keep alphabetical order after the ordered ones; the route of a
+hidden wing 404s. The web room’s layout is, by construction, the desktop
+GUI’s layout.
+
+### 8.5 Reader state (cquarry 1.1)
+
+The detail page shows latest-device reading progress
+(`last_read_positions`, most recent `epoch_time` wins) and highlight count
+(`annotations`) through a `carrel_reader_state` template global backed by
+cquarry’s extractors. Absent data renders nothing; extractor failure
+degrades to the same. Reading state itself stays write-only from Calibre’s
+side — this surface never infers or sets it (see the library’s rules on
+reading_status).
+
 ## 9. Testing
 
 - Fork tests live in `Carrel-calibre-web/tests/` (upstream keeps its
