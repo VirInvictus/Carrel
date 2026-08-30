@@ -1,5 +1,13 @@
 # Patchnotes
 
+## 0.9.4 (2026-08-30)
+
+README housekeeping from the ecosystem audit: the Status section still said
+v0.9.2 and attributed everything remaining to sign-off plus one contrast
+question, missing that Phase 12 (the 2026-08-23 code sweep) sits below the
+1.0 gate with nine open boxes. Status now reads the real version and names
+Phase 12. Nothing in the contract, theme, or fork changes.
+
 ## 0.9.3 (2026-08-25)
 
 Contract updates for the fork's cquarry 1.1 adoption (all code lives in

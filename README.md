@@ -90,9 +90,9 @@ the only way to find out.
 
 ## Status
 
-v0.9.2. Phases 0 through 11 are complete. `roadmap.md` tracks what remains
+v0.9.4. Phases 0 through 11 are complete. `roadmap.md` tracks what remains
 before 1.0, which is sign-off rather than code, plus one open contrast
-question. `patchnotes.md` has the history, newest first.
+question and the Phase 12 sweep. `patchnotes.md` has the history, newest first.
 
 ## Licence
 
