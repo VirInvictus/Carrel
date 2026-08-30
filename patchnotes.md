@@ -1,5 +1,17 @@
 # Patchnotes
 
+## 0.9.5 (2026-08-30)
+
+Contract note for the fork's cquarry 1.8 sync (fork-side 0.6.28, code lives in
+`Carrel-calibre-web` on `smallscope`): the deployment venv is editable from
+`~/.gitrepos/cquarry` per §8.2 — installed equals repo, closing the drift that
+had the instance silently degrading page_count on a stale 1.1.1. The
+library_cache UUID read adopts cquarry's `db_uri_ro()` contract (fixing a
+latent break on `?`/`#` library paths) while keeping its one-query shape;
+analytics adoption remains deferred to cquarry's Phase 7. Fork version 0.6.28
+also leapfrogs upstream's in-flight 0.6.27b numbering.
+
+## 0.9.4 (2026-08-30)
 ## 0.9.4 (2026-08-30)
 
 README housekeeping from the ecosystem audit: the Status section still said
