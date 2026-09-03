@@ -1,4 +1,16 @@
 # Patchnotes
+## 0.9.7 (2026-09-03)
+
+### Phase 7 begins in the fork (0.6.30): the swap's first increments
+
+The contract repo's note for the fork's 0.6.30: the NEW-AUDIT Stage 6
+boundary map is written into cquarry's roadmap, and the fork landed the
+first data-layer swaps — series awareness through `get_entities` +
+`get_all_series`, cover resolution through `get_cover_path` via a shared
+mtime-keyed `quarry()` in `library_cache`, and an acquisition-pace ledger
+on `/statistics` computed by `cquarry.analytics`. Theme untouched this
+round; `check-theme` green.
+
 ## 0.9.6 (2026-09-02)
 
 ### Phase 12 shipped in the fork; both open verdicts resolved
