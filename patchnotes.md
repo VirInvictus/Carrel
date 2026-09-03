@@ -1,4 +1,26 @@
 # Patchnotes
+## 0.9.6 (2026-09-02)
+
+### Phase 12 shipped in the fork; both open verdicts resolved
+
+The code side is the fork's 0.6.29 (its patchnotes carry the detail); this
+repo owns the contract half and the version.
+
+- **Contrast verdict resolved (Brandon: move the uses up a step).** The
+  information-carrying uses of `--kngw-black6` moved to `--kngw-gray3`
+  (4.82:1, AA) in the canonical sheet: sidebar wing and category counts,
+  `.nav-head`, `.hero-l`, `.ro-k`, `.hour-tick`, the masthead readout and
+  link. black6 keeps the genuinely decorative uses, which is what its
+  "muted/disabled" role was fair for. The new `.shelf` block styles to gray3
+  from day one. `check-theme` green; vendored copy matches.
+- **palette.js verdict resolved (Brandon: drop the fallbacks).** The fork's
+  injected palette styles now inherit the sheet's `:root` tokens; nothing
+  second-copies the Dragon palette, so the §4.2 guard question is dissolved
+  rather than widened.
+- **The sheet grows one block** for the fork's Currently Reading shelf
+  (`.shelf`/`.shelf-h`/`.shelf-list`/`.shelf-a`), all palette-closed.
+- Fork suite 82 → 92 discovered (46 base), green from the deployment venv.
+
 
 ## 0.9.5 (2026-08-30)
 

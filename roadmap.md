@@ -259,17 +259,15 @@ Stylesheet:
       that the second wins on source order, so `.publishing-date` and
       `.real_custom_columns` are uppercase while their siblings are not. Left
       that way deliberately: reconciling it would change the page
-- [ ] **Open, needs Brandon's verdict.** `--kngw-black6` (`#625e5a`) fails
-      WCAG AA wherever it carries information rather than decoration: 2.92:1 on
-      the page background, 2.65:1 on hover rows, all at 10 to 11.5px, so AA
-      wants 4.5:1. That covers the sidebar wing and category counts, the
-      `.nav-head` labels, `.hero-l`, `.ro-k`, `.hour-tick` and `.masthead`.
-      `.kngw-status-toread` is 3.45:1 and `.kngw-status-dnf` 4.31:1 on
-      `--kngw-black4`. §4.2 assigns black6 the role "muted/disabled text",
-      which is fair for `.cat-all` and the hour ticks and wrong for a wing's
-      book count. `--kngw-gray3` measures 4.82:1 and is already the sheet's
-      quiet-information colour. Either move the informational uses up a step or
-      record the exception in §4.2, so the next sweep does not re-raise it
+- [x] **Resolved 2026-09-02 (Brandon: move the uses up a step).** The
+      information-carrying uses moved to `--kngw-gray3` (4.82:1, passes AA):
+      the sidebar wing and category counts, `.nav-head`, `.hero-l`, `.ro-k`,
+      `.hour-tick`, the `.masthead` readout and its link. black6 keeps the
+      genuinely decorative uses (scrollbar hover, placeholders, the category
+      disclosure arrow, `.cat-all`, the button-hover border), which is what
+      §4.2's "muted/disabled text" role was always fair for. The two status
+      colours on black4 are untouched (separate question, not raised by this
+      box). Shipped with Phase 12 (Carrel 0.9.6); `check-theme` green.
 
 Tooling:
 
@@ -332,14 +330,13 @@ Deliberately not touched, recorded so the next sweep does not re-raise them:
       surfaces no longer disagree about what a category is: palette rows point
       at `/categories/<name>`, the roll-up browser, instead of stock
       calibre-web's exact-tag `/category/stored/<id>`
-- [ ] **Open, needs a verdict.** `cps/static/js/palette.js` carries a second
-      copy of the Dragon palette as CSS custom-property fallbacks
-      (`var(--kngw-black2,#1d1c19)` and seven more). Nothing guards them
-      against §4.2, and `scripts/check-theme.py` reads the canonical sheet and
-      `logo.svg` only. Either extend the guard to the fork's JS or drop the
-      fallbacks so the file inherits the sheet's tokens and fails visibly when
-      they are missing. Left alone because it is a §4.2 question owned here,
-      not a call for the fork to make unilaterally
+- [x] **Resolved 2026-09-02 (Brandon: drop the fallbacks).** palette.js's
+      eight hardcoded Dragon fallbacks are gone; the injected palette styles
+      inherit the sheet's `:root` tokens (the `--mono`/`--radius` generics
+      stay, they are not palette copies). A missing token now fails visibly
+      instead of silently diverging, and the guard question dissolves —
+      nothing second-copies the palette anymore. Shipped with Phase 12
+      (fork 0.6.29).
 - [x] No contrast rule was added in the fork. The `--kngw-black6` question
       above is its only home: the sheet is vendored there and CLAUDE.md rule 3
       forbids hand-editing the copy
@@ -385,14 +382,14 @@ hands; none of it is a code task.
 *Context: Found falsy index rendering issues, modal input bleeds, and route guard bypasses.*
 
 ### Bugs to Fix
-- [ ] **Falsy Series Index 0:** Update `cps/series_info.py` and `detail.html` to treat index `0` and `0.0` as explicit values, preventing "Book 0" badges from disappearing.
-- [ ] **Case-Sensitive Route Guards:** Normalize paths with `.lower()` in `seal_browse_surfaces()` to prevent capitalized URL bypasses (e.g. `/Hot/`).
-- [ ] **Palette Modifier Capture:** Ensure `palette.js` ignores `/` keystrokes if Ctrl, Alt, or Meta are held.
-- [ ] **Background Grid Navigation:** Prevent `keynav.js` from intercepting vim keys (j/k) when configuration or book detail modals are open.
-- [ ] **Docs Sync:** Update README test counts from 33 to 35.
+- [x] **Falsy Series Index 0:** Update `cps/series_info.py` and `detail.html` to treat index `0` and `0.0` as explicit values, preventing "Book 0" badges from disappearing. *(Shipped in fork 0.6.29: `is not None` in the module, `is not none` in the template; fixture test pins #0 as int and the 7.5 passthrough.)*
+- [x] **Case-Sensitive Route Guards:** Normalize paths with `.lower()` in `seal_browse_surfaces()` to prevent capitalized URL bypasses (e.g. `/Hot/`). *(Shipped in 0.6.29; `/HOT`, `/Hot`, `/Discover` pinned 404.)*
+- [x] **Palette Modifier Capture:** Ensure `palette.js` ignores `/` keystrokes if Ctrl, Alt, or Meta are held. *(Shipped in 0.6.29.)*
+- [x] **Background Grid Navigation:** Prevent `keynav.js` from intercepting vim keys (j/k) when configuration or book detail modals are open. *(Shipped in 0.6.29: `modal-open` body class + `.modal.in/.show` + native `dialog[open]` guard.)*
+- [x] **Docs Sync:** Update README test counts from 33 to 35. *(Done and re-done in 0.6.29: the count had moved again with the new tests; README now says 46 and names the shelf coverage.)*
 
 ### Refactoring & Growth
-- [ ] **Thread-Safe LibraryCache:** Add `threading.Lock()` in `LibraryCache` transitions to prevent race conditions during DB rebuilds.
-- [ ] **Remove Inline CSS Hexes:** Delete inline Kanagawa fallback hex codes in `palette.js` to rely entirely on the `:root` stylesheet overrides.
-- [ ] **Currently Reading Shelf:** Surface books marked as "Reading" on the front page index.
-- [ ] **Prefix Filtering in Ctrl-K:** Support prefix commands (e.g., `a ` for authors) inside the command palette to shrink the 6,975-item haystack.
+- [x] **Thread-Safe LibraryCache:** Add `threading.Lock()` in `LibraryCache` transitions to prevent race conditions during DB rebuilds. *(Shipped in 0.6.29: `get()`/`invalidate()` serialize; four-concurrent-gets test asserts one build.)*
+- [x] **Remove Inline CSS Hexes:** Delete inline Kanagawa fallback hex codes in `palette.js` to rely entirely on the `:root` stylesheet overrides. *(Shipped in 0.6.29; this is the palette.js verdict above, resolved the same way.)*
+- [x] **Currently Reading Shelf:** Surface books marked as "Reading" on the front page index. *(Shipped in 0.6.29 as `cps/reading_shelf.py`: the library's own enum is the source of truth, newest-grid page only, absent when unconfigured or empty; joined `CARREL_PY`.)*
+- [x] **Prefix Filtering in Ctrl-K:** Support prefix commands (e.g., `a ` for authors) inside the command palette to shrink the 6,975-item haystack. *(Shipped in 0.6.29: `w/a/s/c/p` + space scopes the haystack; the counter reports the shelf; the search fallback sees the full query.)*
