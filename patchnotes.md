@@ -46,7 +46,6 @@ analytics adoption remains deferred to cquarry's Phase 7. Fork version 0.6.28
 also leapfrogs upstream's in-flight 0.6.27b numbering.
 
 ## 0.9.4 (2026-08-30)
-## 0.9.4 (2026-08-30)
 
 README housekeeping from the ecosystem audit: the Status section still said
 v0.9.2 and attributed everything remaining to sign-off plus one contrast
