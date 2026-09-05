@@ -27,7 +27,7 @@ screenshots and the feature tour.
 
 ## What it does that calibre-web does not
 
-- **No login.** The owner is authenticated on every request, so upstream's 154
+- **No login.** The owner is authenticated on every request, so upstream's 39
   `@login_required` decorators pass untouched and rebases stay clean.
 - **Calibre's search grammar.** Upstream has none; it matches the query as
   literal FTS text, so `author:"King"` returned nothing. Carrel evaluates
@@ -71,7 +71,7 @@ just check        # the theme contract: palette closure, serif stack, no caliBlu
 just check-theme  # is the fork's vendored copy still the canonical one?
 just sync-theme   # vendor theme/kanagawa-dragon.css into the fork
 just serve        # run the fork from source
-just test         # the fork's suite (33 tests)
+just test         # the fork's suite
 ```
 
 The deployment venv is `~/.local/share/carrel/venv/`; the `calibreweb` wheel is
@@ -91,8 +91,8 @@ the only way to find out.
 ## Status
 
 v0.9.7. Phases 0 through 12 are complete. `roadmap.md` tracks what remains
-before 1.0, which is sign-off rather than code, plus one open contrast
-question and the Phase 12 sweep. `patchnotes.md` has the history, newest first.
+before 1.0: the sign-off boxes and opportunistic items. `patchnotes.md` has
+the history, newest first.
 
 ## Licence
 

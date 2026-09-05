@@ -3,7 +3,7 @@
 The contract for the Kanagawa Dragon calibre-web theme and its companion fork.
 Read this before changing semantics in either repo.
 
-Last revised: 2026-07-24. Companion repo: `Carrel-calibre-web`
+Last revised: 2026-08-25. Companion repo: `Carrel-calibre-web`
 (fork of `janeczku/calibre-web`; all code changes live there on the
 `smallscope` branch). This repo holds the theme source, the documentation
 contract, and glue tooling.
@@ -403,7 +403,7 @@ concept, not merely bypassed.
 - No credential is ever requested. `/login`, `/logout`, and registration
   answer 404 through the same route-disable pattern as §6.2.
 - Every request runs as the owning admin account.
-- The `user` table and `flask-login` stay in the tree. All 154
+- The `user` table and `flask-login` stay in the tree. All 39
   `@login_required` decorators stay exactly where upstream put them.
 
 ### 11.2 Mechanism
@@ -413,7 +413,7 @@ whenever `current_user` is anonymous. The decorators then pass trivially,
 because the request is always authenticated.
 
 This is chosen over deleting the auth layer for one reason: §3 requires the
-fork to stay rebase-friendly onto upstream tags, and touching 154 call sites
+fork to stay rebase-friendly onto upstream tags, and touching 39 call sites
 across 10 modules would make every future rebase a merge conflict. Deleting
 `single_user.py` restores stock behaviour exactly.
 
