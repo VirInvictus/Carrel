@@ -393,3 +393,222 @@ hands; none of it is a code task.
 - [x] **Remove Inline CSS Hexes:** Delete inline Kanagawa fallback hex codes in `palette.js` to rely entirely on the `:root` stylesheet overrides. *(Shipped in 0.6.29; this is the palette.js verdict above, resolved the same way.)*
 - [x] **Currently Reading Shelf:** Surface books marked as "Reading" on the front page index. *(Shipped in 0.6.29 as `cps/reading_shelf.py`: the library's own enum is the source of truth, newest-grid page only, absent when unconfigured or empty; joined `CARREL_PY`.)*
 - [x] **Prefix Filtering in Ctrl-K:** Support prefix commands (e.g., `a ` for authors) inside the command palette to shrink the 6,975-item haystack. *(Shipped in 0.6.29: `w/a/s/c/p` + space scopes the haystack; the counter reports the shelf; the search fallback sees the full query.)*
+
+## Phase 13: hardening backlog from the 2026-09-08 audit sweep (proposed 2026-09-08, digging only)
+
+*Context: a five-agent adversarial sweep covering BOTH repos (fork security
+and the read-only invariant, the cquarry-integration modules, fork tests and
+upstream-diff hygiene, the theme guard and CI, and contract-vs-code drift),
+prompted by the same-day sweeps of bindery-cli, CalibreQuarry, and cquarry.
+No code was changed anywhere; the security agent booted the app in-process
+against the fixture DB and probed 44 requests, the integration agent drove
+the real routes against hostile fixtures. Findings for the fork are recorded
+here because this repo is the contract for both. The headline: the
+load-bearing invariants all held (mode=ro proven at the engine level, the
+seal normalization-proof, OPDS authenticated, no secrets or book data in
+git), but the fork carries eight live routes the seal never met (one of
+which can replace the source tree), and the contract is nine fork releases
+behind the Phase 7 architecture swap.*
+
+*Verification postscript (2026-09-08, an independent batch re-derived the
+sharpest claims; all confirmed, corrections folded in above): the updater
+kill chain is two unauthenticated requests with self-mintable CSRF; the
+broken wing kills its whole section while the page and the sibling feature
+survive; the send chain's full auth passes before the SMTP guard and the
+converted file lands in the book folder before the ro commit fails closed;
+the fork's favicon.ico and icon.png demonstrably still render the pre-fix
+Wave artwork (pixel-histogrammed), and the favicon is served on every page;
+every doc-drift claim re-checked, with the 154 corrections noted in the
+sync box. The mitigating facts also re-verified: mode=ro holds at the
+engine level, and every route proposed for `_SEALED` is confirmed unsealed
+today.*
+
+### Fork: seal the surfaces the seal never met
+
+- [ ] **Extend `_SEALED` by eight routes (P1/P2).** Probed live from a LAN
+      position: `/get_updater_status` with `start=True` resumes the updater
+      thread, which replaces the checkout with an upstream release,
+      destroying the smallscope patches and stopping the server
+      (`cps/admin.py:1537-1563`, `UPDATER_AVAILABLE = True`); the user
+      management AJAX trio (`/ajax/listusers`, `/ajax/editlistusers`,
+      `/ajax/deleteuser`) survives the UI-layer seal, and deleting the
+      owner bricks the room into a redirect loop between two 404s
+      (`cps/single_user.py:40-48`, `:69-74`); `/ajax/pathchooser/` is an
+      unauthenticated arbitrary directory-listing primitive
+      (`cps/admin.py:946`); `/shutdown` is a one-POST LAN DoS
+      (`cps/admin.py:140-156`). The full eight:
+      `/get_updater_status`, `/get_update_status`, the user trio,
+      `/ajax/pathchooser`, `/shutdown`, `/reconnect`. Verification
+      sharpened the updater chain (it is two requests: the GET primes the
+      updater's `updateFile`; the POST alone dies on an unset attribute)
+      and CSRF: it is active in production but self-mintable, a fresh
+      client GETs `/admin/view` (200; single_user auto-authenticates),
+      harvests the token from the HTML, and posts it back. Every closure
+      is a one-line addition to the existing rebase-friendly pattern.
+- [ ] **Kill the send/convert chain structurally (P1).** `/send` is still
+      routed (the spec removed only the template entry point); with SMTP
+      armed via `/admin/mailsettings` and `kindle_mail` set via `/me`, a
+      POST queues `ebook-convert`, which writes a converted file INTO the
+      library directory (metadata.db stays safe: the ro commit fails
+      closed, but the file lands first) (`cps/web.py:1619`,
+      `cps/helper.py:290-301`, `cps/tasks/convert.py`). Stub
+      `send_mail`/`convert_book_format` so no config state can re-enable
+      it. Related near-miss worth short-circuiting while in there:
+      `TaskBackupMetadata` writes `metadata.opf` into book folders and is
+      fail-closed today only by operation ORDER (`cps/tasks/metadata_backup.py:110-117`).
+- [ ] **Pin the invariant with a committed regression test.** The sweep
+      proved mode=ro holds at the engine level (an UPDATE through
+      `calibre_db.session` raises, title intact) and that the single
+      pooled connection carries the attach for every request; that proof
+      lives only in this audit. Add the PRAGMA `database_list` assertion
+      plus the refused-UPDATE probe as tests, so a refactor of the
+      StaticPool attach cannot silently widen the connection.
+- [ ] **Close the harness-vs-main drift permanently.** The test harness
+      hand-syncs blueprint registration with `cps/main.py` and has drifted
+      twice before, once silently voiding the Phase 8 route cuts; gdrive's
+      five routes are registered in production but never test-exercised.
+      One parity test (parse `register_blueprint` calls from main.py,
+      compare against `app.blueprints`) plus a pinned "kobo/oauth/gdrive
+      are off" assertion would have caught both. Related unpinned edges:
+      `single_user._owner()` returning None (the brick scenario), the
+      credential seal against uppercase paths, an OPDS acquisition link
+      followed to bytes, and 7 of 11 SEARCH_SORTS keys.
+
+### Fork: the cquarry integration's failure modes
+
+- [ ] **One broken wing or saved search poisons the whole feature, per
+      request, forever (P1).** `_resolve_wings` resolves every wing in one
+      comprehension and saved searches interpolate names into the grammar,
+      so a single renamed/deleted `vl:` target or a saved-search name
+      containing a quote breaks the build; the failed build never updates
+      the cache mtime, and both sidebar injectors are context processors,
+      so every page render pays a full rebuild and the whole affected
+      section vanishes: all wings, or all saved searches (verification
+      corrected the sweep's first wording: the sibling feature and the
+      rest of the sidebar survive, and the page still renders 200; the
+      measured cost is a fresh cquarry connection plus re-evaluation of
+      every expression on every request, forever, until the entry is
+      fixed) (`cps/wings.py:24-52`,
+      `cps/saved_searches.py:27-36`, `cps/library_cache.py:124-142`).
+      Per-name try/except fault isolation is the highest value-per-line
+      change in the fork sweep.
+- [ ] **OPDS hardening (P1/P2).** The OPDS search feed calls `resolve()`
+      with no SearchError handling, so any unparseable query 500s (the web
+      bar and /basic both degrade gracefully; Moon+ Reader users type
+      stray quotes), and it renders ALL matches in one unbounded feed with
+      full comments and an N+1 `get_formats` per format, where cquarry
+      parity makes broad matches the norm (`cps/opds.py:733-741`,
+      `cps/quarry_grid.py:68-89`). Also `int()` on offset query params
+      escapes as 500s (`cps/opds.py:93-94` and kin). One helper pass:
+      SearchError to empty feed, capped per_page with the existing
+      rel="next", `_int_param()`.
+- [ ] **Decide the common_filters drift (P3).** cquarry grids skip
+      upstream's archived/language/denied-tags filtering; invisible under
+      the default single-user config, but archiving a book currently hides
+      it from nothing. A spec note or the filters.
+- [ ] **Smaller fork papercuts:** `resolve()` converts every exception
+      (including a vanished metadata.db) into "could not parse that
+      search"; wing/saved-search URLs are case-sensitive while everything
+      beneath is case-insensitive; the vacuous `assertGreaterEqual(..., 0)`
+      at `tests/test_smallscope.py:641-643` would pass the exact regression
+      its docstring names (should be assertGreater); the
+      `TestQuarryExtensions` subclass double-runs all 48 parent tests (108
+      executions for 60 unique tests, documented but compounding).
+
+### Fork: rebase hygiene and one licensing smell
+
+- [ ] **Revert `cps/clean_html.py` to upstream byte-for-byte.** It is a
+      pure whole-file reformat with zero functional change, and the
+      reformat stripped upstream's GPL-3.0 license header from third-party
+      code. The 0.6.39 patchnote calls it "rewritten from scratch", which
+      git disproves (it exists at the 0.6.26 base; the diff is +10/-20);
+      the same-day correction commit caught two sibling overclaims and
+      missed this one. Fix the file and append a dated correction; decide
+      whether the CI lint list (which omits the file) or the ownership
+      claim is the one to keep.
+- [ ] **Minimize the `about.py` churn before the next rebase** (~4
+      functional lines inside ~60 lines of quote-style reflow), and record
+      the rebase posture honestly: web.py (+1310/-730), helper.py
+      (+679/-309), opds.py (+471/-188), and the advsearch deletion in
+      search.py are the four files that will conflict on any upstream
+      touch; main.py/constants.py/admin.py/db.py are the done-right
+      counterexamples. The disable-not-delete rule in CLAUDE.md rule 6 and
+      spec §6.2 was amended by no one when 0.6.36 deleted advsearch
+      (deliberate, patchnoted, contract unamended): amend the contract to
+      match the shipped decision.
+
+### Theme and guard
+
+- [ ] **Regenerate the fork's derived logo assets (live palette
+      violation).** `cps/static/icon.svg:15` still renders the Wave hex
+      `#658594` (the exact 2026-08-09 sin), and icon.png/favicon.ico still
+      carry their fork-cut mtimes: the canonical logo.svg was fixed but
+      nothing regenerates the derivatives, and no guard sees them
+      (spec §4.5 says they "are regenerated from" logo.svg; no recipe
+      does). Add a `sync-logo` recipe and have check-theme.py diff the
+      fork's icon.svg against logo.svg when the sibling checkout exists.
+- [ ] **Harden check-theme.py against its two proven bypasses.** `:root`
+      is the allowlist source, so declaring `--evil: #ff0000` legalizes it
+      (pin the 30-hex spec palette instead); and rgb()/hsl()/named-color
+      notations pass the hex-only regex (the same trap spec §4.7 already
+      recorded once); plus the rule-before-`:root` extraction poisoning.
+      The vendored CSS itself is currently in sync and green.
+
+### Release records and contract sync
+
+- [ ] **Cut a Carrel contract release for the fork's Phase 7 completion.**
+      Carrel's newest entry (0.9.7) narrates fork 0.6.30 "Phase 7 begins";
+      the fork then shipped 0.6.31-0.6.39 closing the entire cquarry
+      data-layer swap, and no contract document records it: a 0.9.8
+      patchnotes entry, a roadmap note, the spec deltas (§5.3's dead
+      search.py row, §12.3's "queries written fresh" claim now that stats
+      ride cquarry.analytics, §6.2's three new sealed prefixes, the §3
+      version clause "the fork keeps upstream's version number" which has
+      been false since 0.6.28), and one disambiguating sentence about the
+      colliding Phase 7 numbering.
+- [ ] **Sync the stale contract lines the drift audit found:** spec §6.2's
+      removal table is half false (only the email field was patched out;
+      Kobo fields are stock config-gated UI, exactly as roadmap Phase 2
+      recorded, and the spec row's own line citations have gone stale);
+      fork CLAUDE.md's sealed-surfaces list predates the
+      `/table` and `/ajax/listbooks` seals; the 154 figure survives in
+      THREE places after the correction pass fixed Carrel's README/spec
+      (Carrel's 0.7.0 entry says 154; the fork's `single_user.py:10` has
+      the full 154/10 phrase; the fork's README:20 still says 154), and
+      the correction itself is half-stale: spec §11.2 still pairs 39 with
+      "across 10", the strict decorator count at smallscope HEAD is 42
+      across 10 modules, and 154 is defensible only as a substring count
+      across 14 modules (the indefensible part is pairing it with
+      "10 modules"); §8.2 names a "cquarry v2.6+" floor that
+      matches no repo (real floor >=1.11.1) and the deployment venv's
+      dist-info still says 1.8.0 against a 1.14.0 editable tree; the
+      sign-off section's "Phases 0 through 10" line; the done-but-unticked
+      `.zshrc` box; four surviving em-dashes in contract prose plus a
+      literal `\u2014` escape in the fork's patchnotes (and note the
+      v0.9.7 tag message carries one em-dash verbatim from its entry:
+      fixing that means a tag force-push, noted only).
+- [ ] **Untagged releases, noted and parked.** Carrel has six (0.9.1-0.9.6)
+      and the fork six (0.6.27-0.6.32) pre-discipline releases with
+      patchnotes entries but no tags. Per Brandon's 2026-09-08 standing
+      decision, pre-workflow history stays as it is; recorded here only so
+      the release-record audit is complete. Neither repo publishes
+      anywhere, so there is no workflow hazard either way.
+- [ ] **Pin fork CI's cquarry install** (`@main` today: a sibling-repo push
+      can redden fork CI with no fork change; pin to a tag or SHA), and
+      note Carrel CI's Python 3.13 pin vs the fork's 3.14 (cosmetic for a
+      stdlib-only script).
+
+### Completeness verdict from the sweep
+
+*Close, with one sharp edge. The architecture is right and unusually
+well-tested for a fork (108 green tests, the invariants actually pinned),
+the read-only promise is real at the engine level, and the theme pipeline
+works. But "single-user reading room" is currently one config flag away
+from admin-authenticated kobo/sync endpoints on the LAN, eight live routes
+were never met by the seal, and the contract documents a product that is
+nine releases stale. The fork's completeness work is a sealing release
+(an afternoon: eight `_SEALED` lines, the send/convert stub, the parity
+and invariant tests) plus the contract catch-up; Carrel's own surface
+(theme, guard, docs) needs the sync-logo recipe and the check-theme
+hardening. Nothing found threatens the library or the archive: the
+destructive classes all failed closed.*
