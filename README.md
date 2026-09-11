@@ -31,7 +31,7 @@ screenshots and the feature tour.
   `@login_required` decorators pass untouched and rebases stay clean.
 - **Calibre's search grammar.** Upstream has none; it matches the query as
   literal FTS text, so `author:"King"` returned nothing. Carrel evaluates
-  through [CalibreQuarry](https://github.com/VirInvictus/CalibreQuarry)'s
+  through [cquarry](https://github.com/VirInvictus/cquarry)'s
   stdlib port of Calibre's parser: field prefixes, boolean logic, grouping,
   hierarchical tags, custom columns (`#audience:Rin`) and `vl:` references.
 - **Wings.** Calibre virtual libraries as browse sections, evaluated through

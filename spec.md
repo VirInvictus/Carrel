@@ -287,6 +287,38 @@ that keeps the diff small and rebase-friendly. Users: exactly one, the owner.
 Multi-account operation was dropped in favour of §11; there is no content
 restriction because there is nobody to restrict.
 
+### 6.3 The cquarry data layer (smallscope Phase 7, 0.6.30-0.6.39)
+
+The biggest structural change in the fork's history, recorded here because
+spec carries the contract for both repos and this swap had none of it: since
+0.6.30 the read surfaces resolve and page through cquarry, not the ORM.
+
+- `cps/quarry_grid.py` is the adapter. cquarry's `list_books()` pages the
+  rows, and clean-room proxies expose exactly the attribute surface
+  `index.html`, `detail.html` and `feed.xml` render (the fork is GPL,
+  cquarry is MIT; only calls flow this direction). `build_detail()`
+  precomputes the detail page, `SEARCH_SORTS` maps the sort header onto
+  `list_books` keys, and entity id sets resolve rows-side against the
+  cached rows, so no per-entity queries and no new cquarry API were needed.
+- The surfaces on cquarry: wings, saved searches, categories, the search
+  results page and /basic (spec 13's one grammar), the front page,
+  read/unread and archived grids, the entity browses (authors, series,
+  publishers, tags, languages, ratings, formats), the about-page counts,
+  and the OPDS book feeds.
+- `cps/library_cache.py` owns invalidation: every derived surface keys on
+  metadata.db's mtime AND the library's identity UUID (spec 7's read-only
+  posture is what makes an mtime a sufficient version).
+- Still on the ORM or the app DB by design: `/basic_book`'s detail read
+  (boxed, low priority), the audio branch of `read_book` (boxed, work
+  shape in the roadmap), the app-DB side of the hot/downloaded/archived
+  grids (download counts, user downloads, archived state), kobo (off),
+  and everything touching calibre-web's own `app.db`.
+- Known deviation, decision parked (2026-09-11): the cquarry grids skip
+  upstream's `common_filters` (archived, language, denied tags), so under
+  this instance's single-user config archiving a book hides it from
+  nothing. Adopting the filters or recording the deviation as accepted is
+  Brandon's call; either answer amends this bullet.
+
 ## 7. Read-only metadata.db guarantee
 
 Stock calibre-web attaches `metadata.db` read-write
