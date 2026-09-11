@@ -1,4 +1,54 @@
 # Patchnotes
+## 0.9.8 (2026-09-11)
+
+### The contract catches up: the data-layer swap, the sealing release, a hardened guard
+
+Carrel ships no application code; every code change lives in the fork
+(`Carrel-calibre-web`, `smallscope`, release 0.6.40). What moved here:
+
+- **spec §6.3 is new: the cquarry data layer.** The fork's own Phase 7
+  (0.6.30-0.6.39) moved the read surfaces to cquarry's `list_books` behind
+  clean-room adapters, and no contract document recorded any of it. The
+  new section names the adapter, the surfaces on cquarry, the
+  invalidation rule, what deliberately stays on the ORM or the app DB,
+  and the common_filters deviation with its decision parked for Brandon.
+- **The Phase 13 sealing release is executed (fork 0.6.40).** Eight
+  admin-machinery routes sealed (the updater kill chain was two
+  unauthenticated requests with self-mintable CSRF), the send/convert
+  chain and TaskBackupMetadata refused in code, per-name fault isolation
+  for wings and saved searches, OPDS offset/search/pagination hardening,
+  honest SearchError-vs-LibraryUnavailable failure classes, and the
+  mode=ro attach plus harness-vs-main blueprint parity pinned as
+  committed tests. clean_html.py is upstream byte-for-byte again, about.py
+  lost its quote reflow, and the fork's logo derivatives are regenerated
+  (the Wave artwork had survived in them since the 2026-08-09 fix).
+  Fork suite 71 green, from 108 executions for 60 unique tests.
+- **The stale contract lines are synced.** The §6.2 removal table is
+  repainted with the full seal lists; the decorator counts are corrected
+  (39 upstream across 5 modules; 42 across 10 at smallscope HEAD); the
+  §8.2 floor says cquarry 1.11.1+ editable; the §3 version clause is true
+  again; the dead search.py row is gone from §5.3; §12.3 records the
+  analytics ride-along; the four surviving em-dashes are recast (the
+  0.9.7 entry's stays baked into the pushed v0.9.7 tag: fixing it is a
+  tag force-push call, not taken).
+- **The theme guard is hardened.** The palette is pinned (31 hexes from
+  spec §4.2 plus §4.3's ramp) instead of derived from `:root`, which was
+  a proven bypass; rgb()/hsl()/named colours are refused; `:root` is
+  found wherever it sits; and the fork's `icon.svg` is diffed against
+  `logo.svg` when the sibling checkout exists. `just sync-logo` is the
+  recipe that keeps the derivatives true. Verified Phase 11 style, each
+  bypass reintroduced.
+- **Decisions recorded.** The homelab auth question is answered: the
+  LAN-trust posture stands (spec §11.3; revisit only if the instance
+  leaves the LAN). The fork's three audit remainders are routed: the
+  audio-branch swap boxed with its work shape, `/basic_book` boxed low
+  priority, the deferred OPDS items waived.
+- **Phase numbering, disambiguated:** the fork's "Phase 7" is its own
+  data-layer swap (0.6.30-0.6.39); this repo's Phase 7 is the single-user
+  shim (spec §11). Both are recorded in this file by contract; the fork's
+  releases below named 0.6.30 "Phase 7 begins" while this repo's Phase 7
+  section is something else entirely.
+
 ## 0.9.7 (2026-09-03)
 
 ### Phase 7 begins in the fork (0.6.30): the swap's first increments

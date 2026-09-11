@@ -132,6 +132,11 @@ when shipping; details and rationale live in `spec.md`.
 
 ## Phase 7: Single-user (spec §11)
 
+*Naming note, 2026-09-11: the fork carries its own Phase 7, the cquarry
+data-layer swap (fork 0.6.30-0.6.39); this repo's Phase 7 is the single-user
+shim below. The fork's phase numbers are the fork's own; this file records
+both by contract.*
+
 Small, self-contained, no visual change. Lands first because everything after
 it is easier to verify without a login round-trip.
 
@@ -634,7 +639,7 @@ today.*
 
 ### Release records and contract sync
 
-- [ ] **Cut a Carrel contract release for the fork's Phase 7 completion.**
+- [x] **Cut a Carrel contract release for the fork's Phase 7 completion.**
       Carrel's newest entry (0.9.7) narrates fork 0.6.30 "Phase 7 begins";
       the fork then shipped 0.6.31-0.6.39 closing the entire cquarry
       data-layer swap, and no contract document records it: a 0.9.8
@@ -644,6 +649,10 @@ today.*
       version clause "the fork keeps upstream's version number" which has
       been false since 0.6.28), and one disambiguating sentence about the
       colliding Phase 7 numbering.
+      *(Shipped 2026-09-11 as 0.9.8: the patchnotes entry narrates
+      0.6.31-0.6.40, spec §6.3 records the swap, §5.3/§12.3/§6.2/§3 are
+      synced [8c1432d], and the disambiguation note sits under this file's
+      Phase 7 heading.)*
 - [x] **Sync the stale contract lines the drift audit found:** spec §6.2's
       removal table is half false (only the email field was patched out;
       Kobo fields are stock config-gated UI, exactly as roadmap Phase 2
