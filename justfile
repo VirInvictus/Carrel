@@ -9,6 +9,17 @@ sync-theme:
     cp theme/kanagawa-dragon.css {{fork}}/cps/static/css/kanagawa-dragon.css
     @echo "vendored theme/kanagawa-dragon.css -> fork"
 
+# The fork's derived logo assets are cut from logo.svg here, the single
+# source: icon.svg is a byte copy, icon.png and favicon.ico are renders.
+# check-theme diffs the fork's icon.svg against logo.svg when the sibling
+# checkout exists, so a stale derivative (it once kept the pre-fix Wave
+# artwork for a month) is catchable before pushing.
+sync-logo:
+    cp logo.svg {{fork}}/cps/static/icon.svg
+    rsvg-convert -w 256 -h 256 logo.svg -o {{fork}}/cps/static/icon.png
+    magick -background none -define icon:auto-resize=16,32,48 logo.svg {{fork}}/cps/static/favicon.ico
+    @echo "logo.svg -> fork icon.svg / icon.png / favicon.ico"
+
 # CI runs this same script, so the two cannot drift.
 # Guard the theme contract: palette closure, serif stack, no caliBlur
 check:
