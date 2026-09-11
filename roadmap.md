@@ -376,7 +376,10 @@ hands; none of it is a code task.
       trusted home network run on demand. An always-on homelab is a different
       threat model and needs authentication reinstated or an authenticating
       reverse proxy in front. Decide that deliberately, not by inheriting
-      this config
+      this config. *(The auth decision is MADE, 2026-09-11: the LAN-trust
+      posture stands, no auth code ships, recorded in spec §11.3; revisit
+      only if the instance leaves the LAN. The build itself stays
+      Brandon's.)*
 - [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
       depend on its engine, so consumption HAS deepened (spec §13.3).
       Revisit if a fourth consumer of library metrics appears

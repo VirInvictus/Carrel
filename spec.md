@@ -495,6 +495,14 @@ needs to run somewhere untrusted, the honest fixes are reinstating
 authentication (delete `cps/single_user.py`) or fronting it with an
 authenticating reverse proxy. Do not simply hope the network is friendly.
 
+Decision, 2026-09-11 (the September homelab plan made this clause due): the
+LAN-trust posture stands. No authentication ships and nothing changes about
+the bind; the sealing release hardened the surface the seal never met
+(§6.2's Phase 13 list) rather than re-opening the auth question. The one
+condition repeats itself: this posture is a LAN posture. If the instance
+ever leaves Brandon's own network, this clause is the one to reopen, and
+§6.2's seals are hardening, not a substitute for authentication.
+
 This clause also carried §4.4's font exception, which was licensed by the
 localhost binding. That exception survives on narrower ground, stated once in
 §4.4: keep the two in step if this clause ever flips again.
