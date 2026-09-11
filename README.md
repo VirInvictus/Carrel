@@ -70,6 +70,7 @@ colour anywhere. See spec §4.3.
 just check        # the theme contract: palette closure, serif stack, no caliBlur
 just check-theme  # is the fork's vendored copy still the canonical one?
 just sync-theme   # vendor theme/kanagawa-dragon.css into the fork
+just sync-logo    # cut the fork's icon.svg/icon.png/favicon.ico from logo.svg
 just serve        # run the fork from source
 just test         # the fork's suite
 ```
