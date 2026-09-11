@@ -334,10 +334,9 @@ Deliberately not touched, recorded so the next sweep does not re-raise them:
       eight hardcoded Dragon fallbacks are gone; the injected palette styles
       inherit the sheet's `:root` tokens (the `--mono`/`--radius` generics
       stay, they are not palette copies). A missing token now fails visibly
-      instead of silently diverging, and the guard question dissolves —
+      instead of silently diverging, and the guard question dissolves:
       nothing second-copies the palette anymore. Shipped with Phase 12
-      (fork 0.6.29).
-- [x] No contrast rule was added in the fork. The `--kngw-black6` question
+      (fork 0.6.29).- [x] No contrast rule was added in the fork. The `--kngw-black6` question
       above is its only home: the sheet is vendored there and CLAUDE.md rule 3
       forbids hand-editing the copy
 
@@ -346,7 +345,9 @@ Deliberately not touched, recorded so the next sweep does not re-raise them:
 (The per-phase sign-off boxes were consolidated here on 2026-07-24; the
 phases above are code-complete.)
 
-Phases 0 through 10 are code-complete. Everything here needs Brandon's eyes or
+Phases 0 through 13 are code-complete (13 is the 2026-09-11 sealing release;
+the fork's own phase numbering differs, see the Phase 13 note below).
+Everything here needs Brandon's eyes or
 hands; none of it is a code task.
 
 - [ ] One browse pass over the whole surface: front page, a wing, a category,
@@ -362,7 +363,9 @@ hands; none of it is a code task.
       surfaced and fixed the dark-theme flaw where book stylesheets painted
       over the class themes; see patchnotes 0.9.1)*
 - [ ] `dotfile-sync` the `.zshrc` change (the `cps` alias now binds
-      `0.0.0.0`, matching `just serve`)
+      `0.0.0.0`, matching `just serve`). *(Measured 2026-09-11: the working
+      `.zshrc` carries the alias, but the change is still uncommitted drift
+      in the dotfiles repo, so the sync itself has not happened.)*
 - [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
 
 ## Later / opportunistic

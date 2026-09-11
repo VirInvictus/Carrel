@@ -5,7 +5,7 @@
 
 The contract repo's note for the fork's 0.6.30: the NEW-AUDIT Stage 6
 boundary map is written into cquarry's roadmap, and the fork landed the
-first data-layer swaps — series awareness through `get_entities` +
+first data-layer swaps: series awareness through `get_entities` +
 `get_all_series`, cover resolution through `get_cover_path` via a shared
 mtime-keyed `quarry()` in `library_cache`, and an acquisition-pace ledger
 on `/statistics` computed by `cquarry.analytics`. Theme untouched this
@@ -38,7 +38,7 @@ repo owns the contract half and the version.
 
 Contract note for the fork's cquarry 1.8 sync (fork-side 0.6.28, code lives in
 `Carrel-calibre-web` on `smallscope`): the deployment venv is editable from
-`~/.gitrepos/cquarry` per §8.2 — installed equals repo, closing the drift that
+`~/.gitrepos/cquarry` per §8.2: installed equals repo, closing the drift that
 had the instance silently degrading page_count on a stale 1.1.1. The
 library_cache UUID read adopts cquarry's `db_uri_ro()` contract (fixing a
 latent break on `?`/`#` library paths) while keeping its one-query shape;

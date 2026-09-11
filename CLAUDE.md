@@ -30,10 +30,13 @@ All code lives in the fork.
    The fork's `cps/static/css/` copy is vendored via `just sync-theme`; never
    hand-edit it there.
 4. **Palette comes from `~/.gitrepos/kanagawa-dragon-nvim-emacs`.** Don't
-   introduce colours outside spec §4.2, and don't guess hexes. CI enforces
-   this: every colour in the sheet **and in `logo.svg`** must be declared in
-   `:root`. The logo went unguarded until 2026-08-09 and had been carrying a
-   Wave hex the whole time.
+   introduce colours outside spec §4.2 (+ §4.3's gold ramp), and don't guess
+   hexes. CI enforces this: every colour in the stylesheet, in `logo.svg`,
+   and in the fork's `icon.svg` must be one of the hexes pinned in
+   `scripts/check-theme.py`, with non-hex notations refused. The logo went
+   unguarded until 2026-08-09 and had been carrying a Wave hex the whole
+   time; the fork's derivatives went unregenerated until 2026-09-11 and
+   kept rendering it.
 5. **Tests run against the fixture DB, never the real library.** Read-only
    verification against the real library is fine (spec §10). Anything
    write-capable against `~/docs/Calibre Library/` is forbidden.
@@ -72,15 +75,18 @@ All code lives in the fork.
 
 - `justfile`: `check` (the theme guard), `check-theme` (is the fork's vendored
   copy still the canonical one?), `sync-theme` (vendor the CSS into the fork),
+  `sync-logo` (cut the fork's icon.svg/icon.png/favicon.ico from logo.svg),
   `serve` (run the fork), `test` (the fork's suite).
 - Deployment venv `~/.local/share/carrel/venv/` (Python 3.14) holds the dependencies;
   the calibreweb wheel is uninstalled and the fork runs from source, because
   the 0.6.26 tree has no `src/` layout. calibre-web's own `app.db` in
   `~/.calibre-web/` is separate from the library and safe to touch.
 - CI runs no tests here (there is no application code). It guards the theme's
-  contract via `scripts/check-theme.py`: palette closure across both the
-  stylesheet and `logo.svg`, the serif stack, and the absence of caliBlur.
-  `just check` runs the same file, so a violation is catchable before pushing.
+  contract via `scripts/check-theme.py`: the pinned 31-hex spec palette
+  across the stylesheet, `logo.svg`, and (when the sibling checkout exists)
+  the fork's `icon.svg`, the serif stack, the absence of caliBlur, and the
+  refusal of rgb()/hsl()/named-colour notations. `just check` runs the same
+  file, so a violation is catchable before pushing.
 
 ## Working notes
 

@@ -56,8 +56,10 @@ and safe to touch.
 ## 3. Base version and upstream policy
 
 - Base: calibre-web `0.6.26` (tag), Python 3.14 venv at `~/.local/share/carrel/venv/`.
-- The fork keeps upstream's version number; project identity lives in the
-  `smallscope` branch and this repo's `VERSION`.
+- Versioning: the fork tracked upstream's number until 0.6.28, when it began
+  carrying its own `STABLE_VERSION` in `cps/constants.py` (leapfrogging
+  upstream's in-flight 0.6.27b); this repo's release identity lives in
+  `VERSION`. Each moves only when its own release is cut.
 - Upstream rebases are deliberate, not automatic: fetch upstream, read the
   release notes, rebase `smallscope` onto the new tag, re-run the fork tests,
   re-verify the feature-removal list (section 6) against new UI surface.
@@ -192,8 +194,14 @@ machine it resolves to Söhne, a sans.
 
 ### 4.5 Assets
 
-Project `logo.svg` lives in this repo; the fork's `static/favicon.ico` and
-`static/icon.svg`/`icon.png` are regenerated from it.
+Project `logo.svg` lives in this repo and is the single source. `just
+sync-logo` cuts the fork's derivatives from it (`cps/static/icon.svg` as a
+byte copy, `icon.png` and `favicon.ico` as renders), and `check-theme.py`
+diffs the fork's icon.svg against logo.svg when the sibling checkout exists.
+The guard exists because the derivatives once kept rendering the pre-fix
+Wave artwork for a month after the canonical file was corrected. Whether the
+favicon wants a simplified variant rather than a resize is a sign-off
+question.
 
 ### 4.6 Reader theming (stretch, Phase 5)
 
@@ -255,7 +263,6 @@ must never be machine-written.
 | `cps/db.py:729` `get_book_read_archived` | Same enum branch; this is a SEPARATE query builder used by the detail view (and basic theme) with its own bool-only join. Found during verification: for enum classes the `.book` access raises AttributeError, silently swallowed by the surrounding except, yielding None. |
 | `cps/web.py:1644` | Detail view: `entry.read_status = (value == 'Read')` for enum; also expose the raw label for the badge. |
 | `cps/web.py:747-749` | Read/Unread sections: enum filter per 5.2. |
-| `cps/search.py:145-147` | Advanced-search read filter: same projection. |
 | `cps/helper.py:306-351` `edit_book_read_status` | Hard write-guard: if the linked column is an enumeration, refuse and return an error. `/ajax/toggleread` therefore never writes. |
 | `cps/templates/detail.html:255-264` | Replace the read checkbox with the read-only 4-state badge. |
 
@@ -265,27 +272,42 @@ must never be machine-written.
 
 Applied in the admin UI and recorded here so the instance is reproducible:
 uploads off, anonymous browsing off, public registration off, magic-link
-remote login off, Kobo sync off, Goodreads off, embed-metadata-on-download
-off. Sidebar sections (ratings, formats, publishers, hot books, etc.) are
-per-user `sidebar_view` bitmask settings (`constants.py` `SIDEBAR_*`), set
-per account rather than patched.
+remote login off, Kobo sync off (its per-user fields are stock config-gated
+UI: they vanish with the setting and were never patched), Goodreads off,
+embed-metadata-on-download off. Sidebar sections (ratings, formats,
+publishers, hot books, etc.) are per-user `sidebar_view` bitmask settings
+(`constants.py` `SIDEBAR_*`), set per account rather than patched.
 
 ### 6.2 Removed by patch (config cannot hide these)
 
 | Surface | Where |
 | --- | --- |
-| Tasks page and navbar link | `layout.html`, tasks routes disabled |
-| Shelves UI (sidebar section, create/edit) | `layout.html:149+`, shelf routes disabled; Wings replace shelves as the grouping concept |
-| Send-to-eReader / email machinery | `detail.html:54`, SMTP config UI |
-| Kindle/Kobo per-user fields | `user_edit.html:28-29, 67-70` |
+| Tasks page and navbar link | layout templates, tasks routes disabled |
+| Shelves UI (sidebar section, create/edit) | layout templates, shelf routes disabled; Wings replace shelves as the grouping concept |
+| Send-to-eReader / email machinery | the detail-page button (template); since 0.6.40 the chain itself is stubbed in `helper.py`, so no SMTP config or `kindle_mail` value can queue a send or an `ebook-convert` run |
 | Upload and web metadata editing entry points | navbar/detail edit buttons, editbooks routes disabled |
-| Mass mark-read buttons | `book_table.html:34-37` |
+| Mass mark-read buttons | `book_table.html` |
 | Registration/magic-link remnants, Goodreads settings | templates and admin panes |
 
+Sealed paths as of 0.6.40 (Phase 13), two lists: the browse cut in
+`cps/smallscope.py` (`/hot`, `/rated`, `/discover`, `/advsearch`, `/table`,
+`/ajax/listbooks`, `/ajax/table_settings`), and in `cps/single_user.py` the
+credential five plus the admin machinery the credential seal never met
+(`/get_update_status`, `/get_updater_status`, the user AJAX trio
+`/ajax/listusers` / `/ajax/editlistusers/<param>` / `/ajax/deleteuser`,
+`/ajax/pathchooser`, `/shutdown`, `/reconnect`). The metadata-backup task is
+refused in code rather than sealed by path; a `metadata.opf` backup writes
+into the book folders and the read-only commit only failed closed by
+operation order. The mode=ro attach itself is pinned by committed tests:
+PRAGMA `database_list` shows the library attached to the pooled connection,
+and an UPDATE through the session raises.
+
 Rule: routes are **disabled** (404/registration removed), not deleted, when
-that keeps the diff small and rebase-friendly. Users: exactly one, the owner.
-Multi-account operation was dropped in favour of §11; there is no content
-restriction because there is nobody to restrict.
+that keeps the diff small and rebase-friendly. The one deletion is 0.6.36's
+removal of the dead ORM behind the already-sealed advanced search (§13.2a):
+deliberate, patchnoted, and recorded here since 2026-09-11. Users: exactly
+one, the owner. Multi-account operation was dropped in favour of §11; there
+is no content restriction because there is nobody to restrict.
 
 ### 6.3 The cquarry data layer (smallscope Phase 7, 0.6.30-0.6.39)
 
@@ -346,7 +368,8 @@ only its own shelf system, which duplicates curation state.
 
 - New module `cps/wings.py` in the fork reads the `virtual_libraries` JSON
   and evaluates each wing's expression to a set of book ids using
-  **cquarry's search engine** (`cquarry`, v2.6+:
+  **cquarry's search engine** (`cquarry`, 1.11.1+ at the fork's floor,
+  installed editable from `~/.gitrepos/cquarry`:
   `search(expr) -> set[int]`, a stdlib-faithful port of Calibre's expression
   grammar including `vl:` references, so the self-referential Unsorted wing
   parses correctly).
@@ -388,7 +411,7 @@ The detail page shows latest-device reading progress
 (`annotations`) through a `carrel_reader_state` template global backed by
 cquarry’s extractors. Absent data renders nothing; extractor failure
 degrades to the same. Reading state itself stays write-only from Calibre’s
-side — this surface never infers or sets it (see the library’s rules on
+side; this surface never infers or sets it (see the library’s rules on
 reading_status).
 
 ## 9. Testing
@@ -433,10 +456,13 @@ concept, not merely bypassed.
 ### 11.1 The contract
 
 - No credential is ever requested. `/login`, `/logout`, and registration
-  answer 404 through the same route-disable pattern as §6.2.
+  answer 404 through the same route-disable pattern as §6.2, which since
+  0.6.40 also covers the admin machinery: the updater pair, the user
+  management AJAX trio, `/ajax/pathchooser`, `/shutdown`, `/reconnect`.
 - Every request runs as the owning admin account.
-- The `user` table and `flask-login` stay in the tree. All 39
-  `@login_required` decorators stay exactly where upstream put them.
+- The `user` table and `flask-login` stay in the tree. All 39 upstream
+  `@login_required` decorators (42 across 10 modules at smallscope HEAD,
+  counting the fork's own additions) stay exactly where they are.
 
 ### 11.2 Mechanism
 
@@ -445,8 +471,9 @@ whenever `current_user` is anonymous. The decorators then pass trivially,
 because the request is always authenticated.
 
 This is chosen over deleting the auth layer for one reason: §3 requires the
-fork to stay rebase-friendly onto upstream tags, and touching 39 call sites
-across 10 modules would make every future rebase a merge conflict. Deleting
+fork to stay rebase-friendly onto upstream tags, and touching the decorators
+(39 across 5 upstream modules; 42 across 10 once the fork's own are counted)
+would make every future rebase a merge conflict. Deleting
 `single_user.py` restores stock behaviour exactly.
 
 ### 11.3 Exposure
@@ -511,7 +538,10 @@ render them. No metric function prints, formats, or knows about HTML.
 
 cquarry's `modes/stats.py` is **not** reused: it prints ANSI to stdout and is
 presentation-coupled. The queries here are written fresh and credit that
-lineage. If a fourth consumer of library metrics appears, extracting a headless
+lineage, with one ride-along: the acquisition-pace ledger computes through
+cquarry's headless `analytics.addition_timeline()` (fork 0.6.30), which is
+database-shaped rather than presentation-coupled. If a fourth consumer of
+library metrics appears, extracting a headless
 metrics layer becomes the right call; three is the point at which it gets
 raised, not acted on.
 
