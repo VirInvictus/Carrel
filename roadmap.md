@@ -359,8 +359,8 @@ hands; none of it is a code task.
       a detail page, search, and the EPUB reader, at desktop and mobile width.
       This replaces the six per-phase passes that had accumulated
 - [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
-  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
       the most opinionated change made, and the easiest to revert
+  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
 - [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
       so the favicon wants a simplified variant rather than a resize
 - [ ] DNF badge eyeball, whenever a book actually carries the value
@@ -548,7 +548,6 @@ today.*
       rel="next"; the size N+1 is bounded by the page cap rather than
       removed.)*
 - [ ] **Decide the common_filters drift (P3).** cquarry grids skip
-  *(DECIDED 2026-09-12 (Brandon): the deviation is BLESSED as accepted; spec 6.3's bullet amends to record acceptance in the next Carrel lane.)*
       upstream's archived/language/denied-tags filtering; invisible under
       the default single-user config, but archiving a book currently hides
       it from nothing. A spec note or the filters.
@@ -556,6 +555,7 @@ today.*
       and names both answers. The pick is Brandon's: adopt the filters in
       the cquarry-backed grids, or amend §6.3 to call the deviation
       accepted. No code moves until he picks.)*
+  *(DECIDED 2026-09-12 (Brandon): the deviation is BLESSED as accepted; spec 6.3's bullet amends to record acceptance in the next Carrel lane.)*
 - [x] **Smaller fork papercuts:** `resolve()` converts every exception
       (including a vanished metadata.db) into "could not parse that
       search"; wing/saved-search URLs are case-sensitive while everything
