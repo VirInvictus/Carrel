@@ -359,6 +359,7 @@ hands; none of it is a code task.
       a detail page, search, and the EPUB reader, at desktop and mobile width.
       This replaces the six per-phase passes that had accumulated
 - [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
+  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
       the most opinionated change made, and the easiest to revert
 - [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
       so the favicon wants a simplified variant rather than a resize
@@ -547,6 +548,7 @@ today.*
       rel="next"; the size N+1 is bounded by the page cap rather than
       removed.)*
 - [ ] **Decide the common_filters drift (P3).** cquarry grids skip
+  *(DECIDED 2026-09-12 (Brandon): the deviation is BLESSED as accepted; spec 6.3's bullet amends to record acceptance in the next Carrel lane.)*
       upstream's archived/language/denied-tags filtering; invisible under
       the default single-user config, but archiving a book currently hides
       it from nothing. A spec note or the filters.
@@ -591,6 +593,7 @@ today.*
       fork doc claims it; or (b) re-assert ownership someday, which would
       mean actually rewriting the file fork-side and adding it to the lint
       list in the same commit. Nothing to execute unless he picks (b).)*
+        *(DECIDED 2026-09-12 (Brandon): (a); the ownership claim dies and the lint list stays as it is.)*
 - [x] **Minimize the `about.py` churn before the next rebase** (~4
       functional lines inside ~60 lines of quote-style reflow), and record
       the rebase posture honestly: web.py (+1310/-730), helper.py
@@ -685,6 +688,7 @@ today.*
       in the dotfiles repo), and the venv's dist-info still reads 1.8.0
       against the 1.17.0 editable tree. The v0.9.7 tag-message em-dash
       stays as recorded: fixing it is a force-push call, Brandon's.)*
+        *(CONFIRMED 2026-09-12 (Brandon): it stays recorded; no force-push.)*
 - [x] **Untagged releases, noted and parked.** Carrel has six (0.9.1-0.9.6)
       and the fork six (0.6.27-0.6.32) pre-discipline releases with
       patchnotes entries but no tags. Per Brandon's 2026-09-08 standing
