@@ -783,3 +783,48 @@ destructive classes all failed closed.*
       (product-first, points at the fork); swap 3 topics (add
       design-system/typography/reading-room); Releases for v0.9.7/v0.9.8;
       wiki off; hotlink the fork's six screenshots into the README.
+
+## Fork findings 2026-09-12 (six-lens full audit of Carrel-calibre-web; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 18 - the fork keeps its queue here)
+
+- [ ] **The Phase 13 seal is narrower than the narrative - 25 routes/
+      paths still read library data through the upstream ORM:** nine
+      OPDS routes escape _SEALED_PREFIXES (path-prefix matching: /opds/hot
+      does not match /hot) - feed_hot, the three letter drilldowns, three
+      index feeds, feed_languages, the shelf feeds (incl. app-DB
+      deletes), Calibre-Companion JSON, /opds/readbooks|unreadbooks;
+      reader CONTENT streams through serve_book's ORM (all five reader
+      templates - the 11d swap moved only the chrome); seven web entity
+      LIST pages + five typeahead endpoints (serving the trimmed edit UI)
+      stay ORM; every cover request resolves via ORM before quarry serves
+      the file; basic_book. Fix: extend the prefixes, swap the routes to
+      quarry_grid, correct the fork README's "Removed" list (removed from
+      the web UI only).
+- [ ] **HIGH (fork): read_book's audio branch 500s on archived books**
+      (get_filtered_book applies common_filters without
+      allow_show_archived -> None -> listenmp3.html UndefinedError). The
+      boxed audio-branch swap covers this - fold the 500 into its shape.
+- [ ] **Upstream security cherry-picks (next fork lane):** upstream
+      shipped no release after 0.6.26 (94 commits, mostly translations),
+      but 8-9 substantive fixes sit on LIVE fork surfaces: SQLI via
+      dbpath; /show/ access bypass (serve_book is live); XXE in epub
+      parsing (the epub reader is live); credential leak in debug_info;
+      non-admin stacktrace leak; CSP entropy; comment-column escaping;
+      the download-path staged-tmp/cover-sibling pair. Cherry-pick the
+      short list; re-check at the next upstream tag.
+- [ ] **Fork hardening:** 32 URL rules default book_id to 1 (six families
+      act on it; abort(404) when None); the Ctrl-K palette ships
+      "Books List" to the sealed /table (404; drop or repoint; tighten
+      the destination test to 200); dead detail_entry would
+      AttributeError on __slots__; two drifted identifier tables; OPDS
+      per-page ZeroDivision if config is 0; archive/read badges hardcoded
+      off on detail.
+- [ ] **Blitz candidates:** reading-position sync (seed calibre.bookmark
+      from the latest library cfi; the fixture carries cfi rows); the
+      Categories compact-reposition + palette.py's last ORM reads swapped;
+      single_user.py 39/42 (minutes - tonight's HIGH: the roadmap's
+      "landed" claim is false); the kobo prefix seal; a continue-reading
+      row from last_read_positions.
+- [ ] **Fork GitHub (workspace batch):** the repo description still says
+      "localhost-only" (false since the 07-24 rebind); topics swap (add
+      opds/personal-library/book-server/reading-room); cut the v0.6.40
+      Release; wiki off.
