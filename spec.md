@@ -3,7 +3,7 @@
 The contract for the Kanagawa Dragon calibre-web theme and its companion fork.
 Read this before changing semantics in either repo.
 
-Last revised: 2026-08-25. Companion repo: `Carrel-calibre-web`
+Last revised: 2026-09-13. Companion repo: `Carrel-calibre-web`
 (fork of `janeczku/calibre-web`; all code changes live there on the
 `smallscope` branch). This repo holds the theme source, the documentation
 contract, and glue tooling.
@@ -203,12 +203,13 @@ Wave artwork for a month after the canonical file was corrected. Whether the
 favicon wants a simplified variant rather than a resize is a sign-off
 question.
 
-### 4.6 Reader theming (stretch, Phase 5)
+### 4.6 Reader theming (Phase 5, shipped)
 
 The EPUB reader (`read.html`) has its own theme selector and isolated styles
-(`epub_themes.css`); it does not inherit the app theme. A "Kanagawa" reading
-theme (dragonBlack1 page, dragonWhite text) is planned as a stretch goal.
-PDF/comic/DJVU readers keep their stock styling.
+(`epub_themes.css`); it does not inherit the app theme. The "Kanagawa"
+reading theme (dragonBlack3 page, dragonWhite text, oldWhite chrome title)
+ships alongside the five stock themes. PDF/comic/DJVU readers keep their
+stock styling.
 
 ### 4.7 The override era (historical)
 
@@ -335,11 +336,12 @@ spec carries the contract for both repos and this swap had none of it: since
   shape in the roadmap), the app-DB side of the hot/downloaded/archived
   grids (download counts, user downloads, archived state), kobo (off),
   and everything touching calibre-web's own `app.db`.
-- Known deviation, decision parked (2026-09-11): the cquarry grids skip
+- Known deviation, accepted (2026-09-12): the cquarry grids skip
   upstream's `common_filters` (archived, language, denied tags), so under
   this instance's single-user config archiving a book hides it from
-  nothing. Adopting the filters or recording the deviation as accepted is
-  Brandon's call; either answer amends this bullet.
+  nothing. The deviation is the accepted price of the data layer; if the
+  instance ever needs the filters, this bullet is where the change gets
+  specified.
 
 ## 7. Read-only metadata.db guarantee
 

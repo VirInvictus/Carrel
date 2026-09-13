@@ -341,54 +341,10 @@ Deliberately not touched, recorded so the next sweep does not re-raise them:
       stay, they are not palette copies). A missing token now fails visibly
       instead of silently diverging, and the guard question dissolves:
       nothing second-copies the palette anymore. Shipped with Phase 12
-      (fork 0.6.29).- [x] No contrast rule was added in the fork. The `--kngw-black6` question
+      (fork 0.6.29).
+- [x] No contrast rule was added in the fork. The `--kngw-black6` question
       above is its only home: the sheet is vendored there and CLAUDE.md rule 3
       forbids hand-editing the copy
-
-## Sign-off: what 1.0.0 waits on
-
-(The per-phase sign-off boxes were consolidated here on 2026-07-24; the
-phases above are code-complete.)
-
-Phases 0 through 13 are code-complete (13 is the 2026-09-11 sealing release;
-the fork's own phase numbering differs, see the Phase 13 note below).
-Everything here needs Brandon's eyes or
-hands; none of it is a code task.
-
-- [ ] One browse pass over the whole surface: front page, a wing, a category,
-      a detail page, search, and the EPUB reader, at desktop and mobile width.
-      This replaces the six per-phase passes that had accumulated
-- [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
-      the most opinionated change made, and the easiest to revert
-  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
-- [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
-      so the favicon wants a simplified variant rather than a resize
-- [ ] DNF badge eyeball, whenever a book actually carries the value
-- [x] Read a chapter on the Kanagawa reader theme and judge it *(signed off
-      2026-08-08: "it looks great", judged on Redshirts chapter 4. The read
-      surfaced and fixed the dark-theme flaw where book stylesheets painted
-      over the class themes; see patchnotes 0.9.1)*
-- [ ] `dotfile-sync` the `.zshrc` change (the `cps` alias now binds
-      `0.0.0.0`, matching `just serve`). *(Measured 2026-09-11: the working
-      `.zshrc` carries the alias, but the change is still uncommitted drift
-      in the dotfiles repo, so the sync itself has not happened.)*
-- [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
-
-## Later / opportunistic
-
-- [ ] Offer enum read-column support upstream (it is generally useful)
-- [ ] Homelab deployment (September 2026 build): the instance already binds
-      `0.0.0.0` with no authentication (spec §11.3), which is acceptable on a
-      trusted home network run on demand. An always-on homelab is a different
-      threat model and needs authentication reinstated or an authenticating
-      reverse proxy in front. Decide that deliberately, not by inheriting
-      this config. *(The auth decision is MADE, 2026-09-11: the LAN-trust
-      posture stands, no auth code ships, recorded in spec §11.3; revisit
-      only if the instance leaves the LAN. The build itself stays
-      Brandon's.)*
-- [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
-      depend on its engine, so consumption HAS deepened (spec §13.3).
-      Revisit if a fourth consumer of library metrics appears
 
 ## Phase 12: Code Sweep & UX Polish (2026-08-23)
 *Context: Found falsy index rendering issues, modal input bleeds, and route guard bypasses.*
@@ -750,35 +706,116 @@ and invariant tests) plus the contract catch-up; Carrel's own surface
 hardening. Nothing found threatens the library or the archive: the
 destructive classes all failed closed.*
 
+## Sign-off: what 1.0.0 waits on
+
+(The per-phase sign-off boxes were consolidated here on 2026-07-24; the
+phases above are code-complete.)
+
+Phases 0 through 13 are code-complete (13 is the 2026-09-11 sealing release;
+the fork's own phase numbering differs, see the Phase 13 note below).
+Everything here needs Brandon's eyes or
+hands; none of it is a code task.
+
+- [ ] One browse pass over the whole surface: front page, a wing, a category,
+      a detail page, search, and the EPUB reader, at desktop and mobile width.
+      This replaces the six per-phase passes that had accumulated
+- [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
+      the most opinionated change made, and the easiest to revert
+  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
+- [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
+      so the favicon wants a simplified variant rather than a resize
+- [ ] DNF badge eyeball, whenever a book actually carries the value
+- [x] Read a chapter on the Kanagawa reader theme and judge it *(signed off
+      2026-08-08: "it looks great", judged on Redshirts chapter 4. The read
+      surfaced and fixed the dark-theme flaw where book stylesheets painted
+      over the class themes; see patchnotes 0.9.1)*
+- [ ] `dotfile-sync` the `.zshrc` change (the `cps` alias now binds
+      `0.0.0.0`, matching `just serve`). *(Measured 2026-09-11: the working
+      `.zshrc` carries the alias, but the change is still uncommitted drift
+      in the dotfiles repo, so the sync itself has not happened.)*
+- [ ] `VERSION` 1.0.0 once the instance is signed off as daily-driver ready
+
+## Later / opportunistic
+
+- [ ] Offer enum read-column support upstream (it is generally useful)
+- [ ] Homelab deployment (September 2026 build): the instance already binds
+      `0.0.0.0` with no authentication (spec §11.3), which is acceptable on a
+      trusted home network run on demand. An always-on homelab is a different
+      threat model and needs authentication reinstated or an authenticating
+      reverse proxy in front. Decide that deliberately, not by inheriting
+      this config. *(The auth decision is MADE, 2026-09-11: the LAN-trust
+      posture stands, no auth code ships, recorded in spec §11.3; revisit
+      only if the instance leaves the LAN. The build itself stays
+      Brandon's.)*
+- [ ] Library-graduation check-in on cquarry: Phase 9 makes the search bar
+      depend on its engine, so consumption HAS deepened (spec §13.3).
+      Revisit if a fourth consumer of library metrics appears
+
 ## New findings 2026-09-12 (six-lens full audit; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 17)
 
-- [ ] **HIGH (fork-side, queue to the next Carrel lane): the roadmap's
+- [x] **HIGH (fork-side, queue to the next Carrel lane): the roadmap's
       "single_user.py now says 39/42 [230c42bc]" claim is false - the
       fork's file still reads 154/10.** Land the correction in
       Carrel-calibre-web cps/single_user.py and amend this box to say the
       fix is queued, not shipped.
-- [ ] **The Categories decision note misdescribes the fork:** a full
+      *(Shipped 2026-09-13, fork 0.6.41 [93ef30ab]: the comment now reads
+      39 across 5 upstream modules, 42 across 10 at smallscope HEAD
+      counting the fork's own additions; both counts re-measured with
+      grep before landing. The false ship claim above is hereby
+      corrected: it shipped here, not in 230c42bc.)*
+- [x] **The Categories decision note misdescribes the fork:** a full
       collapsible Categories tree already renders ABOVE Wings
       (layout.html:141-156); the decided change is compact-and-move
       beneath Wings, not a return. Reworded here; the lane executes the
       compact reposition and swaps palette.py's last ORM reads
       (authors/series/tags) to cquarry get_entities - the decision note's
       "served from the cquarry category counts" is currently false.
-- [ ] **Contract sync (fold into the v0.9.9 lane):** spec 6.3's parked
+      *(Shipped 2026-09-13, fork 0.6.41 [93ef30ab]: layout.html renders
+      Wings, then the Categories tree, then Saved Searches; the compact
+      register is the theme's (.cat-node summary 3px/11.5px, .cat-leaf
+      2px/11px); palette.py's three ORM queries now go through cquarry
+      get_entities(), making the decision note's "served from the cquarry
+      category counts" true. Suite 73 green with two new tests: the
+      nav-head order pin and a palette/get_entities lockstep pin.)*
+- [x] **Contract sync (fold into the v0.9.9 lane):** spec 6.3's parked
       bullet -> deviation accepted (decided 09-12); spec "Last revised"
       -> 2026-09-12; README/CI describe the retired :root guard instead
       of the 31-hex pin; spec 4.6 -> shipped, dragonBlack3; the glued
       checkbox at roadmap.md:344; move Phase 12/13 above the sign-off
       section; note the cquarry three-version skew (venv 1.8.0 dist-info
       vs editable 1.20.0 vs CI pin 1.17.0).
-- [ ] **CSS hygiene:** fold the duplicated .cat-node/.cat-leaf badge
+      *(Shipped 2026-09-13 as v0.9.9: spec 6.3 records the accepted
+      deviation (decision 33), Last revised -> 2026-09-13, spec 4.6 now
+      says shipped with dragonBlack3, README and ci.yml describe the
+      31-hex pin, the glued checkbox is split, and Phases 12/13 sit
+      above the sign-off section in phase order. The skew note is its
+      own box below.)*
+- [x] **CSS hygiene:** fold the duplicated .cat-node/.cat-leaf badge
       block into the .navigation rule; drop the no-op hover restatement.
+      *(Shipped 2026-09-13 [theme edits, vendored by just sync-theme]:
+      the duplicate block is deleted - the tree lives inside
+      nav.navigation, so .navigation .badge already covers it - and the
+      hover rule that restated the base colour is gone. check-theme
+      green.)*
+- [ ] **The cquarry three-version skew (recorded 2026-09-13, open):**
+      the deployment venv's dist-info says 1.8.0, the editable tree at
+      ~/.gitrepos/cquarry is 1.20.0, and fork CI pins the v1.17.0 tag.
+      Nothing is wrong at runtime (the editable install IS 1.20.0; the
+      dist-info metadata simply mislabels it), but the metadata will
+      mislead any future audit that trusts `pip show`, and the CI pin
+      lags the tree the fork actually runs against. Fix shapes, when
+      wanted: re-install editable so dist-info catches up, and bump the
+      CI pin deliberately per the 892ab34d note. Neither is this lane;
+      recorded so the next sweep does not re-derive it.
 - [ ] **Blitz candidates:** the v0.9.9 lane above; reading-position sync
       (open the web reader at the recorded position - spec 8.5's display
       half shipped, the consume half does not exist; the fixture already
       carries a cfi column); the 1.0.0 contract prep (workspace-map row
       still says Phases 0-12; the six sign-off boxes; the DNF eyeball
       unblocks with one deliberate DNF marking in the library).
+      *(2026-09-13: the v0.9.9 lane shipped - fork 0.6.41 + this
+      contract release; reading-position sync and the 1.0.0 prep
+      stand.)*
 - [ ] **GitHub presentation (workspace batch):** description rewrite
       (product-first, points at the fork); swap 3 topics (add
       design-system/typography/reading-room); Releases for v0.9.7/v0.9.8;
@@ -824,6 +861,9 @@ destructive classes all failed closed.*
       single_user.py 39/42 (minutes - tonight's HIGH: the roadmap's
       "landed" claim is false); the kobo prefix seal; a continue-reading
       row from last_read_positions.
+      *(2026-09-13: the Categories reposition + palette swap and the
+      single_user 39/42 correction shipped in fork 0.6.41; the rest
+      stands.)*
 - [ ] **Fork GitHub (workspace batch):** the repo description still says
       "localhost-only" (false since the 07-24 rebind); topics swap (add
       opds/personal-library/book-server/reading-room); cut the v0.6.40

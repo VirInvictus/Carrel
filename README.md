@@ -84,14 +84,15 @@ uninstalled and the fork runs from source, because the 0.6.26 tree has no
 > deliberately. See spec §11.3 before changing where this runs.
 
 CI guards the theme's contract rather than running tests: every colour in the
-stylesheet and the logo must be declared in `:root`, the serif stack must lead
-with the exact installed family, and no rule may target caliBlur. It runs
-`scripts/check-theme.py`, the same file `just check` runs, so pushing is not
+stylesheet, the logo and the fork's icon must be one of the 31 palette hexes
+pinned in `scripts/check-theme.py`, with rgb()/hsl()/named notations refused,
+the serif stack must lead with the exact installed family, and no rule may
+target caliBlur. It runs the same file `just check` runs, so pushing is not
 the only way to find out.
 
 ## Status
 
-v0.9.8. Phases 0 through 13 are complete. `roadmap.md` tracks what remains
+v0.9.9. Phases 0 through 13 are complete. `roadmap.md` tracks what remains
 before 1.0: the sign-off boxes and opportunistic items. `patchnotes.md` has
 the history, newest first.
 

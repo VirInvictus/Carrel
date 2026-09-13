@@ -1,4 +1,43 @@
 # Patchnotes
+## 0.9.9 (2026-09-13)
+
+### The Categories reposition lands; the contract syncs to the decisions
+
+The 2026-09-12 decision session's Carrel lane, executed as one release
+across both repos. The code half is fork 0.6.41; this repo carries the
+contract and the theme.
+
+- **The sidebar re-balances (fork 0.6.41).** A compact Categories
+  section renders beneath Wings, above Saved Searches, per decision 32;
+  the tree itself is unchanged, only its position and register (the
+  theme's compact rows ship through the canonical sheet, vendored by
+  `just sync-theme`). While in the sidebar's code, palette.py's three
+  ORM reads (authors, series, tags) moved to cquarry `get_entities()`,
+  so the Ctrl-K index is served from the same source as the about-page
+  counts, making the decision note's "served from the cquarry category
+  counts" true. Fork suite 73 green (two new tests: the sidebar order
+  pin, the palette/get_entities lockstep pin); the README screenshots
+  are re-photographed for the new order, with the library's checksum
+  identical around the session.
+- **The single_user.py decorator correction is real now.** The roadmap
+  claimed the 154/10 comment fix shipped in 230c42bc; the six-lens audit
+  found the file still carrying it. Fork 0.6.41 lands the correction:
+  39 upstream across 5 modules, 42 across 10 at smallscope HEAD.
+- **The contract syncs to the decided state.** spec §6.3's
+  common_filters bullet records the deviation as accepted (decision 33)
+  instead of parked; §4.6 describes the reader theme as shipped, with
+  the right hex (dragonBlack3); the header's Last revised moves to
+  2026-09-13. README and CI describe the 31-hex pin that Phase 13
+  actually ships instead of the retired `:root` declaration guard. The
+  glued checkbox in the roadmap is split, Phases 12 and 13 now sit in
+  phase order above the sign-off section, and the cquarry three-version
+  skew (venv dist-info 1.8.0, editable tree 1.20.0, CI pin 1.17.0) is
+  recorded as a noted hazard with its fix shapes.
+- **Theme hygiene.** The duplicated category-tree badge block folds
+  away (the `.navigation .badge` rule already covered it) and a no-op
+  hover restatement is dropped. `just check` and `just check-theme`
+  green.
+
 ## 0.9.8 (2026-09-11)
 
 ### The contract catches up: the data-layer swap, the sealing release, a hardened guard
