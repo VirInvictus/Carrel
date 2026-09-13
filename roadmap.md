@@ -547,7 +547,7 @@ today.*
       pages at the configured books-per-page with feed.xml's existing
       rel="next"; the size N+1 is bounded by the page cap rather than
       removed.)*
-- [ ] **Decide the common_filters drift (P3).** cquarry grids skip
+- [x] **Decide the common_filters drift (P3).** cquarry grids skip
       upstream's archived/language/denied-tags filtering; invisible under
       the default single-user config, but archiving a book currently hides
       it from nothing. A spec note or the filters.
@@ -749,3 +749,37 @@ and invariant tests) plus the contract catch-up; Carrel's own surface
 (theme, guard, docs) needs the sync-logo recipe and the check-theme
 hardening. Nothing found threatens the library or the archive: the
 destructive classes all failed closed.*
+
+## New findings 2026-09-12 (six-lens full audit; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 17)
+
+- [ ] **HIGH (fork-side, queue to the next Carrel lane): the roadmap's
+      "single_user.py now says 39/42 [230c42bc]" claim is false - the
+      fork's file still reads 154/10.** Land the correction in
+      Carrel-calibre-web cps/single_user.py and amend this box to say the
+      fix is queued, not shipped.
+- [ ] **The Categories decision note misdescribes the fork:** a full
+      collapsible Categories tree already renders ABOVE Wings
+      (layout.html:141-156); the decided change is compact-and-move
+      beneath Wings, not a return. Reworded here; the lane executes the
+      compact reposition and swaps palette.py's last ORM reads
+      (authors/series/tags) to cquarry get_entities - the decision note's
+      "served from the cquarry category counts" is currently false.
+- [ ] **Contract sync (fold into the v0.9.9 lane):** spec 6.3's parked
+      bullet -> deviation accepted (decided 09-12); spec "Last revised"
+      -> 2026-09-12; README/CI describe the retired :root guard instead
+      of the 31-hex pin; spec 4.6 -> shipped, dragonBlack3; the glued
+      checkbox at roadmap.md:344; move Phase 12/13 above the sign-off
+      section; note the cquarry three-version skew (venv 1.8.0 dist-info
+      vs editable 1.20.0 vs CI pin 1.17.0).
+- [ ] **CSS hygiene:** fold the duplicated .cat-node/.cat-leaf badge
+      block into the .navigation rule; drop the no-op hover restatement.
+- [ ] **Blitz candidates:** the v0.9.9 lane above; reading-position sync
+      (open the web reader at the recorded position - spec 8.5's display
+      half shipped, the consume half does not exist; the fixture already
+      carries a cfi column); the 1.0.0 contract prep (workspace-map row
+      still says Phases 0-12; the six sign-off boxes; the DNF eyeball
+      unblocks with one deliberate DNF marking in the library).
+- [ ] **GitHub presentation (workspace batch):** description rewrite
+      (product-first, points at the fork); swap 3 topics (add
+      design-system/typography/reading-room); Releases for v0.9.7/v0.9.8;
+      wiki off; hotlink the fork's six screenshots into the README.
