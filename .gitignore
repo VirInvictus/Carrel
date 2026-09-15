@@ -28,6 +28,7 @@ access.log*
 # The library itself must never be committed (contains private columns)
 metadata.db
 metadata.db-*
+*.bak
 *.bak-*
 
 # Editors / OS

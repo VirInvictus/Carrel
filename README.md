@@ -27,8 +27,11 @@ screenshots and the feature tour.
 
 ## What it does that calibre-web does not
 
-- **No login.** The owner is authenticated on every request, so upstream's 39
-  `@login_required` decorators pass untouched and rebases stay clean.
+- **No login.** The owner is authenticated on every request, so upstream's
+  login decorators pass untouched and rebases stay clean. (The family is
+  `@login_required_if_no_ano`: 39 across 5 modules at the 0.6.26 base, 42
+  across 10 at HEAD counting the fork's own five; `admin.py`'s 94 route
+  protections ride upstream wrapper decorators, satisfied the same way.)
 - **Calibre's search grammar.** Upstream has none; it matches the query as
   literal FTS text, so `author:"King"` returned nothing. Carrel evaluates
   through [cquarry](https://github.com/VirInvictus/cquarry)'s
@@ -46,8 +49,9 @@ screenshots and the feature tour.
   Reading / Read / DNF) rendered as a badge and never written back; status
   belongs to the curation workflow, not the web app.
 - **A read-only guarantee.** `metadata.db` is attached `mode=ro`. The web app
-  cannot corrupt the library, by construction, and the tests prove it by
-  checksum.
+  cannot corrupt the library, by construction, and the tests prove it: the
+  attach shows up in `PRAGMA database_list`, and an `UPDATE` through the
+  session raises.
 
 ## Design
 
@@ -83,12 +87,16 @@ uninstalled and the fork runs from source, because the 0.6.26 tree has no
 > between the library and the network, and it is currently `0.0.0.0`
 > deliberately. See spec §11.3 before changing where this runs.
 
-CI guards the theme's contract rather than running tests: every colour in the
-stylesheet, the logo and the fork's icon must be one of the 31 palette hexes
-pinned in `scripts/check-theme.py`, with rgb()/hsl()/named notations refused,
-the serif stack must lead with the exact installed family, and no rule may
-target caliBlur. It runs the same file `just check` runs, so pushing is not
-the only way to find out.
+CI guards the theme's contract rather than running application code (there is
+none): it runs `scripts/check-theme.py`, the same file `just check` runs,
+whose docstring is the authoritative list. It pins the 31-hex palette across
+the stylesheet and the logo, refuses rgb()/hsl()/named-colour and modern
+functional notations, pins both font-stack leads, forbids caliBlur selectors,
+runs structural sanity (braces, var() resolution, raw-hex refusal), and
+self-tests the guard itself. The fork's logo derivatives are byte-compared
+against `logo.svg` when the sibling checkout exists, which is true locally
+and not on CI; run `just check` with the fork beside this repo for the full
+guard.
 
 ## Status
 

@@ -10,24 +10,21 @@ jobs:
     name: theme invariants
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
 
-      # This repo holds no application code since Phase 8 retired the caliBlur
-      # recolor generator (spec 4.1). What is worth guarding is the theme's
-      # contract: every colour in the stylesheet, the logo, and (when the
-      # sibling checkout exists) the fork's icon.svg must be one of the 31
-      # palette hexes pinned in the script, with rgb()/hsl()/named notations
-      # refused; the serif stack must not lead with "EB Garamond" (which
-      # resolves to a sans); and no rule may target caliBlur. The :root
-      # declaration guard this comment once described retired with Phase 13's
-      # hardening (it legalized any colour the sheet itself declared).
-      #
-      # The script lives in the repo rather than inline here so `just check`
-      # runs the identical thing. It used to be an inline heredoc, which meant
-      # the only way to exercise it was to push.
+      # This repo holds no application code (spec 4.1). What is worth
+      # guarding is the theme's contract, and scripts/check-theme.py's
+      # docstring is the authoritative description of that guard; this file
+      # deliberately does not restate it. The script is the same file
+      # `just check` runs, so the two cannot drift. The fork-side logo
+      # derivative checks need the sibling fork checkout, which this
+      # workflow does not perform; the script prints its skip note there,
+      # and the full guard runs locally with the fork beside this repo.
       - name: Theme contract
-        run: python3 scripts/check-theme.py
+        run: |
+          python3 scripts/check-theme.py --selftest
+          python3 scripts/check-theme.py

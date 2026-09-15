@@ -73,20 +73,25 @@ All code lives in the fork.
 
 ## Layout and tooling
 
-- `justfile`: `check` (the theme guard), `check-theme` (is the fork's vendored
-  copy still the canonical one?), `sync-theme` (vendor the CSS into the fork),
-  `sync-logo` (cut the fork's icon.svg/icon.png/favicon.ico from logo.svg),
-  `serve` (run the fork), `test` (the fork's suite).
+- `justfile`: bare `just` is inert (it lists recipes; the mutating syncs must
+  never run by accident). The recipes: `check` (the theme guard, selftest
+  first), `check-theme` (is the fork's vendored copy still the canonical
+  one?), `sync-theme` (vendor the CSS into the fork), `sync-logo` (cut the
+  fork's icon.svg/icon.png/favicon.ico from logo.svg), `sync` (both syncs
+  then both guards; the compound exists because the loose half-run is how
+  the stale-artifact month happened), `lint-selectors` (report-only
+  selector-vs-DOM sweep; never gates), `serve` (run the fork), `test` (the
+  fork's suite).
 - Deployment venv `~/.local/share/carrel/venv/` (Python 3.14) holds the dependencies;
   the calibreweb wheel is uninstalled and the fork runs from source, because
   the 0.6.26 tree has no `src/` layout. calibre-web's own `app.db` in
   `~/.calibre-web/` is separate from the library and safe to touch.
-- CI runs no tests here (there is no application code). It guards the theme's
-  contract via `scripts/check-theme.py`: the pinned 31-hex spec palette
-  across the stylesheet, `logo.svg`, and (when the sibling checkout exists)
-  the fork's `icon.svg`, the serif stack, the absence of caliBlur, and the
-  refusal of rgb()/hsl()/named-colour notations. `just check` runs the same
-  file, so a violation is catchable before pushing.
+- CI runs no application tests (there is no application code). It runs
+  `scripts/check-theme.py` (selftest first), the same file `just check`
+  runs; the script's docstring is the authoritative description of the
+  guard, so this file does not restate it. One boundary worth knowing: the
+  fork-side logo-derivative checks are byte-diffs that need the sibling
+  checkout (true locally; on CI the script prints its skip note).
 
 ## Working notes
 
