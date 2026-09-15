@@ -8,7 +8,8 @@ across both repos. The code half is fork 0.6.41; this repo carries the
 contract and the theme.
 
 - **The sidebar re-balances (fork 0.6.41).** A compact Categories
-  section renders beneath Wings, above Saved Searches, per decision 32;
+  section renders beneath Wings, above Saved Searches, per the
+  2026-09-12 decision session's Categories item;
   the tree itself is unchanged, only its position and register (the
   theme's compact rows ship through the canonical sheet, vendored by
   `just sync-theme`). While in the sidebar's code, palette.py's three
@@ -23,9 +24,14 @@ contract and the theme.
   claimed the 154/10 comment fix shipped in 230c42bc; the six-lens audit
   found the file still carrying it. Fork 0.6.41 lands the correction:
   39 upstream across 5 modules, 42 across 10 at smallscope HEAD.
+  *(Erratum 2026-09-15: those counts, and their 0.9.8 twin, are counts
+  of the decorator family `@login_required_if_no_ano`; bare
+  `@login_required` is 0 at the 0.6.26 base, and admin.py's 94 route
+  protections ride upstream's wrapper decorators. Neither entry said
+  which spelling it meant; spec 11.1 now does.)*
 - **The contract syncs to the decided state.** spec §6.3's
-  common_filters bullet records the deviation as accepted (decision 33)
-  instead of parked; §4.6 describes the reader theme as shipped, with
+  common_filters bullet records the deviation as accepted (the
+  2026-09-12 decision session's common_filters item) instead of parked; §4.6 describes the reader theme as shipped, with
   the right hex (dragonBlack3); the header's Last revised moves to
   2026-09-13. README and CI describe the 31-hex pin that Phase 13
   actually ships instead of the retired `:root` declaration guard. The
@@ -365,6 +371,13 @@ first-class browse sections in the web UI.
 - cquarry (v2.6+, editable from ~/.gitrepos/CalibreQuarry) becomes the
   fork's one extra dependency. First cross-project consumption of its
   search engine.
+  *(Erratum 2026-09-15: both engine references in this entry are wrong.
+  The engine was, and is, cquarry's (`cquarry.search`, editable from
+  ~/.gitrepos/cquarry); CalibreQuarry is a different repo and never
+  housed it, and the v2.6+ floor was dead as written: no cquarry release
+  ever carried it (the tags begin at v1.9.0). The 0.9.8 correction pass
+  fixed spec 8.2 only and flagged this entry; the entry now carries the
+  correction it deserved.)*
 - Verified on a scratch instance: all 32 sidebar counts match
   `cquarry --wings` exactly; spot-checked wings hold exactly their books;
   empty wing renders; library checksum unchanged.

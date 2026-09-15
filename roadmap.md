@@ -3,7 +3,7 @@
 Phases for Carrel and the `smallscope` fork branch. Tick boxes
 when shipping; details and rationale live in `spec.md`.
 
-## Phase 0: Scaffold (in flight)
+## Phase 0: Scaffold (complete)
 
 - [x] Clone `Carrel` and `Carrel-calibre-web` into `~/.gitrepos/`
 - [x] Fork: add `upstream` remote (janeczku/calibre-web), fetch tags, branch
@@ -362,7 +362,7 @@ Deliberately not touched, recorded so the next sweep does not re-raise them:
 - [x] **Currently Reading Shelf:** Surface books marked as "Reading" on the front page index. *(Shipped in 0.6.29 as `cps/reading_shelf.py`: the library's own enum is the source of truth, newest-grid page only, absent when unconfigured or empty; joined `CARREL_PY`.)*
 - [x] **Prefix Filtering in Ctrl-K:** Support prefix commands (e.g., `a ` for authors) inside the command palette to shrink the 6,975-item haystack. *(Shipped in 0.6.29: `w/a/s/c/p` + space scopes the haystack; the counter reports the shelf; the search fallback sees the full query.)*
 
-## Phase 13: hardening backlog from the 2026-09-08 audit sweep (proposed 2026-09-08, digging only)
+## Phase 13: hardening backlog from the 2026-09-08 audit sweep (shipped 2026-09-11 in fork 0.6.40)
 
 *Context: a five-agent adversarial sweep covering BOTH repos (fork security
 and the read-only invariant, the cquarry-integration modules, fork tests and
@@ -712,16 +712,20 @@ destructive classes all failed closed.*
 phases above are code-complete.)
 
 Phases 0 through 13 are code-complete (13 is the 2026-09-11 sealing release;
-the fork's own phase numbering differs, see the Phase 13 note below).
+the fork's own phase numbering differs, see the Phase 13 note above).
 Everything here needs Brandon's eyes or
 hands; none of it is a code task.
 
 - [ ] One browse pass over the whole surface: front page, a wing, a category,
       a detail page, search, and the EPUB reader, at desktop and mobile width.
       This replaces the six per-phase passes that had accumulated
-- [ ] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
+- [x] Verdict on losing the Browse sidebar entirely in favour of Ctrl-K. It is
       the most opinionated change made, and the easiest to revert
-  *(DECIDED 2026-09-12 (Brandon): a compact Categories section returns to the sidebar beneath Wings, served from the cquarry category counts the palette already uses; Wings stay put. Small fork change, queued for the next Carrel lane.)*
+  *(DECIDED 2026-09-12 (Brandon): a compact Categories section stays in the
+  sidebar, compact-and-repositioned beneath Wings (it had rendered above
+  them), served from the cquarry category counts the palette already uses;
+  Wings stay put. Shipped 2026-09-13 in fork 0.6.41, with the theme's
+  compact rows vendored in the same release.)*
 - [ ] Logo verdict. It holds at 64px, works at 32px, and turns to mush at 16px,
       so the favicon wants a simplified variant rather than a resize
 - [ ] DNF badge eyeball, whenever a book actually carries the value
@@ -754,7 +758,7 @@ hands; none of it is a code task.
 ## New findings 2026-09-12 (six-lens full audit; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 17)
 
 - [x] **HIGH (fork-side, queue to the next Carrel lane): the roadmap's
-      "single_user.py now says 39/42 [230c42bc]" claim is false - the
+      "single_user.py now says 39/42 [230c42bc]" claim is false: the
       fork's file still reads 154/10.** Land the correction in
       Carrel-calibre-web cps/single_user.py and amend this box to say the
       fix is queued, not shipped.
@@ -768,7 +772,7 @@ hands; none of it is a code task.
       (layout.html:141-156); the decided change is compact-and-move
       beneath Wings, not a return. Reworded here; the lane executes the
       compact reposition and swaps palette.py's last ORM reads
-      (authors/series/tags) to cquarry get_entities - the decision note's
+      (authors/series/tags) to cquarry get_entities; the decision note's
       "served from the cquarry category counts" is currently false.
       *(Shipped 2026-09-13, fork 0.6.41 [93ef30ab]: layout.html renders
       Wings, then the Categories tree, then Saved Searches; the compact
@@ -785,7 +789,8 @@ hands; none of it is a code task.
       section; note the cquarry three-version skew (venv 1.8.0 dist-info
       vs editable 1.20.0 vs CI pin 1.17.0).
       *(Shipped 2026-09-13 as v0.9.9: spec 6.3 records the accepted
-      deviation (decision 33), Last revised -> 2026-09-13, spec 4.6 now
+      deviation (the decision session's common_filters item), Last
+      revised -> 2026-09-13, spec 4.6 now
       says shipped with dragonBlack3, README and ci.yml describe the
       31-hex pin, the glued checkbox is split, and Phases 12/13 sit
       above the sign-off section in phase order. The skew note is its
@@ -793,8 +798,8 @@ hands; none of it is a code task.
 - [x] **CSS hygiene:** fold the duplicated .cat-node/.cat-leaf badge
       block into the .navigation rule; drop the no-op hover restatement.
       *(Shipped 2026-09-13 [theme edits, vendored by just sync-theme]:
-      the duplicate block is deleted - the tree lives inside
-      nav.navigation, so .navigation .badge already covers it - and the
+      the duplicate block is deleted (the tree lives inside
+      nav.navigation, so .navigation .badge already covers it) and the
       hover rule that restated the base colour is gone. check-theme
       green.)*
 - [ ] **The cquarry three-version skew (recorded 2026-09-13, open):**
@@ -808,29 +813,33 @@ hands; none of it is a code task.
       CI pin deliberately per the 892ab34d note. Neither is this lane;
       recorded so the next sweep does not re-derive it.
 - [ ] **Blitz candidates:** the v0.9.9 lane above; reading-position sync
-      (open the web reader at the recorded position - spec 8.5's display
+      (open the web reader at the recorded position: spec 8.5's display
       half shipped, the consume half does not exist; the fixture already
       carries a cfi column); the 1.0.0 contract prep (workspace-map row
       still says Phases 0-12; the six sign-off boxes; the DNF eyeball
       unblocks with one deliberate DNF marking in the library).
-      *(2026-09-13: the v0.9.9 lane shipped - fork 0.6.41 + this
-      contract release; reading-position sync and the 1.0.0 prep
+      *(2026-09-13: the v0.9.9 lane shipped (fork 0.6.41 plus this
+      contract release); reading-position sync and the 1.0.0 prep
       stand.)*
 - [ ] **GitHub presentation (workspace batch):** description rewrite
       (product-first, points at the fork); swap 3 topics (add
       design-system/typography/reading-room); Releases for v0.9.7/v0.9.8;
       wiki off; hotlink the fork's six screenshots into the README.
 
-## Fork findings 2026-09-12 (six-lens full audit of Carrel-calibre-web; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 18 - the fork keeps its queue here)
+## Fork findings 2026-09-12 (six-lens full audit of Carrel-calibre-web; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 18; the fork keeps its queue here)
 
-- [ ] **The Phase 13 seal is narrower than the narrative - 25 routes/
+*(Status note, 2026-09-15: the fork's own blitz lane executed this queue on
+2026-09-14 as 0.6.42; the boxes below are kept as this repo's copy of the
+record and the fork's patchnotes carry the ticked originals.)*
+
+- [ ] **The Phase 13 seal is narrower than the narrative: 25 routes/
       paths still read library data through the upstream ORM:** nine
       OPDS routes escape _SEALED_PREFIXES (path-prefix matching: /opds/hot
-      does not match /hot) - feed_hot, the three letter drilldowns, three
+      does not match /hot): feed_hot, the three letter drilldowns, three
       index feeds, feed_languages, the shelf feeds (incl. app-DB
       deletes), Calibre-Companion JSON, /opds/readbooks|unreadbooks;
       reader CONTENT streams through serve_book's ORM (all five reader
-      templates - the 11d swap moved only the chrome); seven web entity
+      templates; the 11d swap moved only the chrome); seven web entity
       LIST pages + five typeahead endpoints (serving the trimmed edit UI)
       stay ORM; every cover request resolves via ORM before quarry serves
       the file; basic_book. Fix: extend the prefixes, swap the routes to
@@ -839,7 +848,7 @@ hands; none of it is a code task.
 - [ ] **HIGH (fork): read_book's audio branch 500s on archived books**
       (get_filtered_book applies common_filters without
       allow_show_archived -> None -> listenmp3.html UndefinedError). The
-      boxed audio-branch swap covers this - fold the 500 into its shape.
+      boxed audio-branch swap covers this; fold the 500 into its shape.
 - [ ] **Upstream security cherry-picks (next fork lane):** upstream
       shipped no release after 0.6.26 (94 commits, mostly translations),
       but 8-9 substantive fixes sit on LIVE fork surfaces: SQLI via
@@ -858,7 +867,7 @@ hands; none of it is a code task.
 - [ ] **Blitz candidates:** reading-position sync (seed calibre.bookmark
       from the latest library cfi; the fixture carries cfi rows); the
       Categories compact-reposition + palette.py's last ORM reads swapped;
-      single_user.py 39/42 (minutes - tonight's HIGH: the roadmap's
+      single_user.py 39/42 (minutes; tonight's HIGH: the roadmap's
       "landed" claim is false); the kobo prefix seal; a continue-reading
       row from last_read_positions.
       *(2026-09-13: the Categories reposition + palette swap and the
@@ -870,17 +879,27 @@ hands; none of it is a code task.
       Release; wiki off.
 
 ### Final audit 2026-09-13 (THE FINAL AUDIT: NEW findings, one line each; full detail in audit-final/Carrel/FINAL-REPORT.md)
-- [ ] **HIGH — NEW: the decorator-count correction is still numerically false: "39 across 5 upstream modules" cannot be produced by any measurement — admin.py carries ZERO literal @login_required (48 user_login_required + 46 admin_required wrappers, byte-identical to upstream); the literal count is 36 across 4 modules (web 24, editbooks 8, shelf 2, basic 2), and "42 across 10" holds only under the admin-excluded spelling, contradicting "across 5" in the same sentence (spec.md:465-467/:477, README:30-31, patchnotes:25/:67, roadmap:761-765).** The mechanism itself verified true. Restate or drop the numbers.
-- [ ] MED — The Bootstrap .dropdown-menu is unstyled: the multi-format Download split button and Read-in-Browser dropdown render stock white on the detail page of every 2+ format book — the one large light surface left, violating palette closure, the 3px radius, and the no-drop-shadow ledger rule at once. One rule block in the canonical sheet.
-- [ ] MED — .badge.read/.cover .badge sets font-family: var(--mono) at 0-2-0, beating Bootstrap's .glyphicon (0-1-0): the cover read tick's \e013 checkmark renders through the mono stack on accidental Nerd-Font fallback. Drop the font-family or exempt .glyphicon.
-- [ ] MED — check-theme bypass classes (probe-verified): the named-colour wordlist misses many standalone names (whitesmoke, fuchsia, tomato… pass); FUNC_COLOR matches only rgb/hsl (oklch/lab/lch/hwb/color-mix pass, and oklch paints everywhere); a hex hardcoded mid-file passes the :root check (it subtracts root_hexes); --mono is unguarded while --serif is pinned. Verify by reintroduction. Riders: boundary-asymmetry comment, rendered-derivative guard for icon.png/favicon.ico (the incident files), sheet-structural sanity (brace balance), compound `just sync` recipe.
-- [ ] MED — CI never exercises the fork-side icon gate (checkout is this-repo-only, so the runner always prints the skip) while README/CLAUDE attribute the check to CI and misdescribe it as palette closure (it is a byte-diff to logo.svg). Add the sibling checkout (stated coupling trade-off) + scope the doc claims; bump actions v5→v7.
-- [ ] MED — GitHub batch (recorded, grown): zero Releases behind 13 tags (cut v0.9.7/0.9.8/0.9.9 verbatim — note the v0.9.7 body would publish the recorded em-dash, same gated call as the tag fix); README hotlinks none of the fork's six screenshots; description never mentions Carrel-calibre-web; topic swap open (drop docs/just/gpl-30); wiki on and never initialized.
-- [ ] MED — Contrast claim: §4.3 "Steps 3 to 5 clear 4.5:1" contradicts its own table (gold 3 = 4.37:1, independently recomputed) and the sheet comment repeats it; "steps 4 to 5" or re-pin gold 3 (versioned amendment).
-- [ ] LOW — CSS/contract smalls: .page-count/.reader-state missing from the ledger flex-order and hairline lists (they render serif white against the rule's own comment); the upstream "Book 1 of Series" line double-renders beside the Carrel ledger row (fork-side fix); dead `footer` selector; §2's "(the release installed in carrel/venv)" vs the same section's wheel-uninstalled; --radius "3px everywhere" vs 2px chart bars; grid series line mono vs serif docs; §4.1 "unlinked" caliBlur sheets are conditionally linked; README's checksum-proofs claim (the suite proves PRAGMA + refused-UPDATE); §10's write-guard is broader than documented (any read column, not just enums — delete the dead branch); record /basic's stock skin in the contract.
-- [ ] LOW — Docs batch: roadmap.md:715 "below" pointer (the note is above); Phase 0 "(in flight)" and Phase 13 "(digging only)" headers stale against shipped reality and README:95; patchnotes errata (0.5.0's "CalibreQuarry's engine" + dead v2.6+ floor; 0.7.0's 154 figure) — decide the historical-correction policy once; "decision 32/33" cite an unlinked private log; de-duplicate the four-place theme-guard restatement; spec spelling split (§8.3-8.5 British vs American elsewhere) + the curly-apostrophe paste seam; 12 spaced-hyphen dash surrogates in the two new-findings blocks; Soehne/Söhne; the check recipe omits the surprising guards; sync-theme's comment should carry the one-way warning at the write path.
-- [ ] LOW — Hygiene: .gitignore is ~45 lines of packaging-era entries this repo can never produce (taste call); bare *.bak unignored; .ruff_cache/ local cruft. Feature candidates logged (FINAL-REPORT L4): dropdown theming + notation closure + --mono guard + compound just sync + sheet sanity as one small release; derivative guard; report-only selector-vs-DOM linter; /basic skin note; the 1.0.0 agent-executable prep (workspace-map row + DNF marking; the six sign-off boxes stay Brandon's).
+- [x] **HIGH, NEW: the decorator-count correction is still numerically false: "39 across 5 upstream modules" cannot be produced by any measurement (admin.py carries ZERO literal @login_required: 48 user_login_required + 46 admin_required wrappers, byte-identical to upstream); the literal count is 36 across 4 modules (web 24, editbooks 8, shelf 2, basic 2), and "42 across 10" holds only under the admin-excluded spelling, contradicting "across 5" in the same sentence (spec.md:465-467/:477, README:30-31, patchnotes:25/:67, roadmap:761-765).** The mechanism itself verified true. Restate or drop the numbers.
+      *(Executed 2026-09-15 as wording, per the cross-repo correction below: the spelling is now named (`@login_required_if_no_ano`, 39 across 5 at the 0.6.26 base, 37 still upstream-side plus the fork's own 5 at HEAD), admin.py's 94 wrapper protections are noted, and spec 11.1/11.2, README, and dated errata in the 0.9.9 entry agree.)*
+- [x] MED, the Bootstrap .dropdown-menu is unstyled: the multi-format Download split button and Read-in-Browser dropdown render stock white on the detail page of every 2+ format book (the one large light surface left, violating palette closure, the 3px radius, and the no-drop-shadow ledger rule at once). One rule block in the canonical sheet.
+      *(Executed 2026-09-15: the block is in the canonical sheet (black2 ground, rule border, gray mono items, orange hover), vendored to the fork, and verified against the real bootstrap.min.css cascade on a scratch page. Latent on the live instance today: the library holds no multi-format book and the navbar profile dropdown is theme-1-gated, so the surface renders when a 2+-format book appears, not before.)*
+- [x] MED, .badge.read/.cover .badge sets font-family: var(--mono) at 0-2-0, beating Bootstrap's .glyphicon (0-1-0): the cover read tick's \e013 checkmark renders through the mono stack on accidental Nerd-Font fallback. Drop the font-family or exempt .glyphicon.
+      *(Executed 2026-09-15 via the exemption shape: `.badge.glyphicon` re-pins the icon font past the badge rules; computed style on the live app reads "Glyphicons Halflings" with the green intact.)*
+- [x] MED, check-theme bypass classes (probe-verified): the named-colour wordlist misses many standalone names (whitesmoke, fuchsia, tomato and kin pass); FUNC_COLOR matches only rgb/hsl (oklch/lab/lch/hwb/color-mix pass, and oklch paints everywhere); a hex hardcoded mid-file passes the :root check (it subtracts root_hexes); --mono is unguarded while --serif is pinned. Verify by reintroduction. Riders: boundary-asymmetry comment, rendered-derivative guard for icon.png/favicon.ico (the incident files), sheet-structural sanity (brace balance), compound `just sync` recipe.
+      *(Executed 2026-09-15: full 148-name colour list, the modern notation set refused, raw hex outside :root fails outright, --mono pinned, brace-aware :root extraction plus var()-resolution sanity, and icon.png/favicon.ico re-rendered and byte-compared when the tools exist (render determinism verified; graceful skip without them). `--selftest` reintroduces every bypass class, 24 checks, and a live reintroduction pass on the real sheet watched all seven classes fail. Riders landed: the boundary comment, `just sync`, and the report-only selector linter, clean on the live tree.)*
+- [ ] MED, CI never exercises the fork-side icon gate (checkout is this-repo-only, so the runner always prints the skip) while README/CLAUDE attribute the check to CI and misdescribe it as palette closure (it is a byte-diff to logo.svg). Add the sibling checkout (stated coupling trade-off) + scope the doc claims; bump actions v5 to v7.
+      *(2026-09-15: the action bumps landed (checkout and setup-python to v7) and README/CLAUDE/ci.yml now scope the claims honestly (the byte-diff needs the sibling; CI prints its skip). The sibling checkout itself is the gated coupling call: asked 2026-09-15, unanswered, held; the gate script checks out the fork beside this repo and points the script at it via CARREL_FORK.)*
+- [ ] MED, GitHub batch (recorded, grown): zero Releases behind 13 tags (cut v0.9.7/0.9.8/0.9.9 verbatim; note the v0.9.7 body would publish the recorded em-dash, same gated call as the tag fix); README hotlinks none of the fork's six screenshots; description never mentions Carrel-calibre-web; topic swap open (drop docs/just/gpl-30); wiki on and never initialized.
+      *(2026-09-15: the whole batch is a Brandon gate (batch go + the v0.9.7 em-dash interplay): asked 2026-09-15, unanswered, held. State re-verified before asking: Releases tab empty, wiki on and uninitialized, description without the fork, topics carrying docs/just/gpl-30, six screenshots on the fork's smallscope branch at docs/screenshots/.)*
+- [x] MED, Contrast claim: §4.3 "Steps 3 to 5 clear 4.5:1" contradicts its own table (gold 3 = 4.37:1, independently recomputed) and the sheet comment repeats it; "steps 4 to 5" or re-pin gold 3 (versioned amendment).
+      *(Executed 2026-09-15 as the wording fix: steps 4 to 5, with gold 3 recorded at 4.37:1 and its values stated outside the fill. Re-pinning gold 3 was declined: it would have invented a hex outside the palette source. Spec 4.3 and the sheet comment agree; no template puts a label on a gold-3 fill.)*
+- [x] LOW, CSS/contract smalls: .page-count/.reader-state missing from the ledger flex-order and hairline lists (they render serif white against the rule's own comment); the upstream "Book 1 of Series" line double-renders beside the Carrel ledger row (fork-side fix); dead `footer` selector; §2's "(the release installed in carrel/venv)" vs the same section's wheel-uninstalled; --radius "3px everywhere" vs 2px chart bars; grid series line mono vs serif docs; §4.1 "unlinked" caliBlur sheets are conditionally linked; README's checksum-proofs claim (the suite proves PRAGMA + refused-UPDATE); §10's write-guard is broader than documented (any read column, not just enums, delete the dead branch); record /basic's stock skin in the contract.
+      *(Executed 2026-09-15: the ledger rows join all three selector lists; the footer selector is gone; the double-render is fixed fork-side (e7949b95, suite 86 green) with the §6.2 contract line; spec gains the venv reword, the 2px chart-radius exception, the grid-series register note, the not-served caliBlur wording, the /basic note carrying decision #106's answer, and the write-guard's true breadth (the dead branch deleted fork-side, cec662ab); README's checksum claim now states the actual proof. Verified on the live app: the series renders once, Pages rides the ledger.)*
+- [ ] LOW, Docs batch: roadmap.md:715 "below" pointer (the note is above); Phase 0 "(in flight)" and Phase 13 "(digging only)" headers stale against shipped reality and README:95; patchnotes errata (0.5.0's "CalibreQuarry's engine" + dead v2.6+ floor; 0.7.0's 154 figure); decide the historical-correction policy once; "decision 32/33" cite an unlinked private log; de-duplicate the four-place theme-guard restatement; spec spelling split (§8.3-8.5 British vs American elsewhere) + the curly-apostrophe paste seam; 12 spaced-hyphen dash surrogates in the two new-findings blocks; Soehne/Söhne; the check recipe omits the surprising guards; sync-theme's comment should carry the one-way warning at the write path.
+      *(2026-09-15: pointer, both headers, both decision anchors, the 0.5.0 dated erratum, all 12 dash surrogates, the apostrophe seam (7 normalized), Soehne, the guard-restatement de-dup (README/CLAUDE/ci.yml now point at the script docstring), the check-recipe comment, and the write-path warning are done. Held for gates: the historical-correction policy (which also governs a 0.7.0 154-figure erratum) and the spelling split; asked 2026-09-15, unanswered.)*
+- [ ] LOW, Hygiene: .gitignore is ~45 lines of packaging-era entries this repo can never produce (taste call); bare *.bak unignored; .ruff_cache/ local cruft. Feature candidates logged (FINAL-REPORT L4): dropdown theming + notation closure + --mono guard + compound just sync + sheet sanity as one small release; derivative guard; report-only selector-vs-DOM linter; /basic skin note; the 1.0.0 agent-executable prep (workspace-map row + DNF marking; the six sign-off boxes stay Brandon's).
+      *(2026-09-15: *.bak ignored, .ruff_cache removed, and every listed feature candidate shipped in this release (dropdown + notation closure + --mono guard + compound just sync + sheet sanity + derivative guard + the report-only linter + the /basic note). Held: the .gitignore prune is a gated removal (asked, unanswered), the DNF marking needs a deliberate library write in the curation workflow, and the six 1.0 sign-off boxes are Brandon's eyes; the workspace-map row is updated.)*
 
-**CONFIRMED-prior (final-audit verification):** the decorator-figure looseness (now escalated to HIGH with the precise count), the 154-figure erratum candidate, the GitHub batch (grown by v0.9.9), ambient python3 (no-action standing), the sheet's stale Checks section. SUPERSEDED (verified fixed): the single_user HIGH (fork 0.6.41), the four contract MEDIUMs, the CSS duplicate block, the em-dash purge (zero em/en-dashes verified across all five docs), checkbox/section-order fixes, the ci.yml retired-guard comment. Still open as recorded: cquarry three-version skew (own box), the v0.9.7 tag em-dash (gated). Slop-reader verdict: all five docs verified clean of em- and en-dashes; the residue is the dash surrogates, a spelling split, and a curly-apostrophe paste seam.
+**CONFIRMED-prior (final-audit verification):** the decorator-figure looseness (now escalated to HIGH with the precise count), the 154-figure erratum candidate, the GitHub batch (grown by v0.9.9), ambient python3 (no-action standing), the sheet's stale Checks section. SUPERSEDED (verified fixed): the single_user HIGH (fork 0.6.41), the four contract MEDIUMs, the CSS duplicate block, the em-dash purge (zero em/en-dashes verified across all five docs), checkbox/section-order fixes, the ci.yml retired-guard comment. Still open as recorded: cquarry three-version skew (own box), the v0.9.7 tag em-dash (gated). Slop-reader verdict: all five docs verified clean of em- and en-dashes; the residue is the dash surrogates, a spelling split, and a curly-apostrophe paste seam. *(2026-09-15: the dash surrogates and the apostrophe seam are closed in this lane; the spelling split waits on its gate.)*
 
-**FINAL-AUDIT CORRECTION (2026-09-13, cross-repo):** the companion-repo audit (audit-final/Carrel-calibre-web) measured the fork tree directly and REFUTED the decorator HIGH recorded above: the "39 across 5" figure verifies under the actual spelling — the base decorator is `@login_required_if_no_ano`, appearing 39 times across exactly 5 modules at the 0.6.26 merge-base (web 24, editbooks 8, search 3, shelf 2, basic 2); 42 across 10 at HEAD (37 upstream-side after the advsearch purge, +5 fork-owned). The literals-only recount (36 across 4) measured bare `@login_required`, which is 0 at base. Work the blitz item as a one-clause wording fix (say which spelling the numbers mean; note 39−2+5=42 so the fork's own contribution is 5, not 3), not as a numeric correction.
+**FINAL-AUDIT CORRECTION (2026-09-13, cross-repo):** the companion-repo audit (audit-final/Carrel-calibre-web) measured the fork tree directly and REFUTED the decorator HIGH recorded above: the "39 across 5" figure verifies under the actual spelling: the base decorator is `@login_required_if_no_ano`, appearing 39 times across exactly 5 modules at the 0.6.26 merge-base (web 24, editbooks 8, search 3, shelf 2, basic 2); 42 across 10 at HEAD (37 upstream-side after the advsearch purge, +5 fork-owned). The literals-only recount (36 across 4) measured bare `@login_required`, which is 0 at base. Work the blitz item as a one-clause wording fix (say which spelling the numbers mean; note 39-2+5=42 so the fork's own contribution is 5, not 3), not as a numeric correction. *(Worked as wording, 2026-09-15.)*
