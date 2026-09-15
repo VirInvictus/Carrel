@@ -31,7 +31,7 @@ that:
 | Repo | Role |
 | --- | --- |
 | `Carrel` (this repo) | Theme source (`theme/`), spec, roadmap, patchnotes, glue (`justfile`). The documentation here is the contract for both repos. |
-| `Carrel-calibre-web` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26` (the release installed in `~/.local/share/carrel/venv/`). All Python/template/CSS changes are commits on this branch. |
+| `Carrel-calibre-web` | Fork of calibre-web. Branch `smallscope`, cut from tag `0.6.26`. All Python/template/CSS changes are commits on this branch. |
 
 Division of labor: the theme is developed here in `theme/kanagawa-dragon.css`
 and vendored into the fork at `cps/static/css/kanagawa-dragon.css` via
@@ -72,8 +72,15 @@ and safe to touch.
 
 The theme is an **owned stylesheet over stock calibre-web templates**. caliBlur
 is not used: `config_theme` is 0 (stock), `caliBlur.css` and
-`caliBlur_override.css` are unlinked, and `theme/kanagawa-dragon.css` is the
-single sheet the fork loads.
+`caliBlur_override.css` are therefore not served (the theme-1 conditional that
+still carries their link tags is kept to keep the upstream diff small), and
+`theme/kanagawa-dragon.css` is the single sheet the app surfaces load.
+
+One recorded exception: the simple-theme surface (`/basic`, `/basic_book`,
+`basic_layout`) loads only stock `basic.css` and is not themed. Decision
+2026-09-14 (#106): /basic is not a device surface; the Oasis reads through
+Calibre's own web server and KOReader's Calibre integration, so nothing rides
+on it. "Single sheet" in this section means the app surfaces.
 
 This is the same move the GTK side of the portfolio made when it dropped
 libadwaita: stop overriding a vendor theme and own the surface instead. The
@@ -147,8 +154,9 @@ with **one sequential ramp** and encodes identity with position and labels:
 | gold 4 | `#a89571` | 0.678 | 6.44:1 |
 | gold 5 | `#c4b28a` | 0.769 | 9.01:1 |
 
-Monotonic in lightness by construction. Steps 3 to 5 clear 4.5:1 and are the
-only ones permitted to carry a label directly on the fill.
+Monotonic in lightness by construction. Steps 4 to 5 clear 4.5:1 and are the
+only ones permitted to carry a label directly on the fill; gold 3 measures
+4.37:1, so its values are stated outside the fill.
 
 **Rule: no categorical color anywhere.** Where a chart shows more than one
 category, identity comes from position, a direct text label, and a hairline
@@ -170,13 +178,17 @@ it, nothing links to it; the borrowing is structural only.
    touches only.
 3. **Ledgers, not cards.** Rows share hairline borders (dragonBlack5) and
    align to a common grid. No filled floating tiles, no drop shadows, no hover
-   lift. `--radius` is 3px everywhere. A cover is presented by spacing and
+   lift. `--radius` is 3px everywhere; the chart micro-radii (`.stat-track`,
+   `.hour-bar` at 2px) are the recorded exception, because 3px on an 8px bar
+   is half its height. A cover is presented by spacing and
    alignment, not by a raised surface. *(This reverses the Phase 1 cover
    treatment, deliberately.)*
 4. **Two type registers.** Prose, titles, and book metadata are set in
    `--serif`; all chrome, labels, counts, nav, and table headers are `--mono`,
    uppercase and tracked. The split is what makes the instrumentation read as
-   instrumentation.
+   instrumentation. One deliberate boundary case, recorded: the book grid's
+   series line rides the mono register (it is a locator line, sibling to the
+   counts), while the detail page's series statement is serif book metadata.
 5. **Readability beats density.** Still a reading room. §12 is the one
    dashboard surface, and it is built from readout rows rather than gauges.
 
@@ -264,7 +276,7 @@ must never be machine-written.
 | `cps/db.py:729` `get_book_read_archived` | Same enum branch; this is a SEPARATE query builder used by the detail view (and basic theme) with its own bool-only join. Found during verification: for enum classes the `.book` access raises AttributeError, silently swallowed by the surrounding except, yielding None. |
 | `cps/web.py:1644` | Detail view: `entry.read_status = (value == 'Read')` for enum; also expose the raw label for the badge. |
 | `cps/web.py:747-749` | Read/Unread sections: enum filter per 5.2. |
-| `cps/helper.py:306-351` `edit_book_read_status` | Hard write-guard: if the linked column is an enumeration, refuse and return an error. `/ajax/toggleread` therefore never writes. |
+| `cps/helper.py:306-351` `edit_book_read_status` | Hard write-guard: with any linked read column configured, the toggle refuses and returns an error (the refusal is broader than the enum case; the enum branch that used to sit beside it returned the same string and was removed 2026-09-15). `/ajax/toggleread` therefore never writes. |
 | `cps/templates/detail.html:255-264` | Replace the read checkbox with the read-only 4-state badge. |
 
 ## 6. Feature surface
@@ -288,6 +300,7 @@ publishers, hot books, etc.) are per-user `sidebar_view` bitmask settings
 | Send-to-eReader / email machinery | the detail-page button (template); since 0.6.40 the chain itself is stubbed in `helper.py`, so no SMTP config or `kindle_mail` value can queue a send or an `ebook-convert` run |
 | Upload and web metadata editing entry points | navbar/detail edit buttons, editbooks routes disabled |
 | Mass mark-read buttons | `book_table.html` |
+| Upstream "Book N of SERIES" detail line | `detail.html`; the Carrel series ledger (series, this book's number, held/gap counts) is the one statement of series placement (2026-09-15) |
 | Registration/magic-link remnants, Goodreads settings | templates and admin panes |
 
 Sealed paths as of 0.6.40 (Phase 13), two lists: the browse cut in
@@ -390,8 +403,8 @@ only its own shelf system, which duplicates curation state.
 
 ### 8.3 Saved Searches (cquarry 1.1)
 
-Calibre’s named searches (`preferences.saved_searches`) become a second
-sidebar section, `/saved/<name>`, resolved through cquarry’s
+Calibre's named searches (`preferences.saved_searches`) become a second
+sidebar section, `/saved/<name>`, resolved through cquarry's
 `search:"Name"` interpolation with cycle detection and strict errors on
 unknown names. Sidebar, search bar and desktop Calibre cannot disagree
 about what a saved search matches: all three evaluate the same grammar. A
@@ -403,17 +416,17 @@ unknown name is a 404.
 The sidebar follows the stored tab order (`virt_libs_order`) and drops
 what Calibre hides (`virt_libs_hidden`) via `get_vl_ui_state()`. Unknown
 names keep alphabetical order after the ordered ones; the route of a
-hidden wing 404s. The web room’s layout is, by construction, the desktop
-GUI’s layout.
+hidden wing 404s. The web room's layout is, by construction, the desktop
+GUI's layout.
 
 ### 8.5 Reader state (cquarry 1.1)
 
 The detail page shows latest-device reading progress
 (`last_read_positions`, most recent `epoch_time` wins) and highlight count
 (`annotations`) through a `carrel_reader_state` template global backed by
-cquarry’s extractors. Absent data renders nothing; extractor failure
-degrades to the same. Reading state itself stays write-only from Calibre’s
-side; this surface never infers or sets it (see the library’s rules on
+cquarry's extractors. Absent data renders nothing; extractor failure
+degrades to the same. Reading state itself stays write-only from Calibre's
+side; this surface never infers or sets it (see the library's rules on
 reading_status).
 
 ## 9. Testing
@@ -462,9 +475,16 @@ concept, not merely bypassed.
   0.6.40 also covers the admin machinery: the updater pair, the user
   management AJAX trio, `/ajax/pathchooser`, `/shutdown`, `/reconnect`.
 - Every request runs as the owning admin account.
-- The `user` table and `flask-login` stay in the tree. All 39 upstream
-  `@login_required` decorators (42 across 10 modules at smallscope HEAD,
-  counting the fork's own additions) stay exactly where they are.
+- The `user` table and `flask-login` stay in the tree. All upstream login
+  decorators stay exactly where they are. The family is
+  `@login_required_if_no_ano`: 39 across 5 modules at the 0.6.26 merge-base
+  (web 24, editbooks 8, search 3, shelf 2, basic 2), 37 of them still
+  upstream-side at smallscope HEAD (the advsearch purge left search with 1),
+  plus the fork's own 5 across 5 new modules: 42 across 10 in total
+  (39 - 2 + 5). `admin.py` carries none of the family: its 94 route
+  protections (48 `@user_login_required` plus 46 `@admin_required`) ride
+  upstream's wrapper decorators, and the `before_request` satisfies those
+  the same way.
 
 ### 11.2 Mechanism
 
@@ -474,9 +494,9 @@ because the request is always authenticated.
 
 This is chosen over deleting the auth layer for one reason: §3 requires the
 fork to stay rebase-friendly onto upstream tags, and touching the decorators
-(39 across 5 upstream modules; 42 across 10 once the fork's own are counted)
-would make every future rebase a merge conflict. Deleting
-`single_user.py` restores stock behaviour exactly.
+(39 across 5 upstream modules at the 0.6.26 base, 42 across 10 at HEAD
+counting the fork's own five, §11.1) would make every future rebase a merge
+conflict. Deleting `single_user.py` restores stock behaviour exactly.
 
 ### 11.3 Exposure
 
