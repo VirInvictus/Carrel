@@ -12,6 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # The fork, beside this repo, so the logo-derivative byte-diffs run
+      # here too (2026-09-15 gate: Carrel CI reddening on fork icon drift is
+      # the designed signal, not a false alarm). The rendered
+      # icon.png/favicon.ico pair still needs rsvg-convert/magick; the
+      # script skips it with a note when the tools are absent, so CI
+      # verifies the SVG byte-diff and leaves the renders to local
+      # `just check`.
+      - uses: actions/checkout@v7
+        with:
+          repository: VirInvictus/Carrel-calibre-web
+          ref: smallscope
+          path: fork
+
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
@@ -20,11 +33,8 @@ jobs:
       # guarding is the theme's contract, and scripts/check-theme.py's
       # docstring is the authoritative description of that guard; this file
       # deliberately does not restate it. The script is the same file
-      # `just check` runs, so the two cannot drift. The fork-side logo
-      # derivative checks need the sibling fork checkout, which this
-      # workflow does not perform; the script prints its skip note there,
-      # and the full guard runs locally with the fork beside this repo.
+      # `just check` runs, so the two cannot drift.
       - name: Theme contract
         run: |
           python3 scripts/check-theme.py --selftest
-          python3 scripts/check-theme.py
+          CARREL_FORK="$GITHUB_WORKSPACE/fork" python3 scripts/check-theme.py

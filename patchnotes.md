@@ -1,4 +1,102 @@
 # Patchnotes
+## 0.9.10 (2026-09-15)
+
+### The final-blitz release: the audit lane executed, the guard hardened, the contract synced
+
+The 2026-09-13 final audit's ranked list, worked top-down in one release.
+Fork-side touches are logged under the cross-repo grant (#117): the series
+double-render fix and the read-guard cleanup (e7949b95, cec662ab), plus the
+vendored theme (ac000655). Fork suite 86 green throughout.
+
+- **The decorator counts are restated as wording (the HIGH).** The
+  correction-of-the-correction: the figures were family counts of
+  `@login_required_if_no_ano` all along (39 across 5 modules at the 0.6.26
+  base; 37 still upstream-side plus the fork's own 5 at HEAD, 42 across 10),
+  and no doc said which spelling it meant. Spec 11.1/11.2 now name it and
+  note admin.py's 94 route protections ride upstream's wrapper decorators;
+  the 0.9.9 entry carries a dated erratum; README says the same in one
+  breath.
+- **The dropdown menu is themed.** The Bootstrap `.dropdown-menu` on the
+  detail page (multi-format Download, Read/Listen in Browser) was the last
+  stock-white surface; one rule block (black2 ground, hairline border, gray
+  mono items, orange hover) in the canonical sheet, vendored by
+  `just sync-theme`, verified against the real bootstrap cascade on a
+  scratch page. Latent on the live instance until a 2+-format book exists
+  (today's library has none); recorded so nobody expects to see it tomorrow.
+- **The cover read tick keeps its icon font.** `.badge.glyphicon` re-pins
+  Glyphicons Halflings past the mono badge rules (0-2-0 had beaten 0-1-0);
+  the \e013 checkmark no longer depends on an installed Nerd Font.
+  Computed style verified on the live app.
+- **check-theme is hardened, and guards itself.** The full 148-name colour
+  list (whitesmoke no longer sails through), the modern notation set
+  refused (oklch/lab/lch/hwb/color/color-mix/light-dark/device-cmyk), raw
+  hex outside :root fails outright (the old check subtracted root_hexes, so
+  a declared mid-file hex passed), `--mono` pinned symmetrically with
+  `--serif`, brace-aware :root extraction, var() resolution, and the
+  fork's icon.png/favicon.ico re-rendered and byte-compared when
+  rsvg-convert and magick exist (render determinism verified; graceful
+  skip on CI, whose actions also bump to checkout/setup-python v7 and run
+  the new `--selftest`: 24 reintroduced bypass classes, each refused).
+  Verified the old way too: every bypass class reintroduced into the real
+  sheet failed the run. The CI gate now checks the fork out beside this
+  repo (the 2026-09-15 answer to the coupling question), so the icon
+  byte-diff runs on CI and Carrel CI reddens on fork icon drift by
+  design; the rendered pair stays local.
+- **The GitHub presentation batch is executed.** Releases for v0.9.7,
+  v0.9.8 and v0.9.9 are cut from their tags, verbatim bodies
+  (`--notes-from-tag`); the v0.9.7 body publishes its recorded em-dash
+  as-is, the 2026-09-15 answer to the force-push question (the tag is the
+  immutable record; nothing forward-facing carries the character). The
+  README gains a Screenshots section hotlinking the fork's six images from
+  `smallscope` (the coupling is stated right under the heading), the repo
+  description now names Carrel-calibre-web, the topics swap landed (docs,
+  just and gpl-30 out; design-system, typography and reading-room in), and
+  the never-initialized wiki is off.
+- **The ledger grows its missing rows.** `.page-count` and `.reader-state`
+  join the flex-order, measure, and hairline lists (they rendered serif
+  white against the rule's own comment); the dead `footer` selector is
+  gone; the sheet header scopes its "only sheet" claim (the EPUB reader
+  and /basic are recorded exceptions); the ramp comment and spec 4.3 tell
+  the truth together now: steps 4 to 5 clear 4.5:1, gold 3 measures
+  4.37:1 and its values are stated outside the fill.
+- **The contract catches up (spec amendments, one reviewable batch).** §2's
+  venv self-contradiction reworded; §4.1 says the caliBlur sheets are not
+  served (the theme-1 conditional stays for the rebase diff) and records
+  the /basic stock-skin exception with the Kindle-path answer (decision
+  #106, 2026-09-14: /basic is not a device surface; the Oasis reads
+  through Calibre's own server and KOReader's integration); §4.4 records
+  the 2px chart micro-radii exception and the grid series line's mono
+  register; §5.3 states the write-guard's real breadth (any linked read
+  column, not just enums; the dead enum branch deleted fork-side); §6.2
+  gains the series-ledger line; the seven stray curly apostrophes of the
+  cquarry-1.1 paste seam are straightened. Last revised moves to
+  2026-09-15 (v0.9.10).
+- **Fork touches under grant #117, logged in both repos.** The upstream
+  "Book N of SERIES" detail line is removed (the Carrel ledger was
+  rendering the same fact twice; spec 6.2 carries the line), the vendored
+  sheet is refreshed, and the read-guard's redundant enum branch is gone.
+  Suite 86 green after each; the fork's patchnotes carry the blitz log.
+- **Docs and hygiene.** The 0.5.0 entry gets its dated erratum (the engine
+  was cquarry's, not "CalibreQuarry's"; the v2.6+ floor named no release
+  that ever existed); the 0.9.9 decision anchors are named in words; the
+  roadmap's stale Phase 0/13 headers and the below/above pointer are
+  fixed; the Browse-verdict sign-off box is closed as decided-and-shipped;
+  the 12 dash surrogates and the apostrophe seam are recast;
+  README/CLAUDE/CI point at the script docstring instead of restating the
+  guard four times; `*.bak` is ignored and the ruff cache is gone. The
+  compound `just sync` recipe vendors both assets then runs both guards,
+  and a bare `just` is inert. The report-only selector-vs-DOM linter lands
+  clean on the live tree (`just lint-selectors`; it never gates).
+- **Gates answered and executed this release.** The GitHub presentation
+  batch (above), the CI sibling checkout (above), the historical-correction
+  policy (inline dated errata, decided once; the 0.5.0 and 0.9.9 entries
+  and now the 0.7.0 entry carry theirs), the spec spelling convention
+  (Canadian English, recorded in the spec header, the split normalized),
+  the .gitignore prune (to the library, editor/OS, and scratch blocks),
+  and the push itself (standing blitz grant). Still Brandon's: the six
+  1.0 sign-off boxes and the DNF marking, recorded as reopen conditions
+  in `project.done`.
+
 ## 0.9.9 (2026-09-13)
 
 ### The Categories reposition lands; the contract syncs to the decisions
@@ -277,6 +375,14 @@ an override.
   `/admin/user/new` and `/admin/usertable` answer 404, and the dead navbar
   links are gone. The server binds `127.0.0.1` only; with no auth, binding
   anything else would hand the library and the admin pane to the network.
+  *(Erratum 2026-09-15, under the inline-errata policy decided today: the
+  154 figure was a loose substring count, as the roadmap already recorded.
+  The real figures are family counts of `@login_required_if_no_ano`: 39
+  across 5 upstream modules at the 0.6.26 base, 42 across 10 at HEAD
+  counting the fork's own; bare `@login_required` is 0 at base. Spec 11.1
+  carries the spelling. The bind advice also aged: the instance rebound to
+  `0.0.0.0` on 2026-07-24 under the recorded LAN-trust decision, spec
+  11.3.)*
 - **caliBlur is gone.** `theme/kanagawa-dragon.css` is now a standalone sheet
   over stock templates rather than an override layer, the same move the GTK
   projects made dropping libadwaita. The recolor generator and its 24 tests

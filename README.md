@@ -93,14 +93,28 @@ whose docstring is the authoritative list. It pins the 31-hex palette across
 the stylesheet and the logo, refuses rgb()/hsl()/named-colour and modern
 functional notations, pins both font-stack leads, forbids caliBlur selectors,
 runs structural sanity (braces, var() resolution, raw-hex refusal), and
-self-tests the guard itself. The fork's logo derivatives are byte-compared
-against `logo.svg` when the sibling checkout exists, which is true locally
-and not on CI; run `just check` with the fork beside this repo for the full
-guard.
+self-tests the guard itself. CI checks the fork out beside this repo, so the
+icon byte-diff runs there too (Carrel CI reddening on fork icon drift is the
+designed signal); the rendered icon.png/favicon.ico pair additionally needs
+rsvg-convert and magick, so that last check is a local `just check` one.
+
+## Screenshots
+
+Served from the fork's `smallscope` branch, so this README and the fork are
+coupled by design: the images are the fork's, the contract is here.
+
+![The library grid](https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/browse.png)
+
+![A book's detail page](https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/detail.png)
+
+| | |
+| --- | --- |
+| <img src="https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/categories.png" width="290" alt="The category tree, expanded"> | <img src="https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/stats.png" width="290" alt="The statistics page"> |
+| <img src="https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/palette.png" width="290" alt="The Ctrl-K command palette"> | <img src="https://raw.githubusercontent.com/VirInvictus/Carrel-calibre-web/smallscope/docs/screenshots/mobile.png" width="290" alt="Carrel on a phone"> |
 
 ## Status
 
-v0.9.9. Phases 0 through 13 are complete. `roadmap.md` tracks what remains
+v0.9.10. Phases 0 through 13 are complete. `roadmap.md` tracks what remains
 before 1.0: the sign-off boxes and opportunistic items. `patchnotes.md` has
 the history, newest first.
 

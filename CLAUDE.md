@@ -89,9 +89,10 @@ All code lives in the fork.
 - CI runs no application tests (there is no application code). It runs
   `scripts/check-theme.py` (selftest first), the same file `just check`
   runs; the script's docstring is the authoritative description of the
-  guard, so this file does not restate it. One boundary worth knowing: the
-  fork-side logo-derivative checks are byte-diffs that need the sibling
-  checkout (true locally; on CI the script prints its skip note).
+  guard, so this file does not restate it. One boundary worth knowing: CI
+  checks the fork out beside this repo (CARREL_FORK), so the icon.svg
+  byte-diff runs there; the rendered icon.png/favicon.ico pair needs
+  rsvg-convert/magick and stays a local check (CI prints its skip).
 
 ## Working notes
 

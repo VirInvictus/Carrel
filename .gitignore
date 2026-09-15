@@ -1,30 +1,3 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.eggs/
-build/
-dist/
-.venv/
-venv/
-.ruff_cache/
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
-
-# calibre-web runtime artifacts (never belong in either repo)
-app.db
-app.db-journal
-gdrive_credentials
-client_secrets.json
-gdrive.db
-*.log
-calibre-web.log*
-access.log*
-.key
-*.key
-
 # The library itself must never be committed (contains private columns)
 metadata.db
 metadata.db-*
@@ -44,3 +17,4 @@ Thumbs.db
 *.orig
 *.rej
 scratch/
+.ruff_cache/
