@@ -666,7 +666,7 @@ today.*
 The three unboxed remainders from the audit, given owning boxes or explicit
 waivers per the contract rule that nothing "finishes" informally:
 
-- [ ] **Swap `read_book`'s audio branch off the ORM** (`cps/web.py`
+- [x] **Swap `read_book`'s audio branch off the ORM** (`cps/web.py`
       route at :2096): it still resolves through `get_filtered_book` and
       passes an ORM object to `listenmp3.html`. Work shape from the audit:
       precompute everything in the route from `quarry_grid.build_detail`
@@ -677,6 +677,9 @@ waivers per the contract rule that nothing "finishes" informally:
       both and its route never passes them (latent bug the audit noted).
       Same release: flip the 0.6.39 correction note in the fork's
       patchnotes to "done".
+      *(SHIPPED in fork 0.6.42, the 2026-09-14 blitz lane; ticked
+      2026-09-29 during the parity scoping because the box kept reading
+      as open work.)*
 - [ ] **`/basic_book` detail is still ORM** (`cps/basic.py:81`
       `get_book_read_archived`); marked low priority. The basic theme is
       the phone fallback; the ORM read is read-only and safe, so this
@@ -802,16 +805,18 @@ hands; none of it is a code task.
       nav.navigation, so .navigation .badge already covers it) and the
       hover rule that restated the base colour is gone. check-theme
       green.)*
-- [ ] **The cquarry three-version skew (recorded 2026-09-13, open):**
-      the deployment venv's dist-info says 1.8.0, the editable tree at
-      ~/.gitrepos/cquarry is 1.20.0, and fork CI pins the v1.17.0 tag.
-      Nothing is wrong at runtime (the editable install IS 1.20.0; the
-      dist-info metadata simply mislabels it), but the metadata will
-      mislead any future audit that trusts `pip show`, and the CI pin
-      lags the tree the fork actually runs against. Fix shapes, when
-      wanted: re-install editable so dist-info catches up, and bump the
-      CI pin deliberately per the 892ab34d note. Neither is this lane;
-      recorded so the next sweep does not re-derive it.
+- [ ] **The cquarry three-version skew (recorded 2026-09-13, open;
+      numbers refreshed 2026-09-29):** the deployment venv's dist-info
+      says 1.8.0, the editable tree at ~/.gitrepos/cquarry is 1.23.2, and
+      fork CI pins the v1.21.0 tag (bumped by fork 0.6.42; the
+      pre-0.6.42 pin was v1.17.0). Nothing is wrong at runtime (the
+      editable install IS 1.23.2; the dist-info metadata simply
+      mislabels it), but the metadata will mislead any future audit that
+      trusts `pip show`, and the CI pin lags the tree the fork actually
+      runs against. Fix shapes, when wanted: re-install editable so
+      dist-info catches up, and bump the CI pin deliberately per the
+      892ab34d note. Neither is this lane; recorded so the next sweep
+      does not re-derive it.
 - [ ] **Blitz candidates:** the v0.9.9 lane above; reading-position sync
       (open the web reader at the recorded position: spec 8.5's display
       half shipped, the consume half does not exist; the fixture already
@@ -819,18 +824,29 @@ hands; none of it is a code task.
       still says Phases 0-12; the six sign-off boxes; the DNF eyeball
       unblocks with one deliberate DNF marking in the library).
       *(2026-09-13: the v0.9.9 lane shipped (fork 0.6.41 plus this
-      contract release); reading-position sync and the 1.0.0 prep
-      stand.)*
-- [ ] **GitHub presentation (workspace batch):** description rewrite
+      contract release). 2026-09-29 refresh: reading-position sync
+      shipped in fork 0.6.42 (the web reader opens at the recorded
+      position); what stands of this box is the 1.0.0 prep, i.e. the
+      five live sign-off boxes (the browse-verdict sixth closed
+      2026-09-12) and the DNF eyeball.)*
+- [x] **GitHub presentation (workspace batch):** description rewrite
       (product-first, points at the fork); swap 3 topics (add
       design-system/typography/reading-room); Releases for v0.9.7/v0.9.8;
       wiki off; hotlink the fork's six screenshots into the README.
+      *(EXECUTED 2026-09-15 as the grown batch recorded at the ticked
+      box below (Releases for all three tags, the README screenshots
+      section, the fork named in the description, topics swapped, wiki
+      off); ticked 2026-09-29 to stop it reading as open work.)*
 
 ## Fork findings 2026-09-12 (six-lens full audit of Carrel-calibre-web; detail: audit/FULL-AUDIT-2026-09-12.md, Wave 18; the fork keeps its queue here)
 
 *(Status note, 2026-09-15: the fork's own blitz lane executed this queue on
 2026-09-14 as 0.6.42; the boxes below are kept as this repo's copy of the
-record and the fork's patchnotes carry the ticked originals.)*
+record and the fork's patchnotes carry the ticked originals. 2026-09-29:
+the fork's LIVE queue moved to Carrel-calibre-web/roadmap.md, created
+during the parity scoping; this block is historical record from here on,
+and the genuinely still-open residue (the serve_book/cover ORM tail, the
+parked upstream security cherry-picks) is carried in the fork's file.)*
 
 - [ ] **The Phase 13 seal is narrower than the narrative: 25 routes/
       paths still read library data through the upstream ORM:** nine
@@ -903,3 +919,27 @@ record and the fork's patchnotes carry the ticked originals.)*
 **CONFIRMED-prior (final-audit verification):** the decorator-figure looseness (now escalated to HIGH with the precise count), the 154-figure erratum candidate, the GitHub batch (grown by v0.9.9), ambient python3 (no-action standing), the sheet's stale Checks section. SUPERSEDED (verified fixed): the single_user HIGH (fork 0.6.41), the four contract MEDIUMs, the CSS duplicate block, the em-dash purge (zero em/en-dashes verified across all five docs), checkbox/section-order fixes, the ci.yml retired-guard comment. Still open as recorded: cquarry three-version skew (own box), the v0.9.7 tag em-dash (gated). Slop-reader verdict: all five docs verified clean of em- and en-dashes; the residue is the dash surrogates, a spelling split, and a curly-apostrophe paste seam. *(2026-09-15: the dash surrogates and the apostrophe seam are closed in this lane; the spelling split waits on its gate.)*
 
 **FINAL-AUDIT CORRECTION (2026-09-13, cross-repo):** the companion-repo audit (audit-final/Carrel-calibre-web) measured the fork tree directly and REFUTED the decorator HIGH recorded above: the "39 across 5" figure verifies under the actual spelling: the base decorator is `@login_required_if_no_ano`, appearing 39 times across exactly 5 modules at the 0.6.26 merge-base (web 24, editbooks 8, search 3, shelf 2, basic 2); 42 across 10 at HEAD (37 upstream-side after the advsearch purge, +5 fork-owned). The literals-only recount (36 across 4) measured bare `@login_required`, which is 0 at base. Work the blitz item as a one-clause wording fix (say which spelling the numbers mean; note 39-2+5=42 so the fork's own contribution is 5, not 3), not as a numeric correction. *(Worked as wording, 2026-09-15.)*
+
+## The contract repo in the ecosystem parity program (recorded 2026-09-29)
+
+Brandon opened the ecosystem Calibre-parity program on 2026-09-29 (cquarry roadmap.md,
+"The parity program"): every Calibre capability covered natively or by orchestration of
+Calibre's own headless tools, so Calibre work can be fully automated. This repo holds
+the contract, so its role in the program is recording, not building: the web
+reading-room lane belongs to the fork, whose open work now lives in
+Carrel-calibre-web/roadmap.md (created 2026-09-29; the fork-side parity items are the
+preserve_order retirement via cquarry's `list_books(sort="ids")`, the two raw
+custom-column reads, the serve_book/cover ORM tail, and the helper adoptions once
+cquarry Phase 16 promotes them, including the Open Library ISBN switch decided the
+same day).
+
+- The read-only-by-construction declines stand unchanged under the program: no writes
+  (spec 1.4/7/14), reading-status writes waived permanently (spec 5.1/5.2), no
+  conversion-on-download, no reading-position write path. They are D-lane exclusions
+  with recorded reasons, not gaps.
+- The path to the fork's 1.0.0 is unchanged: the five live sign-off boxes above (the
+  browse-verdict sixth closed 2026-09-12) plus the DNF eyeball; the parity program
+  adds no gate to it.
+- The stats-metrics tripwire (spec 12.3) stands: a fourth library-metrics consumer
+  triggers the headless metrics-layer conversation; three lanes exist today
+  (CalibreQuarry --analytics, Hermitage Insights, the fork's stats.py).
