@@ -1,3 +1,5 @@
+> **Status: complete and stable.** Bug reports welcome; feature development is closed.
+
 <p align="center"><img src="logo.svg" width="120" alt="Carrel logo"></p>
 
 # Carrel
