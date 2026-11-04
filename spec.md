@@ -347,7 +347,16 @@ spec carries the contract for both repos and this swap had none of it: since
   and the OPDS book feeds.
 - `cps/library_cache.py` owns invalidation: every derived surface keys on
   metadata.db's mtime AND the library's identity UUID (spec 7's read-only
-  posture is what makes an mtime a sufficient version).
+  posture is what makes an mtime a sufficient version). Delivery is
+  stale-while-revalidate (amended 2026-11-04, Brandon's call): Calibre
+  desktop touches the mtime every few seconds, which under the old
+  rebuild-inline-on-change rule rebuilt everything on nearly every request
+  (10-12s pages, measured). The first build is inline; a moved signature
+  now serves the last good value and re-derives in one background thread,
+  throttled (rebuild only once the signature holds ~10s steady, or the
+  value passes ~120s of age; staleness stays bounded during endless
+  churn). A vanished library still raises: the 503 convention never
+  serves stale over an unreadable library.
 - Still on the ORM or the app DB by design: `/basic_book`'s detail read
   (boxed, low priority), the audio branch of `read_book` (boxed, work
   shape in the roadmap), the app-DB side of the hot/downloaded/archived
@@ -394,8 +403,9 @@ only its own shelf system, which duplicates curation state.
   parses correctly).
 - cquarry opens the DB strictly read-only by its own contract, consistent
   with section 7.
-- Caching: wing name -> id set, keyed on `metadata.db` mtime; any library
-  change invalidates on the next request.
+- Caching: wing name -> id set, keyed on `metadata.db` mtime; a library
+  change serves the previous set while the shared stale-while-revalidate
+  rule (spec 6) re-derives it in the background.
 - UI: a "Wings" sidebar section listing wings with counts; `/wings/<name>`
   renders the standard book grid filtered by `Books.id.in_(ids)`.
 - Wings are read-only views. Creating/editing wings happens in the library
