@@ -846,7 +846,11 @@ record and the fork's patchnotes carry the ticked originals. 2026-09-29:
 the fork's LIVE queue moved to Carrel-calibre-web/roadmap.md, created
 during the parity scoping; this block is historical record from here on,
 and the genuinely still-open residue (the serve_book/cover ORM tail, the
-parked upstream security cherry-picks) is carried in the fork's file.)*
+parked upstream security cherry-picks) is carried in the fork's file.
+ERRATUM 2026-11-13: that residue claim is stale; both the serve_book/cover
+ORM tail and the security cherry-picks shipped with 0.6.44 (2026-10-07),
+and the three bug boxes below that migrated to the tracker that day all
+closed as already-shipped after a HEAD verification pass.)*
 
 - [ ] **The Phase 13 seal is narrower than the narrative: 25 routes/
       paths still read library data through the upstream ORM:** nine
@@ -863,12 +867,22 @@ parked upstream security cherry-picks) is carried in the fork's file.)*
       the web UI only).
 - [x] **HIGH (fork): read_book's audio branch 500s on archived books**
       *(Moved to the tracker 2026-11-13 as issue #2; bugs live in the
-      issue tracker now.)*
-- [x] **Upstream security cherry-picks (next fork lane)** *(Moved to the
-      tracker 2026-11-13 as issue #1 — the eight upstream fixes ride
-      live surfaces, so this is the fork's top lane.)*
+      issue tracker now. CLOSED 2026-11-13 as already-shipped: fixed by
+      the 0.6.42 audio-branch swap (6339ece3), pinned by
+      test_audio_listen_page_renders_archived_or_not; the issue carries
+      the evidence.)*
+- [x] **Upstream security cherry-picks** *(Moved to the tracker
+      2026-11-13 as issue #1, the eight upstream fixes riding live
+      surfaces. CLOSED 2026-11-13 as already-shipped: the whole wave
+      landed with fork 0.6.44 (2026-10-07, c8356e97 + 1521b2d2, tag
+      v0.6.44); every item verified in code at HEAD and the issue
+      carries the per-item citations. "Re-check at the next upstream
+      tag" stays with the fork's roadmap.)*
 - [x] **Fork hardening** *(Moved to the tracker 2026-11-13 as issue
-      #3.)*
+      #3. CLOSED 2026-11-13 as already-shipped: all six across
+      0.6.42-0.6.44, verified at HEAD with citations in the issue; the
+      OPDS ZeroDivision raw uses survive only in path-sealed feeds and
+      one dead function.)*
 - [ ] **Blitz candidates:** reading-position sync (seed calibre.bookmark
       from the latest library cfi; the fixture carries cfi rows); the
       Categories compact-reposition + palette.py's last ORM reads swapped;
