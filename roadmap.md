@@ -861,25 +861,14 @@ parked upstream security cherry-picks) is carried in the fork's file.)*
       the file; basic_book. Fix: extend the prefixes, swap the routes to
       quarry_grid, correct the fork README's "Removed" list (removed from
       the web UI only).
-- [ ] **HIGH (fork): read_book's audio branch 500s on archived books**
-      (get_filtered_book applies common_filters without
-      allow_show_archived -> None -> listenmp3.html UndefinedError). The
-      boxed audio-branch swap covers this; fold the 500 into its shape.
-- [ ] **Upstream security cherry-picks (next fork lane):** upstream
-      shipped no release after 0.6.26 (94 commits, mostly translations),
-      but 8-9 substantive fixes sit on LIVE fork surfaces: SQLI via
-      dbpath; /show/ access bypass (serve_book is live); XXE in epub
-      parsing (the epub reader is live); credential leak in debug_info;
-      non-admin stacktrace leak; CSP entropy; comment-column escaping;
-      the download-path staged-tmp/cover-sibling pair. Cherry-pick the
-      short list; re-check at the next upstream tag.
-- [ ] **Fork hardening:** 32 URL rules default book_id to 1 (six families
-      act on it; abort(404) when None); the Ctrl-K palette ships
-      "Books List" to the sealed /table (404; drop or repoint; tighten
-      the destination test to 200); dead detail_entry would
-      AttributeError on __slots__; two drifted identifier tables; OPDS
-      per-page ZeroDivision if config is 0; archive/read badges hardcoded
-      off on detail.
+- [x] **HIGH (fork): read_book's audio branch 500s on archived books**
+      *(Moved to the tracker 2026-11-13 as issue #2; bugs live in the
+      issue tracker now.)*
+- [x] **Upstream security cherry-picks (next fork lane)** *(Moved to the
+      tracker 2026-11-13 as issue #1 — the eight upstream fixes ride
+      live surfaces, so this is the fork's top lane.)*
+- [x] **Fork hardening** *(Moved to the tracker 2026-11-13 as issue
+      #3.)*
 - [ ] **Blitz candidates:** reading-position sync (seed calibre.bookmark
       from the latest library cfi; the fixture carries cfi rows); the
       Categories compact-reposition + palette.py's last ORM reads swapped;
